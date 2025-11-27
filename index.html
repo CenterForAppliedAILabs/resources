@@ -3,92 +3,100 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MyPages — Index</title>
+  <title>MyPages — Files</title>
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding:1rem;max-width:900px;margin:0 auto}
-    header{margin:1rem 0}
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0 auto;padding:1rem;max-width:900px}
+    h1{margin-top:0}
+    ul{padding-left:1.25rem}
+    li{margin:.35rem 0}
     a{color:#0366d6}
-    pre{background:#f6f8fa;padding:0.5rem;border-radius:4px;overflow:auto}
-    .notice{background:#fff8c5;border:1px solid #ffe58f;padding:0.75rem;border-radius:6px}
+    .muted{color:#6a737d;font-size:0.95rem}
+    .error{color:#842029;background:#f8d7da;padding:.5rem;border-radius:6px}
   </style>
 </head>
 <body>
   <header>
-    <h1>MyPages — Index</h1>
-    <p class="notice">This site is prepared for GitHub Pages. To serve from GitHub Pages, enable Pages in the repository settings and use the <code>main</code> branch (or the branch you prefer).</p>
+    <h1>Repository files — MyPages</h1>
+    <p class="muted">Files in <strong>toddwmac/MyPages</strong> (this index file is excluded).</p>
   </header>
 
   <main>
-    <p>Use the links below to navigate the files in this repository. Links use relative paths so they will work when the site is served from <code>https://toddwmac.github.io/MyPages/</code> or a custom domain.</p>
+    <section id="listing">
+      <p class="muted">Loading file list…</p>
+    </section>
 
-    <ul>
-      <li><a href="index.html">index.html</a> (this file)</li>
-      <li><a href="1918-Remedies.html">1918 Remedies</a></li>
-      <li><a href="assets/resume.pdf">assets/resume.pdf</a></li>
-      <li><a href="docs/manual.html">docs/manual.html</a></li>
-    </ul>
-
-    <p>If any links in the repository point to GitHub "blob" URLs (for example <code>https://github.com/&lt;owner&gt;/&lt;repo&gt;/blob/&lt;branch&gt;/path</code>), a small script below will rewrite those links at runtime to the corresponding <code>raw.githubusercontent.com</code> URL so browsers and fetch() can load the file contents directly.</p>
-
-    <h2>Converted example</h2>
-    <pre id="debug">(no github.com blob links found)</pre>
+    <noscript>
+      <p class="error">JavaScript is required to build the file list dynamically. View files on GitHub: <a href="https://github.com/toddwmac/MyPages">https://github.com/toddwmac/MyPages</a></p>
+    </noscript>
   </main>
 
   <script>
-    (function () {
-      // Convert anchors that point to github.com/.../blob/... into raw.githubusercontent.com URLs
-      try {
-        const anchors = Array.from(document.querySelectorAll('a[href*="github.com/"][href*="/blob/"]'));
-        anchors.forEach(a => {
-          try {
-            const u = new URL(a.href);
-            const parts = u.pathname.split('/').filter(Boolean);
-            const blobIndex = parts.indexOf('blob');
-            if (blobIndex > 0) {
-              const owner = parts[0];
-              const repo = parts[1];
-              const ref = parts[blobIndex + 1];
-              const pathParts = parts.slice(blobIndex + 2);
-              // Construct raw URL: https://raw.githubusercontent.com/<owner>/<repo>/<ref>/<path>
-              const rawUrl = u.protocol + '//' + ['raw.githubusercontent.com', owner, repo, ref, ...pathParts].join('/');
-              a.href = rawUrl;
+    (function(){
+      const owner = 'toddwmac';
+      const repo = 'MyPages';
+      const branch = 'main';
+      const listingEl = document.getElementById('listing');
+
+      function setBaseForPages() {
+        try {
+          if ((location.hostname || '').endsWith('.github.io')) {
+            const parts = location.pathname.split('/').filter(Boolean);
+            if (parts.length && parts[0]) {
+              const repoSegment = parts[0];
+              const baseHref = '/' + repoSegment + '/';
+              let baseEl = document.querySelector('base');
+              if (!baseEl) {
+                baseEl = document.createElement('base');
+                document.head.insertBefore(baseEl, document.head.firstChild);
+              }
+              baseEl.setAttribute('href', baseHref);
             }
-          } catch (e) {
-            // ignore invalid URL
           }
+        } catch (e){}
+      }
+
+      function showError(msg){
+        listingEl.innerHTML = '<div class="error">' + msg + '</div>';
+      }
+
+      async function fetchFiles(){
+        const api = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
+        const resp = await fetch(api, {headers: {'Accept':'application/vnd.github.v3+json'}});
+        if(!resp.ok) throw new Error('GitHub API: ' + resp.status + ' ' + resp.statusText);
+        const data = await resp.json();
+        if(!data.tree) throw new Error('Unexpected response');
+        return data.tree.filter(item => item.type === 'blob').map(b=>b.path);
+      }
+
+      function renderList(paths){
+        const files = paths.filter(p => p !== 'index.html').sort((a,b)=>a.localeCompare(b));
+        if(!files.length){
+          listingEl.innerHTML = '<p class="muted">No files found (excluding index.html).</p>';
+          return;
+        }
+        const ul = document.createElement('ul');
+        files.forEach(path => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = encodeURI(path);
+          a.textContent = path;
+          li.appendChild(a);
+          ul.appendChild(li);
         });
-
-        const debugEl = document.getElementById('debug');
-        if (debugEl) {
-          if (anchors.length) {
-            debugEl.textContent = 'Converted example link(s):\n' + anchors.map(a => a.href).join('\n');
-          } else {
-            debugEl.textContent = 'No github.com blob links found on this page.';
-          }
-        }
-      } catch (e) {
-        // non-fatal
+        listingEl.innerHTML = '';
+        listingEl.appendChild(ul);
       }
 
-      // If hosted on a github.io project page (https://user.github.io/Repo/...), set a base so relative links resolve to the repo root.
-      try {
-        const host = location.hostname || '';
-        if (host.endsWith('.github.io')) {
-          const parts = location.pathname.split('/').filter(Boolean);
-          if (parts.length && parts[0]) {
-            const repoSegment = parts[0];
-            const baseHref = '/' + repoSegment + '/';
-            let baseEl = document.querySelector('base');
-            if (!baseEl) {
-              baseEl = document.createElement('base');
-              document.head.insertBefore(baseEl, document.head.firstChild);
-            }
-            baseEl.setAttribute('href', baseHref);
-          }
+      (async function init(){
+        setBaseForPages();
+        try{
+          const paths = await fetchFiles();
+          renderList(paths);
+        }catch(err){
+          console.error(err);
+          showError('Could not load file list from GitHub API. View repository on GitHub: <a href="https://github.com/' + owner + '/' + repo + '">https://github.com/' + owner + '/' + repo + '</a>');
         }
-      } catch (e) {
-        // non-fatal
-      }
+      })();
     })();
   </script>
 </body>
