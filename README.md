@@ -1,1 +1,1 @@
-Project to let me eaisly add links to a page
+Project to let me eaisly host static HTML "Whitepaper files"
