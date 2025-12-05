@@ -1,7 +1,8 @@
 # MyPages
 
 A simple project to easily host and index static HTML files using GitHub Pages.
--AppliedAILabs  suffix display tag
+
+**-AppliedAILabs**  required suffix for display toggle
 
 ## Overview
 
