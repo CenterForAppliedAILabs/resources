@@ -10,7 +10,7 @@ MyPages generates an index page that automatically lists HTML files ending with 
 
 ## Features
 
-- **Filtered File Listing**: Dynamically displays only HTML files ending with "-appliedAILabs.html"
+- **Filtered File Listing**: Dynamically displays only HTML files ending with "-AppliedAILabs.html"
 - **GitHub Pages Integration**: Designed to work seamlessly with GitHub Pages hosting
 - **Responsive Design**: Clean, mobile-friendly interface
 - **Two Generation Methods**:
