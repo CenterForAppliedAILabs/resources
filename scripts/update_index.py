@@ -16,7 +16,7 @@ def build_index_html(file_paths):
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MyPages — Files</title>
+  <title>html-content — Files</title>
   <style>
     body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0 auto;padding:1rem;max-width:900px}
     h1{margin-top:0}
@@ -29,8 +29,8 @@ def build_index_html(file_paths):
 </head>
 <body>
   <header>
-    <h1>Repository files — MyPages</h1>
-    <p class=\"muted\">Files in <strong>toddwmac/MyPages</strong> containing "-AppliedAILabs" (this index file is excluded).</p>
+    <h1>Repository files — html-content</h1>
+    <p class=\"muted\">Files in <strong>toddwmac/html-content</strong> containing "-AppliedAILabs" (this index file is excluded).</p>
   </header>
 
   <main>
