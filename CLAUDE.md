@@ -4,56 +4,92 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**MyPages** is a static site generator for hosting and indexing files on GitHub Pages. It automatically lists any files containing `-AppliedAILabs` in their filename, specifically designed to showcase AI collaborative whitepapers and AI-enhanced content examples from Center For Applied AI / Applied AI Labs.
+**MyPages** is a GitHub Pages project that hosts and indexes static HTML files (primarily whitepapers and AI-enhanced content from Applied AI Labs). The repository maintains a dynamic or static index page that filters and displays files containing "-AppliedAILabs" in their filenames.
 
 ## Architecture
 
-The project uses a **dual-index approach**:
+The project consists of three main components:
 
-1. **Dynamic Index** (`index.html` - default): A JavaScript-based index that fetches the file list from the GitHub API at runtime. This approach requires no pre-processing but needs JavaScript enabled in browsers.
+1. **index.html** - The main entry point, currently configured as a dynamic index page that uses JavaScript and the GitHub API to fetch and display files from the repository. Can be regenerated as a static version using the Python script.
 
-2. **Static Index**: A pre-generated HTML index created by `scripts/update_index.py` that doesn't require JavaScript or API calls. This is automatically generated and committed when files change (via GitHub Actions workflow).
+2. **scripts/update_index.py** - A Python utility that generates a static version of `index.html` by reading files from git. This is useful when you want a version that doesn't depend on JavaScript or GitHub API calls.
 
-### Key Components
+3. **.github/workflows/update-index.ymx** - GitHub Actions workflow that automatically regenerates `index.html` when code is pushed to the main branch. The workflow prevents infinite loops by only running when pushes are not from the `github-actions[bot]` user.
 
-- **`index.html`**: The main landing page. It serves as the dynamic index by default and fetches files via GitHub API. Contains a Center For Applied AI logo header and instructions about confirming resources/references.
+## Development Workflow
 
-- **`scripts/update_index.py`**: Python script that generates a static version of the index by:
-  - Listing all git-tracked files using `git ls-files`
-  - Filtering for files containing `-AppliedAILabs` in their filename
-  - Building static HTML with links to all matching files
-  - Only updating `index.html` if content changed (prevents unnecessary commits)
-
-- **`.github/workflows/update-index.yml`**: GitHub Actions workflow that:
-  - Runs on every push to `main` branch
-  - Executes the Python update script
-  - Automatically commits and pushes changes (labeled `[skip ci]` to prevent recursive runs)
-  - Only runs if the commit author is not the `github-actions[bot]` itself
+The project uses a **working branch pattern**:
+- All edits should be made in the `working` branch
+- Push changes to `working` to test locally
+- Create a pull request from `working` to `main` when ready
+- Once merged to `main`, the GitHub Actions workflow automatically regenerates `index.html` and commits the changes
 
 ## Common Commands
 
-### Regenerate Static Index
+### Generate static index.html
 ```bash
-python scripts/update_index.py
+python3 scripts/update_index.py
 ```
-Run this after adding or removing content files to update `index.html`. The GitHub Actions workflow handles this automatically on push.
+This reads all files tracked by git, filters for those containing "-AppliedAILabs", and regenerates the static HTML file. Only commits changes if content has actually changed.
 
-### Add a New Content File
-1. Create or add your file to the repository root
-2. Ensure the filename contains `-AppliedAILabs` (any file type is supported)
-3. Commit and push to `main` branch
-4. GitHub Actions will automatically regenerate the index
+### Check which files would be indexed
+```bash
+git ls-files | grep -AppliedAILabs
+```
 
-## File Naming Convention
+### Test the dynamic index locally
+Open `index.html` in a browser. The JavaScript will fetch from the GitHub API and display matching files.
 
-- **Required text**: Files must contain `-AppliedAILabs` in their filename to appear in the index
-- Any file type is supported (`.html`, `.pdf`, `.docx`, etc.)
-- Files are sorted alphabetically in the listing
-- `index.html` itself is excluded from the file list
+## Key Implementation Details
 
-## Development Notes
+### File Filtering
+Both the dynamic JavaScript version and static Python version filter files the same way:
+- Include only files where the filename contains "-AppliedAILabs"
+- Exclude `index.html` itself
+- Sort results alphabetically
 
-- **Python version**: Uses Python 3 (no specific version requirement)
-- **Git dependency**: The index generator uses `git ls-files`, so git must be available in the environment
-- **HTML escaping**: The Python script properly HTML-escapes file paths to prevent injection issues
-- **No build step**: This is a static site generator with no compilation or bundling required
+### Dynamic vs Static Index Generation
+- **Dynamic (current)**: `index.html` uses JavaScript to call the GitHub API (requires internet, supports real-time updates)
+- **Static**: `scripts/update_index.py` generates a hardcoded HTML file with a list of files at the time it's run
+
+### GitHub Actions Automation
+The workflow in `.github/workflows/update-index.ymx`:
+- Triggers on every push to `main`
+- Prevents self-triggered recursion by checking if the actor is not the `github-actions[bot]`
+- Runs the Python script to regenerate `index.html`
+- Auto-commits and pushes changes if the file was modified (with `[skip ci]` to prevent infinite loops)
+
+## File Structure
+
+```
+resources/
+├── CLAUDE.md                          # This file
+├── index.html                         # Main index page (dynamic)
+├── scripts/
+│   └── update_index.py               # Static index generator
+├── .github/
+│   └── workflows/
+│       └── update-index.ymx          # GitHub Actions workflow
+└── *.pdf                             # Whitepapers and content files
+```
+
+## Common Modifications
+
+### Adding a new static file
+1. Create or add your file to the repository
+2. Ensure the filename contains "-AppliedAILabs" for it to be indexed
+3. Commit and push to `main` (or `working` first)
+4. The GitHub Actions workflow will automatically regenerate the index
+
+### Changing the file filter pattern
+Edit the file pattern check in:
+- **Dynamic version**: Line 96 in `index.html` - `files.filter(p => p !== 'index.html' && p.includes('-AppliedAILabs'))`
+- **Static version**: Line 58 in `scripts/update_index.py` - `files = [f for f in files if f != 'index.html' and '-AppliedAILabs' in f]`
+
+### Modifying the HTML styling
+- For dynamic index: Edit the `<style>` block in `index.html` (lines 7-15)
+- For static index: Edit the `header` string in `scripts/update_index.py` (lines 14-38)
+
+### Updating the page title or description
+- Dynamic: Edit the content in `index.html` (lines 6, 25-31)
+- Static: Edit the header strings in `scripts/update_index.py` (lines 18-19, 33)
