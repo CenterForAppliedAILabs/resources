@@ -4,6 +4,7 @@ A simple project to easily host and index static HTML files using GitHub Pages.
 
 **-AppliedAILabs** in the file name required for display toggle
 **Workflow:** >>  edit in **working** and then push to main so a deployment action can run
+test for new location
 
 
 ## Overview
