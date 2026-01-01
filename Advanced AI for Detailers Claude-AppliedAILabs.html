@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI For The Automotive Detailing Spa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://static.wixstatic.com/media/9293f6_b5cbb37252b74e079cd7d0fc3e899ea9~mv2.jpg/v1/fill/w_2495,h_1240,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/9293f6_b5cbb37252b74e079cd7d0fc3e899ea9~mv2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            margin-bottom: 40px;
+            border-bottom: 3px solid rgb(89, 200, 193);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: rgb(89, 200, 193);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.4em;
+            color: #ddd;
+            font-style: italic;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: rgba(89, 200, 193, 0.2);
+            border: 2px solid rgb(89, 200, 193);
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgb(89, 200, 193);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(89, 200, 193, 0.4);
+        }
+
+        .section {
+            display: none;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(89, 200, 193, 0.3);
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: rgb(89, 200, 193);
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgb(89, 200, 193);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: rgb(89, 200, 193);
+            font-size: 1.6em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .example-box {
+            background: rgba(89, 200, 193, 0.1);
+            border-left: 4px solid rgb(89, 200, 193);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .prompt-box {
+            background: rgba(30, 30, 30, 0.9);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            border: 1px solid rgb(89, 200, 193);
+        }
+
+        .highlight {
+            color: rgb(89, 200, 193);
+            font-weight: bold;
+        }
+
+        .tip {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning {
+            background: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(89, 200, 193, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checklist li:hover {
+            background: rgba(89, 200, 193, 0.2);
+            transform: translateX(10px);
+        }
+
+        .checklist li::before {
+            content: '✓ ';
+            color: rgb(89, 200, 193);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .practice-area {
+            background: rgba(20, 20, 20, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid rgb(89, 200, 193);
+        }
+
+        .practice-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(50, 50, 50, 0.9);
+            border: 1px solid rgb(89, 200, 193);
+            color: #fff;
+            border-radius: 5px;
+            font-size: 1em;
+            margin: 10px 0;
+            font-family: inherit;
+        }
+
+        .practice-btn {
+            padding: 12px 30px;
+            background: rgb(89, 200, 193);
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .practice-btn:hover {
+            background: rgb(109, 220, 213);
+            transform: scale(1.05);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(50, 50, 50, 0.9);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: rgb(89, 200, 193);
+            transition: width 0.5s;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            margin-top: 40px;
+            border-top: 3px solid rgb(89, 200, 193);
+        }
+    </style>
+</head>
+<body>
+<header style="text-align: center;">
+    <img 
+        src="https://static.wixstatic.com/media/9293f6_a0eefb7370d44723bed2182e1139f658~mv2.jpg/v1/fill/w_986,h_302,al_c,q_80,enc_avif,quality_auto/9293f6_a0eefb7370d44723bed2182e1139f658~mv2.jpg" 
+        alt="Mercer Auto Spa Banner"
+        style="width:50%; height:auto; display:block; margin:0 auto 10px auto;"
+    >
+
+<h3>
+    <span style="color: white;">Detail</span><span>AI</span>
+    <small style="font-size: 0.9rem; color: #737373; text-transform: none; margin-left: 10px;">
+        The Digital Shop Hand
+    </small>
+</h3>
+
+</header>
+
+
+
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+
+        <nav class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('intro')">Start Here</button>
+            <button class="nav-btn" onclick="showSection('basics')">AI Basics</button>
+            <button class="nav-btn" onclick="showSection('front')">Front of House</button>
+            <button class="nav-btn" onclick="showSection('back')">Back of Shop</button>
+            <button class="nav-btn" onclick="showSection('prompts')">Prompt Library</button>
+            <button class="nav-btn" onclick="showSection('practice')">Practice Zone</button>
+        </nav>
+
+        <!-- INTRO SECTION -->
+        <section id="intro" class="section active">
+            <h2>Welcome to Your AI Journey! 👋</h2>
+            
+            <p style="font-size: 1.2em; margin: 20px 0;">
+                You know how a Dual Action (DA) Polisher makes your job 10x faster than hand-polishing? 
+                It doesn't do the work <em>for</em> you—you still guide it, apply pressure, and know the vehicle—but 
+                it saves your arms and produces a better shine.
+            </p>
+
+            <div class="example-box">
+                <h3>AI is Your Digital Power Tool</h3>
+                <p>Think of <span class="highlight">Artificial Intelligence (AI)</span> the same way. It's not a robot 
+                taking your job—it's a power tool for your brain that helps you:</p>
+                <ul class="checklist">
+                    <li>Write professional emails in seconds</li>
+                    <li>Create social media posts that pop</li>
+                    <li>Answer customer questions instantly</li>
+                    <li>Build checklists and training materials</li>
+                    <li>Solve problems faster</li>
+                    <li>Look like a pro every time</li>
+                </ul>
+            </div>
+
+            <h3>What You'll Learn</h3>
+            <div class="grid-2">
+                <div class="example-box">
+                    <h4>🏢 Front of House</h4>
+                    <p>Handle customers, emails, scheduling, and social media like a pro</p>
+                </div>
+                <div class="example-box">
+                    <h4>🔧 Back of Shop</h4>
+                    <p>Create SOPs, solve problems, train new staff, and stay organized</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>💡 Pro Tip:</strong> You don't need to be "tech-savvy" to use AI. If you can text, you can use AI. 
+                It's literally just typing what you want!
+            </div>
+        </section>
+
+        <!-- BASICS SECTION -->
+        <section id="basics" class="section">
+            <h2>AI Basics: Your First Lap</h2>
+
+            <h3>What is AI, Really?</h3>
+            <p>AI tools like <span class="highlight">ChatGPT</span>, <span class="highlight">Claude</span>, 
+            and <span class="highlight">Google Gemini</span> are like having an extremely well-read assistant. 
+            They've read almost everything on the internet, but they need <strong>YOU</strong> to tell them what to do.</p>
+
+            <div class="example-box">
+                <h3>Getting Started (3 Easy Steps)</h3>
+                <ol style="padding-left: 20px;">
+                    <li><strong>Pick Your Tool:</strong> Go to chat.openai.com (ChatGPT) or claude.ai - both free!</li>
+                    <li><strong>Sign Up:</strong> Just need an email, takes 30 seconds</li>
+                    <li><strong>Start Typing:</strong> Ask it anything!</li>
+                </ol>
+            </div>
+
+            <h3>The CCC Method (Your Secret Formula)</h3>
+            <p>To get great results every time, use the <span class="highlight">CCC Method</span>:</p>
+
+            <div class="example-box">
+                <ol style="padding-left: 20px;">
+                    <li><strong>Context:</strong> Who are you? ("I'm a detailing service advisor...")</li>
+                    <li><strong>Content:</strong> What do you need? ("Write a text message...")</li>
+                    <li><strong>Constraints:</strong> How should it look? ("Keep it under 160 characters, friendly tone")</li>
+                </ol>
+            </div>
+
+            <h3>Bad vs. Good Prompts</h3>
+            <div class="grid-2">
+                <div class="warning">
+                    <h4>❌ Bad Prompt</h4>
+                    <div class="prompt-box">"Write an email."</div>
+                    <p><small>Too vague! AI doesn't know what to write.</small></p>
+                </div>
+                <div class="tip">
+                    <h4>✅ Good Prompt</h4>
+                    <div class="prompt-box">"I'm a service advisor at an auto detailing spa. Write a professional email to Mr. Henderson apologizing that his detail took 30 minutes longer than expected. Explain our technician found deep scratches and wanted to ensure perfection. Offer 10% off his next visit. Keep it warm and friendly."</div>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>💡 Golden Rule:</strong> The more specific you are, the better the results. 
+                Think of it like giving directions to a new employee!
+            </div>
+        </section>
+
+        <!-- FRONT OF HOUSE SECTION -->
+        <section id="front" class="section">
+            <h2>Front of House: Customer Service Superstar</h2>
+
+            <h3>1. The "Perfect Email" Generator</h3>
+            <div class="example-box">
+                <h4>Scenario: Upset Customer</h4>
+                <p>A customer is angry their appointment took longer than expected.</p>
+                
+                <div class="prompt-box">
+"I work at a high-end auto detailing spa. Write a polite, professional email to Mr. Henderson. Apologize that his detail took 30 minutes longer than quoted, but explain that our technician noticed deep scratches on the hood and wanted to spend extra time ensuring perfection. Offer him 10% off his next wash. Keep it warm and professional."
+                </div>
+                
+                <p><strong>Result:</strong> Perfect, professional email in 3 seconds. Copy, paste, send! ✅</p>
+            </div>
+
+            <h3>2. Social Media Wizard</h3>
+            <div class="example-box">
+                <h4>Scenario: Instagram Post</h4>
+                <p>You just finished a full paint correction on a vintage 1967 Mustang.</p>
+                
+                <div class="prompt-box">
+"Write 3 engaging Instagram captions for a photo of a 1967 Mustang that just got full paint correction and ceramic coating. Make it exciting and luxurious. Include emojis and relevant hashtags for auto detailing."
+                </div>
+                
+                <p><strong>Result:</strong> Three professional captions to choose from instantly!</p>
+            </div>
+
+            <h3>3. Handling Price Objections</h3>
+            <div class="example-box">
+                <div class="prompt-box">
+"Write 5 polite responses to 'That's too expensive.' Each should (1) validate the customer, (2) explain value, (3) offer a smaller option without discounting the premium package. Keep each under 3 sentences."
+                </div>
+            </div>
+
+            <h3>4. Review Requests (Easy Wins)</h3>
+            <div class="example-box">
+                <div class="prompt-box">
+"Write a next-day follow-up text after a full interior detail. Thank them, ask if everything looks great, and include a gentle Google review request. Make it warm, not pushy. Under 160 characters."
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>💡 Time Saver:</strong> Create a document with your best AI-generated messages. 
+                After a few days, you'll have templates for every situation!
+            </div>
+        </section>
+
+        <!-- BACK OF SHOP SECTION -->
+        <section id="back" class="section">
+            <h2>Back of Shop: Efficiency Engine</h2>
+
+            <h3>1. The Product Researcher</h3>
+            <div class="example-box">
+                <h4>Scenario: Weird Stain on Alcantara</h4>
+                <div class="prompt-box">
+"I'm detailing a car with Alcantara seats. There's a coffee stain. What's the safest process to clean this without damaging the fibers? Give me a step-by-step list with product recommendations."
+                </div>
+                <p><strong>Note:</strong> AI is smart, but always test a small spot first!</p>
+            </div>
+
+            <h3>2. Checklist Creation</h3>
+            <div class="example-box">
+                <h4>Build Consistency</h4>
+                <div class="prompt-box">
+"Create a quality control checklist for a 'Level 2 Interior Detail.' Include steps for vacuuming, steam cleaning vents, leather conditioning, and glass cleaning. Put it in logical order starting from the driver's side. Make it printable."
+                </div>
+                <p><strong>Result:</strong> Professional checklist you can laminate and use daily!</p>
+            </div>
+
+            <h3>3. Training New Staff</h3>
+            <div class="example-box">
+                <div class="prompt-box">
+"Create a 5-day training plan for a new detailing technician with zero experience. Each day should include skills to learn, a demo task, supervised practice, and a checklist. Emphasize safety and efficiency."
+                </div>
+            </div>
+
+            <h3>4. Inventory Math Helper</h3>
+            <div class="example-box">
+                <h4>Hate Math? AI's Got You</h4>
+                <div class="prompt-box">
+"We use about 2 ounces of ceramic coating per car. We have 3 bottles left, and each bottle is 50ml. How many cars can we coat before we run out? (Note: 1 ounce is roughly 30ml). Include a safety buffer recommendation."
+                </div>
+            </div>
+
+            <h3>5. SOP (Standard Operating Procedure) Builder</h3>
+            <div class="example-box">
+                <div class="prompt-box">
+"Create an SOP for a full exterior detail on a mid-size SUV. Include: prep wash, clay bar, polish, wax, tire dressing, and final inspection. Add time estimates for each step and common mistakes to avoid."
+                </div>
+            </div>
+
+            <div class="warning">
+                <strong>⚠️ Safety First:</strong> Always verify chemical recommendations with your shop's approved products. 
+                AI is helpful but doesn't know your specific inventory!
+            </div>
+        </section>
+
+        <!-- PROMPT LIBRARY SECTION -->
+        <section id="prompts" class="section">
+            <h2>Prompt Library: Copy & Paste These!</h2>
+            <p>Stuck? Here are ready-to-use prompts for common situations:</p>
+
+            <h3>Customer Service</h3>
+            <div class="example-box">
+                <h4>Appointment Confirmation</h4>
+                <div class="prompt-box">
+"Write an appointment confirmation text for a [SERVICE] on [DATE] at [TIME]. Include arrival instructions, expected duration, and a reminder to remove valuables. Keep under 320 characters."
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>Running Late</h4>
+                <div class="prompt-box">
+"Write a polite text to reschedule because the previous job ran long. Apologize professionally and offer 2 alternative times. Keep it brief and understanding."
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>Upsell Helper</h4>
+                <div class="prompt-box">
+"A customer just booked a basic wash. Give me 3 persuasive talking points to upsell them on adding ceramic coating for an extra $200. Focus on value and protection."
+                </div>
+            </div>
+
+            <h3>Technical & Shop Operations</h3>
+            <div class="example-box">
+                <h4>Problem Solving</h4>
+                <div class="prompt-box">
+"I'm seeing [ISSUE: streaking/hazing/swirls]. List the 5 most likely causes and fixes, from most common to least common. Include product recommendations."
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>Schedule Optimizer</h4>
+                <div class="prompt-box">
+"We have these jobs today: [LIST JOBS]. Build a schedule for 2 technicians with realistic time blocks. Account for 15-minute buffers between cars."
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>Supply Order</h4>
+                <div class="prompt-box">
+"Draft an email to our supplier 'Chemical Guys.' Ask about bulk pricing on microfiber towels if we buy 500 at a time, and what the lead time on shipping is. Professional but friendly tone."
+                </div>
+            </div>
+
+            <h3>Marketing & Social Media</h3>
+            <div class="example-box">
+                <h4>Before/After Post</h4>
+                <div class="prompt-box">
+"Create 3 Instagram captions for before/after photos of a [CAR TYPE] that was [CONDITION] and is now [RESULT]. Include emojis, excitement, and relevant hashtags. Make people want to book."
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>💡 Pro Move:</strong> Keep a note on your phone with your top 5 prompts. 
+                Just fill in the blanks and you're good to go!
+            </div>
+        </section>
+
+        <!-- PRACTICE SECTION -->
+        <section id="practice" class="section">
+            <h2>Practice Zone: Try It Yourself!</h2>
+
+            <div class="practice-area">
+                <h3>Your First Prompt</h3>
+                <p>Let's practice the CCC Method. Fill in the blanks to create your first prompt:</p>
+                
+                <label for="context"><strong>Context:</strong> Who are you?</label>
+                <input type="text" id="context" class="practice-input" placeholder="Example: I'm a service advisor at an auto detailing shop">
+                
+                <label for="content"><strong>Content:</strong> What do you need?</label>
+                <input type="text" id="content" class="practice-input" placeholder="Example: Write a text message to confirm an appointment">
+                
+                <label for="constraints"><strong>Constraints:</strong> Any special requirements?</label>
+                <input type="text" id="constraints" class="practice-input" placeholder="Example: Keep it under 160 characters, friendly tone">
+                
+                <button class="practice-btn" onclick="generatePrompt()">Generate My Prompt</button>
+                
+                <div id="generatedPrompt" style="margin-top: 20px;"></div>
+            </div>
+
+            <h3>Real-World Scenarios</h3>
+            <p>Pick a scenario and try writing your own prompt:</p>
+
+            <div class="grid-2">
+                <div class="example-box">
+                    <h4>📧 Scenario 1</h4>
+                    <p>A customer's car is ready 2 hours early. Write them a text.</p>
+                </div>
+                <div class="example-box">
+                    <h4>📱 Scenario 2</h4>
+                    <p>Create an Instagram caption for a muddy truck that's now spotless.</p>
+                </div>
+                <div class="example-box">
+                    <h4>📋 Scenario 3</h4>
+                    <p>Make a checklist for opening the shop each morning.</p>
+                </div>
+                <div class="example-box">
+                    <h4>💬 Scenario 4</h4>
+                    <p>Respond to a customer asking about ceramic coating vs. wax.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>🎯 Your Challenge:</strong> Pick ONE task you hate doing today and ask AI to help. 
+                See how much time you save!
+            </div>
+
+            <h3>Quick Tips for Better Results</h3>
+            <ul class="checklist">
+                <li>Start with "Act as a..." to set the role</li>
+                <li>Be specific about tone (professional, friendly, casual)</li>
+                <li>Include length limits when needed</li>
+                <li>Ask for multiple options to choose from</li>
+                <li>Tell AI to "make it shorter" or "make it more professional" if needed</li>
+                <li>Always review before sending - you're the quality control!</li>
+            </ul>
+        </section>
+
+    </div>
+
+    <footer>
+        <h3 style="color: rgb(89, 200, 193); margin-bottom: 15px;">Ready to Shine? 🚗✨</h3>
+        <p style="font-size: 1.2em; margin-bottom: 20px;">
+            AI isn't scary or complicated. It's just another tool to make your work easier and your results better.
+        </p>
+        <p>
+            <strong>Remember:</strong> Every expert was once a beginner. Start small, experiment, and have fun!
+        </p>
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(89, 200, 193, 0.3);">
+            <p style="font-size: 0.9em; opacity: 0.7;">
+                Now go make those cars shine - and let AI handle the paperwork! 💪
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Update progress bar
+            updateProgress();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateProgress() {
+            const sections = ['intro', 'basics', 'front', 'back', 'prompts', 'practice'];
+            const activeSection = document.querySelector('.section.active').id;
+            const progress = ((sections.indexOf(activeSection) + 1) / sections.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function generatePrompt() {
+            const context = document.getElementById('context').value;
+            const content = document.getElementById('content').value;
+            const constraints = document.getElementById('constraints').value;
+            
+            if (!context || !content) {
+                alert('Please fill in at least Context and Content fields!');
+                return;
+            }
+            
+            let prompt = context + '. ' + content;
+            if (constraints) {
+                prompt += '. ' + constraints;
+            }
+            
+            const resultDiv = document.getElementById('generatedPrompt');
+            resultDiv.innerHTML = `
+                <div class="example-box">
+                    <h4 style="color: rgb(89, 200, 193);">✅ Your Generated Prompt:</h4>
+                    <div class="prompt-box" style="margin-top: 10px; white-space: pre-wrap;">${prompt}</div>
+                    <p style="margin-top: 15px;">
+                        <strong>Next Step:</strong> Copy this prompt and paste it into ChatGPT, Claude, or Google Gemini!
+                    </p>
+                </div>
+            `;
+        }
+
+        // Initialize progress bar
+        updateProgress();
+    </script>
+</body>
+</html>
