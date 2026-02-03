@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USU College of Business & Technology - 10 Critical AI Challenges for Professors</title>
+    <style>
+        :root {
+            --primary: #13A2EB;
+            --accent: #FF0000;
+            --bg-color: #FAFBFC;
+            --text-primary: #000000;
+            --border-radius: 5px;
+            --base-unit: 4px;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-stack);
+            font-size: 22px; 
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4 { font-weight: 700; margin-top: 0; }
+        h1 { font-size: 28px; color: var(--text-primary); margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { font-size: 18px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;}
+        h3 { font-size: 24px; margin-top: 35px; margin-bottom: 15px; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 5px;}
+        h4 { font-size: 22px; margin-top: 25px; color: var(--text-primary); }
+
+        .container {
+            max-width: 1700px;
+            margin: 0 auto;
+            padding: 0 calc(var(--base-unit) * 10);
+        }
+
+        /* --- HEADER (LEFT ALIGNED) --- */
+        header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 40px;
+            padding: 10px 40px;
+            background: white;
+            border-bottom: 3px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 100px;
+            box-sizing: border-box;
+        }
+
+        .logo-container img {
+            height: 60px;
+            width: auto;
+            display: block;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #333;
+            max-width: 450px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        /* --- TOGGLE BUTTONS --- */
+        .toggle-container {
+            display: flex;
+            background: #eef2f5;
+            padding: var(--base-unit);
+            border-radius: 50px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+        .toggle-btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .active-classroom .btn-classroom { background: var(--primary); color: white; }
+        .active-doctoral .btn-doctoral { background: var(--accent); color: white; }
+        .active-doctoral header { border-bottom-color: var(--accent); }
+
+        /* --- THREE COLUMN LAYOUT --- */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr 340px;
+            gap: 40px;
+            margin-top: 40px;
+            align-items: flex-start;
+        }
+
+        /* --- INDEPENDENT SIDEBAR SCROLLING --- */
+        .sidebar {
+            position: sticky;
+            top: 140px; 
+            height: calc(100vh - 160px);
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* LEFT NAVIGATION */
+        .nav-links a {
+            display: block;
+            padding: 12px 15px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #555;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            transition: all 0.2s;
+            border-radius: var(--border-radius);
+            margin-bottom: 4px;
+        }
+        .nav-links a:hover { background: #f0f9ff; color: var(--primary); }
+        .nav-links a.active-nav { border-left: 6px solid var(--primary); color: var(--primary); background: #f0f9ff; }
+        .active-doctoral .nav-links a.active-nav { border-left-color: var(--accent); color: var(--accent); background: #fff5f5; }
+
+        /* RIGHT META FRAME */
+        .meta-frame-box {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* --- CHALLENGE CARDS --- */
+        .challenge-section {
+            background: white;
+            padding: 50px;
+            border-radius: var(--border-radius);
+            margin-bottom: 60px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.07);
+            border-left: 12px solid var(--primary);
+            scroll-margin-top: 140px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .challenge-section:hover { transform: translateX(8px); box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        .active-doctoral .challenge-section { border-left-color: var(--accent); }
+
+        .click-hint { font-size: 11px; text-transform: uppercase; color: #bbb; font-weight: bold; margin-bottom: 8px; display: block; }
+        .section-label { font-size: 14px; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        .active-classroom .section-label { color: var(--primary); }
+        .active-doctoral .section-label { color: var(--accent); }
+
+        .sub-block {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin: 25px 0;
+            border-left: 4px solid #cbd5e1;
+        }
+        
+        .discussion-only { display: none; }
+        .active-doctoral .discussion-only { display: block; }
+        .active-doctoral .challenge-only { display: none; }
+
+        .highlight-box {
+            background: #f0f9ff;
+            padding: 25px;
+            border: 1px solid var(--primary);
+            border-radius: var(--border-radius);
+            margin-top: 30px;
+        }
+        .active-doctoral .highlight-box { background: #fff5f5; border-color: var(--accent); }
+
+        table { width: 100%; border-collapse: collapse; margin: 35px 0; font-size: 18px; }
+        th, td { border: 1px solid #ddd; padding: 15px; text-align: left; }
+        th { background: #f4f4f4; font-weight: 700; }
+
+        @media (max-width: 1400px) {
+            .main-layout { grid-template-columns: 280px 1fr; }
+            .right-sidebar { display: none; }
+        }
+        @media (max-width: 1000px) {
+            header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .main-layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; height: auto; overflow: visible; width: 100%; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body class="active-classroom">
+
+<header>
+    <div class="logo-container">
+        <img src="https://www.usuniversity.edu/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fusuniversity.f2a35715.png&w=256&q=75" alt="USU Logo">
+    </div>
+    <div class="header-title">
+        College of Business & Technology<br>
+        10 Critical AI Challenges for Professors
+    </div>
+    <div class="toggle-container" onclick="toggleMode(event)">
+        <div class="toggle-btn btn-classroom">Challenge View</div>
+        <div class="toggle-btn btn-doctoral">Discussion View</div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="main-layout">
+        <!-- LEFT NAVIGATION -->
+        <aside class="sidebar left-sidebar">
+            <nav class="nav-links" id="nav-list"></nav>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main id="content-main">
+            <!-- CHALLENGE 1 -->
+            <section class="challenge-section" id="c1" onclick="toggleMode(event, 'c1')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 1</span>
+                <h1>What learning outcomes must remain human-only?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> AI can perform many academic tasks faster than students.</p>
+                    <p><strong>Core question:</strong> Which cognitive, ethical, and judgment-based outcomes must students demonstrate without AI assistance?</p>
+                    <p><strong>Why it matters:</strong> Without clarity, institutions unintentionally outsource learning itself.</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> AI can now draft literature reviews, generate statistical code, summarize theories, and even propose research questions faster than most doctoral students. Without deliberate boundaries, doctoral education risks shifting from developing scholars to supervising AI outputs.</p>
+                    <p><strong>Core Question:</strong> Which cognitive, ethical, and judgment-based outcomes must doctoral students demonstrate without AI assistance?</p>
+                    
+                    <div class="sub-block">
+                        <p><strong>A. Epistemic Judgment (Knowing What Counts as Knowledge)</strong><br><br>
+                        Doctoral students must independently demonstrate:<br>
+                        • The ability to evaluate competing theoretical explanations.<br>
+                        • Discernment between signal and noise in empirical findings<br>
+                        • Judgment about what is worth studying and why.<br><br>
+                        AI can recombine knowledge; it cannot justify why one explanation should prevail over another in ambiguous conditions.<br><br>
+                        <em>Human-only outcome: Students must show they can make defensible knowledge claims under uncertainty.</em></p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>B. Ethical Reasoning and Scholarly Responsibility</strong><br><br>
+                        AI is ethically agnostic; it optimizes outputs, not consequences. Doctoral education must therefore require students to demonstrate:<br>
+                        • Independent ethical judgment in research design<br>
+                        • Awareness of power, bias, and harm in knowledge production<br>
+                        • Accountability for data integrity, authorship, and interpretation<br><br>
+                        AI can generate an IRB-compliant protocol; it cannot feel moral responsibility for its downstream effects.<br><br>
+                        <em>Human-only outcome: Students must own the ethical implications of their scholarly choices.</em></p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>C. Original Sensemaking (Beyond Pattern Recognition)</strong><br><br>
+                        AI excels at pattern detection. Doctoral education must protect the human capacity to:<br>
+                        • Synthesize across incommensurable literatures.<br>
+                        • Generate novel conceptual frames.<br>
+                        • Detect when existing models fail to explain reality.<br><br>
+                        Insight is not the same as inference. AI infers; humans reframe.<br><br>
+                        <em>Human-only outcome: Students must demonstrate the capacity to create meaning, not just outputs.</em></p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>D. Methodological Judgment (Not Mechanical Execution)</strong><br><br>
+                        While AI can run analyses, doctoral students must independently show:<br>
+                        • The ability to choose appropriate methods, not just execute them.<br>
+                        • Understanding of assumptions, limitations, and tradeoffs<br>
+                        • Judgment about when results are technically correct but substantively wrong.<br><br>
+                        Running a model is not the same as understanding what the model does to reality.<br><br>
+                        <em>Human-only outcome: Students must defend methodological decisions without AI mediation.</em></p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>E. Scholarly Voice and Intellectual Ownership</strong><br><br>
+                        Doctoral education is about forming scholars, not prompt engineers. Students must demonstrate:<br>
+                        • A coherent intellectual identity<br>
+                        • The ability to argue a position and defend it publicly.<br>
+                        • Ownership of ideas under critique<br><br>
+                        AI can mimic a voice; it cannot stand behind one.<br><br>
+                        <em>Human-only outcome: Students must be identifiable authors of their thinking.</em></p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>F. Reflexivity and Metacognition</strong><br><br>
+                        Finally, doctoral students must independently demonstrate:<br>
+                        • Awareness of their own assumptions and limitations<br>
+                        • Capacity to revise beliefs, considering evidence.<br>
+                        • Intellectual humility and self-correction<br><br>
+                        AI does not reflect on its own thinking. Doctoral scholars must.<br><br>
+                        <em>Human-only outcome: Students must show they can think about how they think.</em></p>
+                    </div>
+
+                    <div class="highlight-box">
+                        <p><strong>Why This Matters:</strong> Without explicit human-only learning outcomes, institutions risk:<br>
+                        • Credentialing AI-mediated competence instead of scholarly mastery<br>
+                        • Eroding trust in the doctorate as a signal of independent judgment<br>
+                        • Producing graduates who can generate outputs but cannot create and govern knowledge.<br><br>
+                        The doctorate must certify not the ability to use intelligence, but the capacity to be responsible for it.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGE 2 -->
+            <section class="challenge-section" id="c2" onclick="toggleMode(event, 'c2')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 2</span>
+                <h1>Where does AI enhance learning vs. replace it?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> Faculty often ban or allow AI wholesale.</p>
+                    <p><strong>Core question:</strong> At what points in the learning process does AI deepen understanding, and where does it short-circuit it?</p>
+                    <p><strong>Examples:</strong><br><br>
+                    Positive - brainstorming, scenario analysis, feedback loops<br>
+                    Potentially risky - first-draft thinking, conceptual formation, synthesis without critique</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> Faculty often respond to AI by either banning it outright or allowing unrestricted use. Both approaches miss the core pedagogical issue: AI changes where learning happens, not whether learning happens. The risk is not AI use per se but misplacing it within the learning process.</p>
+                    <p><strong>Core Question:</strong> At what points in the learning process does AI deepen understanding, and where does it short-circuit it?</p>
+                    
+                    <h3>A. Where AI Enhances Learning (Cognitive Amplification)</h3>
+                    <p>AI enhances learning when it operates after or alongside human thinking, not in place of it.</p>
+                    
+                    <div class="sub-block">
+                        <p><strong>1. Pre-Commitment Exploration (Idea Expansion)</strong><br>
+                        Appropriate use:<br>
+                        • Brainstorming alternative hypotheses<br>
+                        • Generating counterarguments<br>
+                        • Stress-testing assumptions<br>
+                        • Exploring edge cases or boundary conditions<br><br>
+                        Why it works: AI increases breadth without displacing ownership. The student still chooses, evaluates, and commits. AI expands the option set; the learner makes the decision.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>2. Scenario Analysis and Simulation</strong><br>
+                        Appropriate use:<br>
+                        • Exploring “what-if” policy or methodological scenarios<br>
+                        • Testing sensitivity to assumptions<br>
+                        • Examining consequences across stakeholder groups<br><br>
+                        Why it works: AI accelerates iteration, allowing deeper engagement with complexity rather than superficial coverage. The learning comes from comparing scenarios, not generating them.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>3. Feedback Loops and Iterative Refinement</strong><br>
+                        Appropriate use:<br>
+                        • Receiving critique on clarity, logic, or structure<br>
+                        • Identifying gaps in argumentation<br>
+                        • Checking consistency with stated premises<br><br>
+                        Why it works: AI functions as a diagnostic mirror, not an author. Feedback enhances judgment only if judgment already exists.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>4. Technical Scaffolding (Not Intellectual Substitution)</strong><br>
+                        Appropriate use:<br>
+                        • Statistical code drafting after method selection.<br>
+                        • Formatting, citation checks, replication assistance<br>
+                        • Data visualization once analytic intent is defined.<br><br>
+                        Why it works: AI reduces friction in execution while preserving conceptual control. Efficiency is benign when cognition remains human-owned.</p>
+                    </div>
+
+                    <h3>B. Where AI Replaces Learning (Cognitive Short-Circuiting)</h3>
+                    <p>AI undermines learning when it occupies the first-order cognitive act the student is supposed to develop.</p>
+
+                    <div class="sub-block">
+                        <p><strong>1. First-Draft Thinking (Idea Origination)</strong><br>
+                        Risky use:<br>
+                        • Generating initial arguments<br>
+                        • Writing problem statements from scratch<br>
+                        • Defining constructs or research questions<br><br>
+                        Why it short-circuits learning: The student bypasses the discomfort that produces insight. If the student never struggles, they never own the idea.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>2. Conceptual Formation and Theory Building</strong><br>
+                        Risky use:<br>
+                        • Asking AI to develop a framework.<br>
+                        • Allowing AI to define key constructs.<br>
+                        • Accepting synthesized theory without interrogation.<br><br>
+                        Why it short-circuits learning: Concepts emerge through wrestling with ambiguity—something AI simulates but does not experience. Frameworks built without struggle collapse under critique.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>3. Synthesis Without Evaluation</strong><br>
+                        Risky use:<br>
+                        • AI-generated literature reviews without human critique<br>
+                        • Automated thematic synthesis<br>
+                        • Accepting coherence as correctness<br><br>
+                        Why it short-circuits learning: Synthesis is not aggregation; it requires judgment, exclusion, and prioritization. Coherence is not insight. AI confuses the two.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>4. Argument Substitution</strong><br>
+                        Risky use:<br>
+                        • AI-written discussion sections<br>
+                        • Auto-generated implications or conclusions<br>
+                        • Delegating interpretation to the model<br><br>
+                        Why it short-circuits learning: Interpretation is where doctoral competence is proven. If AI explains the findings, the student did not learn them.</p>
+                    </div>
+
+                    <div class="highlight-box">
+                        <p><strong>The Guiding Principle:</strong> AI should never occupy the cognitive position the student is being trained to master.<br><br>
+                        A simple heuristic:<br>
+                        Before understanding → AI is dangerous<br>
+                        After understanding → AI is powerful<br><br>
+                        Or more bluntly: AI may accelerate thinking, but it must never replace the act of thinking itself.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>Why This Matters:</strong> Without clarity about where AI belongs:<br>
+                        • Faculty enforce inconsistent and incoherent policies.<br>
+                        • Students optimize for output rather than mastery.<br>
+                        • Doctoral education risks credentialing fluency instead of judgment.<br><br>
+                        The question is not “Can students use AI?” The question should be “At which cognitive moments must they stand alone?”</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGE 3 -->
+            <section class="challenge-section" id="c3" onclick="toggleMode(event, 'c3')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 3</span>
+                <h1>How do we assess thinking, not output?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> AI produces polished artifacts that mask shallow cognition.</p>
+                    <p><strong>Core question:</strong> What assessment designs reveal student reasoning, decision logic, and trade-offs?</p>
+                    <p><strong>Implication:</strong> Move toward oral defenses, annotated reasoning, in-class problem solving (where possible…e.g., international weekends), reflective justification.</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> Faculty often respond to AI by banning it wholesale or allowing it without constraint. Both approaches fail because they focus on tools, not evidence of thinking. In an AI-rich environment, polished output is no longer a reliable signal of learning.</p>
+                    <p><strong>Core Question:</strong> How can assessment be designed so that human reasoning, judgment, and sensemaking are visible—regardless of AI use?</p>
+
+                    <p><strong>A. Re-Anchor Assessment to Cognitive Process</strong><br>
+                    The central shift is this: Assess the path of thinking, not just the final product. AI can generate outputs; it cannot credibly reconstruct a student’s evolving reasoning under interrogation.</p>
+                    
+                    <h3>B. Assessment Designs That Surface Human Thinking</h3>
+                    <div class="sub-block">
+                        <p><strong>1. Pre-Commitment Artifacts (Before AI Use)</strong><br>
+                        Assessment strategy:<br>
+                        • Handwritten or time-bounded concept maps.<br>
+                        • Oral articulation of research questions and assumptions.<br>
+                        • Explain your initial theory of the problem memos.<br><br>
+                        What this tactic reveals: Original sensemaking, framing ability, and baseline understanding.<br><br>
+                        Why it works: AI cannot replace pre-decisional cognition captured in real time. Thinking that exists before refinement cannot be outsourced.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>2. Justification-First Submissions</strong><br>
+                        Assessment strategy: Require students to submit:<br>
+                        • Methodological choices before results<br>
+                        • Theoretical commitments before synthesis<br>
+                        • Hypotheses with explicit rejection criteria<br><br>
+                        What tactic reveals: Epistemic judgment and decision logic.<br><br>
+                        Why it works: AI can optimize outcomes but struggles to justify why this path was chosen over others. Decisions precede results in real scholarship—assessment should too.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>3. Oral Defense and Live Interrogation</strong><br>
+                        Assessment strategy:<br>
+                        • Short oral exams<br>
+                        • Dissertation proposal defenses<br>
+                        • Explain and defend this paragraph questioning.<br><br>
+                        What this tactic reveals: Conceptual mastery, intellectual ownership, and depth of understanding.<br><br>
+                        Why it works: AI cannot answer follow-up questions grounded in lived reasoning. Fluency collapses quickly without understanding.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>4. Counterfactual and Failure Analysis</strong><br>
+                        Assessment strategy: Ask students to explain:<br>
+                        • Why an alternative theory was rejected.<br>
+                        • How their conclusions would change if assumptions failed.<br>
+                        • Where their argument is weakest.<br><br>
+                        What this tactic reveals: Critical judgment, reflexivity, and intellectual honesty.<br><br>
+                        Why it works: AI tends toward coherence; humans must demonstrate discernment. Knowing why something doesn’t work is higher-order thinking.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>5. Iterative Feedback Loops (AI as a Mirror, Not an Author)</strong><br>
+                        Assessment strategy:<br>
+                        • Require annotated revisions showing what changed and why.<br>
+                        • Reflection memos explaining how feedback was incorporated or rejected.<br>
+                        • AI critique logs (what advice was accepted, modified, or ignored)<br><br>
+                        What this tactic reveals: Metacognition and evaluative reasoning.<br><br>
+                        Why it works: Learning is visible in revision rationale, not textual polish. Improvement without explanation is not learning.</p>
+                    </div>
+
+                    <h3>C. Where AI Fits—and Where It Does Not—in Assessment</h3>
+                    <table>
+                        <tr><th>Learning Stage</th><th>AI Role</th><th>Assessment Focus</th></tr>
+                        <tr><td>Brainstorming</td><td>Assistive</td><td>Idea selection and rationale</td></tr>
+                        <tr><td>Scenario analysis</td><td>Amplifying</td><td>Interpretation of differences</td></tr>
+                        <tr><td>Feedback</td><td>Diagnostic</td><td>Judgment in revision</td></tr>
+                        <tr><td>First-draft thinking</td><td>Risky</td><td>Independent articulation</td></tr>
+                        <tr><td>Concept formation</td><td>Prohibited</td><td>Human sensemaking</td></tr>
+                        <tr><td>Synthesis</td><td>Conditional</td><td>Critical evaluation, not aggregation</td></tr>
+                    </table>
+
+                    <div class="highlight-box">
+                        <p><strong>The Assessment Principle:</strong> If an assessment can be completed convincingly by AI, it is mis-specified.<br><br>
+                        Or more pointedly: We do not need AI detectors. We need better questions.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>Why This Matters:</strong> Without redesigning assessment:<br>
+                        • Faculty will fight a losing battle against tools.<br>
+                        • Students will optimize for surface fluency.<br>
+                        • The doctorate will lose its signal value as evidence of independent thought.<br><br>
+                        Assessment must certify that the scholar (and not the system) can think, judge, and defend knowledge claims.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGE 4 -->
+            <section class="challenge-section" id="c4" onclick="toggleMode(event, 'c4')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 4</span>
+                <h1>What does academic integrity mean in an AI-native world?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> Traditional plagiarism models no longer apply.</p>
+                    <p><strong>Core question:</strong> What constitutes misuse vs. legitimate augmentation? How is that declaration made explicit to students?</p>
+                    <p><strong>Key shift:</strong> From prohibition → disclosure, attribution, and accountability.</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> Traditional academic integrity frameworks were built to detect unauthorized copying of text or ideas. In an AI-native world, originality is no longer threatened primarily by copying, but by delegation of thinking. Plagiarism models focused on textual similarity are no longer fit for purpose.</p>
+                    <p><strong>Core Question:</strong> What constitutes misuse versus legitimate augmentation of AI—and how is that boundary made explicit to students?</p>
+
+                    <div class="sub-block">
+                        <strong>A. Redefining Academic Integrity</strong><br><br>
+                        In an AI-native environment, academic integrity must shift from authorship policing to cognitive accountability. Academic integrity means the scholar remains the primary agent of judgment, decision-making, and “meaning-making”. Integrity is violated not when AI is used, but when core intellectual responsibility is transferred.
+                    </div>
+
+                    <div class="sub-block">
+                        <strong>B. Legitimate Augmentation vs. Misuse</strong><br><br>
+                        Legitimate Augmentation (Permissible Use) AI use is legitimate when it: Supports idea exploration without determining conclusions; Provides feedback or critique that the student evaluates; Assists with technical execution after human decisions are made; Improves clarity, structure, or efficiency without altering meaning.<br><br>
+                        Key test: Could the student fully explain, defend, and revise the work without AI present? If yes, augmentation is legitimate.<br><br>
+                        Misuse (Integrity Violation) AI use becomes misuse when it: Generates first-order ideas the student cannot independently reconstruct; Defines core concepts, frameworks, or research questions; Produces synthesis or interpretation without human critique; Substitutes for judgment under uncertainty.<br><br>
+                        Key indicator: If AI did the thinking the assignment was designed to elicit, integrity has been breached.
+                    </div>
+                    
+                    <h3>C. The Integrity Boundary: Cognitive Ownership</h3>
+                    <p>The central boundary is not how much AI was used, but where it was used in the thinking process.</p>
+                    <table>
+                        <tr><th>Cognitive Function</th><th>Integrity Status</th></tr>
+                        <tr><td>Deciding what matters</td><td>Human-only</td></tr>
+                        <tr><td>Choosing theories or methods</td><td>Human-only</td></tr>
+                        <tr><td>Interpreting findings</td><td>Human-only</td></tr>
+                        <tr><td>Brainstorming options</td><td>AI-assisted</td></tr>
+                        <tr><td>Scenario testing</td><td>AI-assisted</td></tr>
+                        <tr><td>Editing and formatting</td><td>AI-assisted</td></tr>
+                    </table>
+                    <p>AI may inform decisions but must never replace them.</p>
+
+                    <h3>D. Making Integrity Explicit to Students</h3>
+                    <p>Academic integrity in an AI-native world must be declared, not inferred.</p>
+                    <p><strong>Cognitive Disclosure Statements:</strong> Require students to include a brief statement specifying: Where AI was used; For what purpose; What decisions remained human? Example: "AI tools were used for brainstorming alternative hypotheses and for clarity edits. All theoretical framing... developed independently."</p>
+                    <p><strong>Assignment-Level AI Charters:</strong> Each assignment should explicitly state: AI-permitted zones; AI-restricted zones; Human-only expectations. This removes ambiguity and prevents post-hoc enforcement.</p>
+                    <p><strong>Integrity as Defensibility, Not Detection:</strong> Replace “Did you use AI?” with: Explain how you arrived at this conclusion; Why was this framework chosen over alternatives; What would change your interpretation? Students who did the thinking can answer.</p>
+
+                    <div class="highlight-box">
+                        <p><strong>E. The New Integrity Standard</strong><br><br>
+                        Integrity is preserved when students can: Reconstruct their reasoning; Defend their decisions under questioning; Accept responsibility for consequences. If the student cannot do these three things, no disclosure statement can restore integrity.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>Why This Matters:</strong> Without redefining academic integrity: Institutions will chase tools instead of governing learning; Faculty will enforce inconsistent, indefensible rules; Doctoral credentials will quietly lose credibility.<br><br>
+                        Academic integrity in the AI era is not about originality of text. It is about ownership of thought.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGE 5 -->
+            <section class="challenge-section" id="c5" onclick="toggleMode(event, 'c5')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 5</span>
+                <h1>How do we teach students to interrogate AI outputs?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> Students trust fluent responses too easily.</p>
+                    <p><strong>Core question:</strong> How do we train students to challenge assumptions, identify hallucinations, and test validity?</p>
+                    <p><strong>Implication:</strong> This becomes a core literacy, not a technical skill.</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> Doctoral students are trained to trust peer-reviewed prose, methodological rigor, and authoritative tone. AI systems exploit this training: they produce fluent, confident, and often plausible responses that simulate scholarly authority without guaranteeing validity. As a result, students too easily accept AI outputs as credible starting points, or worse, as conclusions.</p>
+                    <p><strong>Core Question:</strong> How do we train doctoral students to challenge AI assumptions, detect hallucinations, and rigorously test validity?</p>
+
+                    <p><strong>A. Reframing AI Interrogation as Scholarly Literacy</strong><br>
+                    At the doctoral level, interrogating AI is not a technical skill (e.g., prompt engineering). It is an extension of epistemological training. Doctoral AI literacy means treating AI output as a hypothesis generator, but never as evidence. Students must learn to approach AI text with the same skepticism applied to: Unreviewed manuscripts, Industry white papers, Politically or ideologically motivated analyses.</p>
+
+                    <h3>B. Core Interrogation Practices to Teach Explicitly</h3>
+                    <div class="sub-block"><strong>1. Assumption Extraction:</strong> Require students to identify implicit theoretical assumptions in AI responses; Surface what the model presumes about causality, agency, or context. Ask: What must be true for this answer to hold?<br><br>Why it matters: AI rarely states assumptions explicitly, yet all claims depend on them. Hidden assumptions are the primary source of AI error.</div>
+                    <div class="sub-block"><strong>2. Source Verification and Provenance Testing:</strong> Train students to independently locate primary sources for any cited claim; Check whether references exist and say what is claimed; Distinguish between canonical literature and plausible sounding fabrications.<br><br>Why it matters: AI can generate syntactically perfect but nonexistent citations. At the doctoral level, unverifiable claims are epistemically meaningless.</div>
+                    <div class="sub-block"><strong>3. Counterfactual Stress-Testing:</strong> Ask students to reverse key assumptions and observe how conclusions change; Test edge cases and boundary conditions. Ask: When would this answer fail?<br><br>Why it matters: AI is optimized for coherence, not robustness. Truth reveals itself under pressure; fluency does not.</div>
+                    <div class="sub-block"><strong>4. Cross-Model and Cross-Method Comparison:</strong> Query multiple AI systems and compare divergences; Contrast AI outputs with domain-specific empirical data; Reconcile contradictions explicitly.<br><br>Why it matters: Disagreement forces judgment. When AI systems disagree, the scholar must decide.</div>
+                    <div class="sub-block"><strong>5. Methodological Plausibility Checks:</strong> Require students to examine whether proposed methods align with research questions; Identify misapplications of statistical or qualitative techniques; Flag overgeneralization from limited evidence.<br><br>Why it matters: AI often produces methodologically possible but substantively inappropriate solutions. Plausibility is not validity.</div>
+
+                    <h3>C. Making Interrogation a Formal Part of Doctoral Training</h3>
+                    <div class="sub-block">
+                        <strong>1. AI Critique Assignments:</strong> Assign students to submit AI-generated analyses with line-by-line critiques; Annotate where outputs are strong/weak/wrong; Propose corrected versions.<br>
+                        <strong>2. AI Failure Case Studies:</strong> Incorporate documented AI hallucinations; Misleading but fluent analyses; High-stakes errors in published contexts.<br>
+                        <strong>3. Oral Defense of AI-Rebuttal:</strong> Require students to defend why an AI-generated answer is flawed; Explain how they would redesign the analysis.
+                    </div>
+
+                    <div class="highlight-box">
+                        <p><strong>D. The Interrogation Heuristic for Doctoral Students</strong><br><br>
+                        Teach a simple but rigorous test:<br>
+                        • What is the claim?<br>
+                        • What assumptions support it?<br>
+                        • What evidence would falsify it?<br>
+                        • What sources independently confirm it?<br>
+                        • Where might it fail?<br><br>
+                        If a student cannot answer these questions, the AI output has not been interrogated.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>Why This Matters:</strong> If doctoral students are not explicitly trained to interrogate AI: Fluency will masquerade as rigor; Hallucinations will quietly enter scholarship; Graduates will lack the judgment required to govern AI-informed knowledge.<br><br>
+                        Interrogating AI is now as fundamental to doctoral education as evaluating peer-reviewed research. It is not a technical competency, but a scholarly obligation.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGE 6 -->
+            <section class="challenge-section" id="c6" onclick="toggleMode(event, 'c6')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 6</span>
+                <h1>What faculty capabilities are now non-optional?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> Uneven faculty fluency creates inequity and confusion.</p>
+                    <p><strong>Core question:</strong> What minimum AI literacy should every instructor possess to design, supervise, and assess learning responsibly?</p>
+                    <p><strong>Includes:</strong> GAI Prompt critique, Bias awareness, Assignment redesign, Boundary setting.</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> In doctoral education, uneven faculty fluency with AI produces inconsistent policies, contradictory expectations, and inequitable assessment. Some faculty prohibit AI entirely; others permit it without boundaries. Doctoral students are left to navigate ambiguity in the very environment meant to model scholarly rigor.</p>
+                    <p><strong>Core Question:</strong> What minimum AI literacy must every doctoral instructor possess to responsibly design, supervise, and assess doctoral learning?</p>
+
+                    <p><strong>A. The Baseline Standard</strong><br>
+                    At the doctoral level, AI fluency is now a professional obligation, not an elective skill. Every faculty member who teaches, supervises, or examines doctoral students must be able to distinguish augmentation of scholarship from substitution of judgment. What follows defines the non-optional floor for faculty capability.</p>
+
+                    <h3>B. Core Faculty Capabilities (Minimum Required)</h3>
+                    <div class="sub-block"><strong>1. Generative AI Prompt Critique (Epistemic Awareness):</strong> Faculty must be able to: Recognize how prompts shape outputs; Identify leading, biased, underspecified prompts; Diagnose prompt artifacts.<br><br>Why it matters: One cannot assess AI-mediated work without understanding how it was elicited.</div>
+                    <div class="sub-block"><strong>2. Bias Awareness and Epistemic Risk:</strong> Faculty must be able to: Explain training data bias; Identify normative assumptions in AI; Recognize when AI favors dominant theories.<br><br>Why it matters: Doctoral education advances knowledge, not blind spots. Unexamined AI is a conservative force.</div>
+                    <div class="sub-block"><strong>3. Assignment Redesign for Cognitive Visibility:</strong> Faculty must be able to: Redesign tasks so reasoning is observable; Shift assessment from output to defensible judgment.<br><br>Why it matters: If AI can complete the task unaided, the task is misaligned with doctoral outcomes.</div>
+                    <div class="sub-block"><strong>4. Boundary Setting and Explicit AI Governance:</strong> Faculty must be able to: Clearly articulate where AI use is permitted/prohibited; Align permissions with learning objectives.<br><br>Why it matters: Ambiguity creates inequity. Explicit boundaries create fairness. Governance replaces guesswork.</div>
+                    <div class="sub-block"><strong>5. Evaluation Without Reliance on Detection Tools:</strong> Faculty must be able to: Assess reasoning through questioning/defense; Evaluate ownership of ideas independent of textual polish.<br><br>Why it matters: Detection tools are unreliable and pedagogically corrosive. Judgment anchors doctoral assessment.</div>
+
+                    <p><strong>C. What Faculty Are Not Required to Be</strong><br>
+                    To be clear, doctoral faculty are not required to: Build or fine-tune AI models; Master every emerging platform; Become prompt engineers. The obligation is epistemic competence, not technical expertise.</p>
+
+                    <div class="highlight-box">
+                        <p><strong>D. The Doctoral Faculty AI Literacy Checklist</strong><br><br>
+                        Every doctoral instructor should be able to answer yes to the following:<br>
+                        • Can I explain where AI strengthens versus undermines doctoral learning?<br>
+                        • Can I critique an AI response in my field for assumptions and bias?<br>
+                        • Can I design an assessment that AI cannot complete convincingly?<br>
+                        • Can I clearly state AI-permitted and AI-restricted zones?<br>
+                        • Can I defend my AI policy as fair, coherent, and aligned with doctoral standards?<br><br>
+                        If not, doctoral supervision is at risk.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>Why This Matters:</strong> Without a shared baseline: Doctoral standards fragment across faculty; Students receive mixed signals; The credibility of the doctorate erodes unevenly.<br><br>
+                        AI does not lower the bar for doctoral faculty. It clarifies where the bar must be held.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGE 7 -->
+            <section class="challenge-section" id="c7" onclick="toggleMode(event, 'c7')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 7</span>
+                <h1>How do we ensure equity of access and expectations?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> AI advantages compound existing inequities.</p>
+                    <p><strong>Core question:</strong> Are all students given equal access to AI tools? Do we have clear guidance on acceptable use?</p>
+                    <p><strong>Equity issue:</strong> Silent use favors those already advantaged.</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> In doctoral education, AI advantages compound existing inequities. Doctoral students enter programs with unequal resources/mentoring. When AI use is ambiguous, these disparities intensify, quietly privileging students who already possess confidence, social capital, or financial means.</p>
+                    <p><strong>Core Questions:</strong> Are all doctoral students given equal access to AI tools. Moreover, do they receive clear, consistent guidance on acceptable use?<br><br>
+                    <strong>Equity Issue:</strong> When AI use is silent, it disproportionately benefits students who know the unwritten rules.</p>
+
+                    <div class="sub-block"><strong>A. Equity Requires Program-Level Access, Not Individual Workarounds:</strong> Equity fails if access depends on personal subscriptions, advisor norms, or informal peer instruction. Programs must provide institutional AI tools or approved open-access equivalents, and privacy/data-compliant platforms.</div>
+                    <div class="sub-block"><strong>B. Standardizing Expectations Across the Doctoral Lifecycle:</strong> Doctoral students move across coursework, exams, and research. Equity requires continuity. Programs must articulate AI expectations during coursework, disclosure standards for proposals, and consistent norms across advisors.</div>
+                    <div class="sub-block"><strong>C. Making AI Use Explicit and Safe to Declare:</strong> Silence around AI use advantages students willing to take risks. Equitable practice demands explicitness. Required AI Disclosure Norms: AI-use statements; criteria for misuse; assurance that compliant use will not be penalized. Transparency protects rule-followers; silence protects insiders.</div>
+                    <div class="sub-block"><strong>D. Preventing a Two-Tier Doctoral Experience:</strong> Without governance, doctoral education splits into an official curriculum and a shadow curriculum (what successful students quietly do). To prevent this: AI guidance in orientations; Advisor alignment; normalizing open discussion.</div>
+                    <div class="sub-block"><strong>E. Assessment Design as an Equity Mechanism:</strong> Assessments that reward polish/speed advantage undisclosed AI use. Equitable assessment: prioritizes reasoning/justification, includes oral components, and makes evaluation criteria explicit.</div>
+
+                    <div class="highlight-box">
+                        <p><strong>F. Program-Level Accountability</strong><br><br>
+                        Equity in doctoral AI use is not a student responsibility, but a program obligation. Doctoral programs must: Provide access; Define boundaries; Train faculty advisors; Educate students; Enforce expectations consistently.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>Why This Matters:</strong> If doctoral programs do not explicitly address AI equity: AI will quietly widen gaps; Transparent students will be disadvantaged; Credibility of merit-based training will erode.<br><br>
+                        Equity in AI-enabled doctoral education is not about restricting tools. It is about ensuring that access and expectations are shared, explicit, and defensible.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGE 8 -->
+            <section class="challenge-section" id="c8" onclick="toggleMode(event, 'c8')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 8</span>
+                <h1>What institutional risks are we accepting, explicitly or implicitly?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> AI introduces legal, reputational, and accreditation risks.</p>
+                    <p><strong>Core question:</strong> Where does responsibility lie when AI-assisted work is incorrect, biased, or harmful?</p>
+                    <p><strong>Implication:</strong> This is governance, and not pedagogy.</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> Doctoral education sits at the apex of an institution’s knowledge-production enterprise. AI use within doctoral research introduces legal, reputational, accreditation, and ethical risks that extend far beyond classrooms. When governance is absent, institutions implicitly assume risks they have neither acknowledged nor managed.</p>
+                    <p><strong>Core Question:</strong> When AI-assisted doctoral work is incorrect, biased, or harmful where does responsibility lie?</p>
+
+                    <div class="sub-block"><strong>A. The Central Governance Reality:</strong> Responsibility cannot be fully delegated. Institutions award the degree and certify competence, and therefore bear ultimate risk. AI-mediated failure reflects on the committee, program, and institutional brand.</div>
+
+                    <h3>B. Categories of Institutional Risk</h3>
+                    <div class="sub-block">
+                        <strong>Legal and Compliance Risk:</strong> Use of proprietary data; Privacy/IRB violations; Copyright violations. Governance gap: Without policy, institutions may be liable.<br>
+                        <strong>Reputational Risk:</strong> Dissertations are public-facing, archived and indexed. AI errors can undermine trust in doctoral rigor and damage program credibility.<br>
+                        <strong>Accreditation and Quality Assurance Risk:</strong> Accreditors expect institutions to demonstrate control over standards. If AI substitutes for cognition, learning outcomes become unverifiable.<br>
+                        <strong>Ethical and Harm-Based Risk:</strong> AI research can reinforce bias in theory or data and influence policy/discourse harmfully. Lapses implicate institutional oversight.
+                    </div>
+
+                    <h3>C. Where Responsibility Must Reside</h3>
+                    <p>Responsibility in AI-assisted doctoral work is distributed but not diffuse.</p>
+                    <table>
+                        <tr><th>Actor</th><th>Responsibility</th></tr>
+                        <tr><td>Doctoral candidate</td><td>Primary authorship, disclosure, defensibility</td></tr>
+                        <tr><td>Advisor & committee</td><td>Oversight, interrogation, validation</td></tr>
+                        <tr><td>Program</td><td>Standards, consistency, milestone governance</td></tr>
+                        <tr><td>Institution</td><td>Policy, risk acceptance, accountability</td></tr>
+                    </table>
+
+                    <div class="sub-block">
+                        <p><strong>D. The Risk of Implicit Acceptance</strong><br>
+                        Institutions accept risk implicitly when they: Allow AI without formal policy; Delegate to individual faculty; Rely on detection tools; Treat AI as a classroom issue rather than a research issue. Silence is not neutrality, but unmanaged risk.</p>
+                    </div>
+
+                    <div class="highlight-box">
+                        <p><strong>E. Governance Mechanisms That Mitigate Risk</strong><br><br>
+                        Institutions must implement: Doctoral-level AI use policies; Mandatory AI disclosure in proposals/dissertations; Faculty training on risk; Clear lines of accountability. Governance makes risk conscious, bounded, and defensible.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>Why This Matters:</strong> If institutions fail to govern AI in doctoral education: Legal exposure will be reactive; Reputational harm will precede clarity; Accreditation scrutiny will intensify.<br><br>
+                        The question is not whether AI introduces risk. The question is whether institutions are knowingly governing the risks they are already accepting.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGE 9 -->
+            <section class="challenge-section" id="c9" onclick="toggleMode(event, 'c9')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 9</span>
+                <h1>How do we future-proof curriculum in a fast-moving AI landscape?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> Tool-specific instruction ages quickly.</p>
+                    <p><strong>Core question:</strong> What enduring skills do students need regardless of the platform?</p>
+                    <p><strong>Focus:</strong> Judgment, framing, ethics, systems thinking, decision quality.</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> AI platforms evolve faster than doctoral curricula can be revised. Tool-specific instruction becomes obsolete within semesters, creating a false sense of preparedness while diverting attention from the deeper purpose of doctoral education: developing scholars capable of exercising independent judgment.</p>
+                    <p><strong>Core Question:</strong> What enduring capabilities must doctoral students develop that remain valid regardless of AI platform or technological change?</p>
+
+                    <div class="sub-block"><strong>A. Shift the Curriculum from Tools to Intellectual Invariants:</strong> Doctoral curricula must be designed around cognitive capabilities that persist. Tools are transient. Judgment endures. Futureproofing means teaching students how to think with, about, and beyond AI, not how to operate a system.</div>
+
+                    <h3>B. Enduring Doctoral Skills That Transcend Platforms</h3>
+                    <div class="sub-block"><strong>1. Judgment Under Uncertainty:</strong> Make defensible decisions with conflicting info; Weigh tradeoffs rather than optimize single metrics; Accept responsibility. AI can propose options; it cannot choose wisely.</div>
+                    <div class="sub-block"><strong>2. Problem Framing and Question Formulation:</strong> Defining the right problem before solving it; Distinguishing symptoms from root causes; Articulating researchable questions. AI responds to frames but does not create them. Poor framing produces sophisticated irrelevance.</div>
+                    <div class="sub-block"><strong>3. Ethical Reasoning and Responsibility:</strong> Ethical implications of design; Power, bias, and harm in knowledge production; Accountability. AI is ethically neutral; doctoral scholars must not be. Ethics cannot be automated.</div>
+                    <div class="sub-block"><strong>4. Systems Thinking and Second-Order Effects:</strong> Understanding how interventions propagate through systems; Anticipating unintended consequences. AI optimizes locally; scholars must reason globally.</div>
+                    <div class="sub-block"><strong>5. Critical Evaluation of Knowledge Claims:</strong> Interrogate assumptions; Distinguish plausibility from validity; Detect bias, hallucination, and overgeneralization. Fluency is not evidence.</div>
+                    <div class="sub-block"><strong>6. Decision Quality, Not Decision Speed:</strong> Resist equating productivity with rigor. Justify decisions explicitly; Explain rejected alternatives; Revise beliefs considering evidence. AI accelerates output; doctoral education must preserve deliberation.</div>
+
+                    <h3>C. Curriculum Design Principles for Futureproofing</h3>
+                    <p>To embed these enduring skills, doctoral curricula should: Anchor courses around decision points, not deliverables; Emphasize oral defense and critique; Use AI as an object of interrogation, not mastery; Require students to explain why before how. If a learning outcome depends on a specific platform, it is already outdated.</p>
+
+                    <div class="highlight-box">
+                        <p><strong>D. Assessing Enduring Skills</strong><br><br>
+                        Futureproof assessment focuses on: Framing memos; Assumption audits; Ethical impact analyses; Counterfactual reasoning; Oral examinations and defenses. What cannot be defended should not be credentialed.</p>
+                    </div>
+
+                    <div class="sub-block">
+                        <p><strong>Why This Matters:</strong> If doctoral curricula chase tools: Programs will perpetually lag technology; Students will confuse fluency with expertise; Signal value erodes.<br><br>
+                        Doctoral education must outlast platforms. Its purpose is to develop scholars whose judgment remains relevant even when today’s tools disappear.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGE 10 -->
+            <section class="challenge-section" id="c10" onclick="toggleMode(event, 'c10')">
+                <span class="click-hint">Click card to switch view</span>
+                <span class="section-label">Challenge 10</span>
+                <h1>What is the educator’s role when information is abundant?</h1>
+                
+                <div class="challenge-only">
+                    <p><strong>Problem:</strong> AI challenges the traditional “expert content deliverer” model.</p>
+                    <p><strong>Core question:</strong> If AI scales intelligence, how do educators scale wisdom, context, and meaning?</p>
+                    <p><strong>Implication:</strong> This reframes teaching as sense-making, not information transfer.</p>
+                </div>
+
+                <div class="discussion-only">
+                    <p><strong>Problem:</strong> Doctoral education has historically relied on faculty as primary content authorities and gatekeepers of scarce knowledge. AI has collapsed that scarcity. Doctoral students now have immediate access to information, analysis, and explanation. This disrupts the traditional model at the very level where intellectual authority matters most.</p>
+                    <p><strong>Core Question:</strong> If AI scales intelligence, how do doctoral educators scale wisdom, context, and meaning?</p>
+
+                    <div class="sub-block"><strong>1. Sense-Maker of Complex Knowledge:</strong> Curating and contextualizing. Help students distinguish important questions from merely interesting ones; Surface underlying assumptions; Situate ideas within historical/disciplinary context. Meaning does not emerge from abundance; it emerges from interpretation.</div>
+                    <div class="sub-block"><strong>2. Modeler of Scholarly Judgment:</strong> Faculty must make their thinking visible: Explain why one framework is chosen over another; Demonstrate tradeoff reasoning; Articulate how evidence reshapes conclusions. Doctoral students learn judgment by observing it.</div>
+                    <div class="sub-block"><strong>3. Guardian of Epistemic Standards:</strong> Enforcing what counts as valid evidence; Challenging fluency that masks weak reasoning; Preventing the substitution of coherence for rigor. In an AI world, standards matter more.</div>
+                    <div class="sub-block"><strong>4. Designer of Intellectual Friction:</strong> Intentionally introduce: Ambiguity, Contradictory evidence, Uncomfortable counterarguments. Learning occurs at the point of tension. AI removes friction; educators must reintroduce it.</div>
+                    <div class="sub-block"><strong>5. Ethical Steward and Boundary Setter:</strong> Clarify appropriate AI use; Address power, bias, and harm in knowledge; Hold students accountable for consequences. Ethics is the frame.</div>
+                    <div class="sub-block"><strong>6. Coach of Scholarly Identity:</strong> Shape intellectual voice, scholarly confidence, and ownership of ideas under critique. AI can generate text; it cannot form scholars.</div>
+
+                    <h3>C. Teaching as Sense-Making: What Changes in Practice</h3>
+                    <table>
+                        <tr><th>Traditional Role</th><th>AI-Native Doctoral Role</th></tr>
+                        <tr><td>Delivering content</td><td>Interrogating meaning</td></tr>
+                        <tr><td>Lecturing</td><td>Facilitating critique</td></tr>
+                        <tr><td>Answering questions</td><td>Refining questions</td></tr>
+                        <tr><td>Grading outputs</td><td>Assessing judgment</td></tr>
+                        <tr><td>Policing tools</td><td>Governing cognition</td></tr>
+                    </table>
+
+                    <div class="sub-block">
+                        <p><strong>Why This Matters:</strong> If doctoral educators cling to the content-delivery model: AI will outperform them at the wrong task; Students will mistake access for understanding; Depth erodes.<br><br>
+                        When information is abundant, the educator’s role is not diminished. it is clarified. Doctoral educators scale wisdom by cultivating judgment, context, and responsibility in the next generation of scholars.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- RIGHT SIDEBAR (META FRAME) -->
+        <aside class="sidebar right-sidebar">
+            <div class="meta-frame-box">
+                <h2 style="color:var(--text-primary); margin-bottom:15px; border-bottom: 2px solid #eee;">The Meta-Frame</h2>
+                <p><strong>Permission</strong> – What is allowed, where, and why?</p>
+                <p><strong>Process</strong> – How is AI used within learning workflows?</p>
+                <p><strong>Proof</strong> – How is student understanding demonstrated?</p>
+                <p style="font-size:14px; font-style:italic; color: #666; margin-top: 15px;">If any one of these is missing, confusion and risk will very likely follow.</p>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    const navItems = [
+        "Human-Only Outcomes", "Enhance vs. Replace", "Assessing Thinking", "Academic Integrity",
+        "Interrogating Outputs", "Faculty Capabilities", "Equity of Access", "Institutional Risks",
+        "Future-Proofing", "The Educator’s Role"
+    ];
+
+    function toggleMode(event, targetId = null) {
+        event.stopPropagation();
+        let anchorId = targetId;
+        if (!anchorId) {
+            const sections = document.querySelectorAll('.challenge-section');
+            for (const section of sections) {
+                const rect = section.getBoundingClientRect();
+                if (rect.top >= -200 && rect.top <= window.innerHeight / 2) { anchorId = section.id; break; }
+            }
+        }
+        document.body.classList.toggle('active-classroom');
+        document.body.classList.toggle('active-doctoral');
+        if (anchorId) {
+            const target = document.getElementById(anchorId);
+            if (target) { setTimeout(() => { target.scrollIntoView({ behavior: 'auto', block: 'start' }); }, 10); }
+        }
+    }
+
+    function renderNav() {
+        const navList = document.getElementById('nav-list');
+        navItems.forEach((item, index) => {
+            const link = document.createElement('a');
+            link.href = `#c${index + 1}`;
+            link.className = 'nav-link-item';
+            link.innerText = `${index + 1}. ${item}`;
+            navList.appendChild(link);
+        });
+    }
+
+    function highlightNavOnScroll() {
+        const sections = document.querySelectorAll('.challenge-section');
+        const navLinks = document.querySelectorAll('.nav-link-item');
+        window.addEventListener('scroll', () => {
+            let current = "";
+            sections.forEach((section) => {
+                if (pageYOffset >= section.offsetTop - 180) { current = section.getAttribute("id"); }
+            });
+            navLinks.forEach((a) => {
+                a.classList.remove("active-nav");
+                // EXACT MATCH CHECK to prevent c1 / c10 highlight collision
+                if (a.getAttribute("href") === "#" + current) { a.classList.add("active-nav"); }
+            });
+        });
+    }
+
+    renderNav();
+    highlightNavOnScroll();
+</script>
+
+</body>
+</html>
