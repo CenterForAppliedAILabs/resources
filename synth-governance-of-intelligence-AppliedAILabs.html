@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Governance of Intelligence: AI Integration in Business Doctoral Education</title>
+    <meta name="description" content="A synthesized briefing on the P4 Framework for AI governance in doctoral education.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           CSS CUSTOM PROPERTIES - ACADEMIC AUTHORITY
+           ============================================ */
+        :root {
+            /* Typography */
+            --font-display: 'Crimson Pro', Georgia, serif;
+            --font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+            /* Colors */
+            --ink-primary: #1a1a2e;
+            --ink-secondary: #4a4a5e;
+            --ink-tertiary: #6b6b7e;
+            --accent-cerulean: #2c5f8d;
+            --accent-cerulean-dark: #1e4666;
+            --accent-gold: #c9a227;
+            --accent-gold-light: #e8d5a8;
+            --surface-warm: #f7f5f0;
+            --surface-cool: #e8eef2;
+            --surface-white: #ffffff;
+            --alert-red: #8b3a3a;
+            --alert-red-light: #f5e0e0;
+            --success-green: #3a6b3a;
+            --success-green-light: #d5e8d5;
+            --warning-amber: #9a7a2a;
+            --warning-amber-light: #f5e8c5;
+
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+
+            /* Borders */
+            --border-thin: 1px;
+            --border-medium: 2px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(26, 26, 46, 0.08);
+            --shadow-md: 0 4px 12px rgba(26, 26, 46, 0.1);
+            --shadow-lg: 0 8px 24px rgba(26, 26, 46, 0.12);
+        }
+
+        /* ============================================
+           BASE & RESET
+           ============================================ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-body);
+            font-size: 17px;
+            line-height: 1.7;
+            color: var(--ink-primary);
+            background-color: var(--surface-warm);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================
+           SCROLL PROGRESS BAR
+           ============================================ */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cerulean), var(--accent-gold));
+            z-index: 1000;
+            transition: width 0.1s ease-out;
+        }
+
+        /* ============================================
+           HEADER - HERO SECTION
+           ============================================ */
+        .hero {
+            position: relative;
+            padding: var(--space-3xl) var(--space-xl) var(--space-2xl);
+            background: linear-gradient(135deg, var(--ink-primary) 0%, var(--accent-cerulean-dark) 100%);
+            color: var(--surface-white);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .meta-tag {
+            display: inline-block;
+            padding: var(--space-xs) var(--space-md);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: rgba(201, 162, 39, 0.2);
+            color: var(--accent-gold);
+            border: var(--border-thin) solid var(--accent-gold);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-lg);
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin: 0 0 var(--space-lg);
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 400;
+            opacity: 0.9;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-top: var(--space-xl);
+            padding: var(--space-md) var(--space-lg);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--ink-primary);
+            background: var(--accent-gold);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .hero-cta:hover {
+            background: var(--surface-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ============================================
+           NAVIGATION - STICKY SIDE RAIL
+           ============================================ */
+        .nav-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--surface-warm);
+            border-bottom: var(--border-thin) solid rgba(26, 26, 46, 0.1);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-xl);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-title {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: var(--space-md) 0;
+            color: var(--ink-secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: var(--space-sm) var(--space-md);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--ink-secondary);
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--surface-cool);
+            color: var(--accent-cerulean);
+        }
+
+        .nav-link.active {
+            background: var(--accent-cerulean);
+            color: var(--surface-white);
+        }
+
+        /* ============================================
+           MAIN CONTENT LAYOUT
+           ============================================ */
+        .main-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: var(--space-2xl);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-2xl) var(--space-xl);
+        }
+
+        /* Side Navigation */
+        .side-nav {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+            padding-left: var(--space-md);
+            border-left: var(--border-medium) solid var(--accent-cerulean);
+        }
+
+        .side-nav-title {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink-tertiary);
+            margin-bottom: var(--space-md);
+        }
+
+        .side-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .side-nav-item {
+            margin-bottom: var(--space-xs);
+        }
+
+        .side-nav-link {
+            display: block;
+            padding: var(--space-xs) var(--space-sm);
+            font-size: 0.85rem;
+            color: var(--ink-secondary);
+            text-decoration: none;
+            border-left: var(--border-thin) solid transparent;
+            margin-left: -1px;
+            transition: all 0.2s ease;
+        }
+
+        .side-nav-link:hover {
+            color: var(--accent-cerulean);
+            border-left-color: var(--accent-cerulean);
+        }
+
+        .side-nav-link.active {
+            color: var(--accent-cerulean);
+            border-left-color: var(--accent-cerulean);
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content {
+            min-width: 0;
+        }
+
+        /* ============================================
+           SECTIONS
+           ============================================ */
+        .section {
+            padding: var(--space-2xl) 0;
+            border-bottom: var(--border-thin) solid rgba(26, 26, 46, 0.08);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            margin-bottom: var(--space-xl);
+        }
+
+        .section-number {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent-gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: var(--space-sm);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 0 var(--space-md);
+            color: var(--ink-primary);
+            line-height: 1.3;
+        }
+
+        .section-description {
+            font-size: 1.05rem;
+            color: var(--ink-secondary);
+            max-width: 700px;
+        }
+
+        /* ============================================
+           EXECUTIVE SUMMARY HIGHLIGHTS
+           ============================================ */
+        .consensus-box {
+            background: var(--surface-cool);
+            border-left: var(--border-medium) solid var(--accent-cerulean);
+            padding: var(--space-lg) var(--space-xl);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: var(--space-lg) 0;
+        }
+
+        .consensus-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-cerulean-dark);
+            margin: 0 0 var(--space-md);
+        }
+
+        .consensus-list {
+            display: grid;
+            gap: var(--space-md);
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .consensus-item {
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        .consensus-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-cerulean);
+            color: var(--surface-white);
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 50%;
+        }
+
+        .consensus-item-title {
+            font-weight: 600;
+            color: var(--ink-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .consensus-item-text {
+            color: var(--ink-secondary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* ============================================
+           P4 FRAMEWORK DIAGRAM
+           ============================================ */
+        .p4-diagram {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+            margin: var(--space-xl) 0;
+        }
+
+        .p4-pillar {
+            background: var(--surface-white);
+            padding: var(--space-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border-top: var(--border-medium) solid var(--accent-cerulean);
+            transition: all 0.3s ease;
+        }
+
+        .p4-pillar:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .p4-pillar.permission { border-top-color: var(--success-green); }
+        .p4-pillar.process { border-top-color: var(--warning-amber); }
+        .p4-pillar.proof { border-top-color: var(--alert-red); }
+        .p4-pillar.reflection { border-top-color: var(--accent-cerulean); }
+
+        .p4-pillar-letter {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+            margin: 0 0 var(--space-sm);
+            opacity: 0.15;
+        }
+
+        .p4-pillar.permission .p4-pillar-letter { color: var(--success-green); }
+        .p4-pillar.process .p4-pillar-letter { color: var(--warning-amber); }
+        .p4-pillar.proof .p4-pillar-letter { color: var(--alert-red); }
+        .p4-pillar.reflection .p4-pillar-letter { color: var(--accent-cerulean); }
+
+        .p4-pillar-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: -2.5rem 0 var(--space-md);
+            color: var(--ink-primary);
+        }
+
+        .p4-pillar-desc {
+            color: var(--ink-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           CALLOUT BOXES
+           ============================================ */
+        .callout {
+            padding: var(--space-lg) var(--space-xl);
+            border-radius: var(--radius-md);
+            margin: var(--space-lg) 0;
+        }
+
+        .callout.info {
+            background: var(--surface-cool);
+            border-left: var(--border-medium) solid var(--accent-cerulean);
+        }
+
+        .callout.warning {
+            background: var(--warning-amber-light);
+            border-left: var(--border-medium) solid var(--warning-amber);
+        }
+
+        .callout.alert {
+            background: var(--alert-red-light);
+            border-left: var(--border-medium) solid var(--alert-red);
+        }
+
+        .callout-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 var(--space-sm);
+            color: var(--ink-primary);
+        }
+
+        .callout-content {
+            color: var(--ink-secondary);
+            font-size: 0.95rem;
+        }
+
+        .callout-content p {
+            margin: 0 0 var(--space-sm);
+        }
+
+        .callout-content p:last-child {
+            margin: 0;
+        }
+
+        /* ============================================
+           TABLES
+           ============================================ */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: var(--space-xl) 0;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface-white);
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: var(--space-md) var(--space-lg);
+            text-align: left;
+            border-bottom: var(--border-thin) solid rgba(26, 26, 46, 0.08);
+        }
+
+        th {
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--surface-white);
+            background: var(--accent-cerulean);
+        }
+
+        th:first-child {
+            border-radius: var(--radius-sm) 0 0 0;
+        }
+
+        th:last-child {
+            border-radius: 0 var(--radius-sm) 0 0;
+        }
+
+        tr {
+            transition: background-color 0.2s ease;
+        }
+
+        tr:hover {
+            background-color: var(--surface-cool);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td {
+            color: var(--ink-secondary);
+        }
+
+        /* Zone badges for Traffic Light table */
+        .zone-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-sm);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            text-transform: uppercase;
+        }
+
+        .zone-badge.green {
+            background: var(--success-green-light);
+            color: var(--success-green);
+        }
+
+        .zone-badge.yellow {
+            background: var(--warning-amber-light);
+            color: var(--warning-amber);
+        }
+
+        .zone-badge.red {
+            background: var(--alert-red-light);
+            color: var(--alert-red);
+        }
+
+        .zone-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .zone-badge.green .zone-dot { background: var(--success-green); }
+        .zone-badge.yellow .zone-dot { background: var(--warning-amber); }
+        .zone-badge.red .zone-dot { background: var(--alert-red); }
+
+        /* Model names in Comparative Critique */
+        .model-name {
+            font-family: var(--font-mono);
+            font-weight: 500;
+            color: var(--accent-cerulean);
+        }
+
+        /* ============================================
+           THEMES GRID
+           ============================================ */
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin: var(--space-lg) 0;
+        }
+
+        .theme-card {
+            background: var(--surface-white);
+            padding: var(--space-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border-top: var(--border-thin) solid var(--accent-gold);
+        }
+
+        .theme-card-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--ink-primary);
+            margin: 0 0 var(--space-sm);
+        }
+
+        .theme-card-content {
+            font-size: 0.95rem;
+            color: var(--ink-secondary);
+            line-height: 1.6;
+        }
+
+        .theme-card-content em {
+            font-style: italic;
+            color: var(--accent-cerulean);
+        }
+
+        /* ============================================
+           RISK MATRIX
+           ============================================ */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-md);
+            margin: var(--space-lg) 0;
+        }
+
+        .risk-card {
+            background: var(--surface-white);
+            padding: var(--space-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border-left: var(--border-medium) solid var(--alert-red);
+        }
+
+        .risk-card.legal { border-left-color: var(--alert-red); }
+        .risk-card.reputational { border-left-color: var(--warning-amber); }
+        .risk-card.accreditation { border-left-color: var(--accent-cerulean); }
+        .risk-card.ethical { border-left-color: var(--ink-secondary); }
+
+        .risk-category {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--ink-tertiary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .risk-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 var(--space-sm);
+            color: var(--ink-primary);
+        }
+
+        .risk-description {
+            font-size: 0.9rem;
+            color: var(--ink-secondary);
+            line-height: 1.5;
+        }
+
+        /* ============================================
+           TIMELINE
+           ============================================ */
+        .timeline {
+            position: relative;
+            padding-left: var(--space-2xl);
+            margin: var(--space-lg) 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--border-thin);
+            background: linear-gradient(to bottom, var(--accent-cerulean), var(--accent-gold));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: var(--space-xl);
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: calc(var(--space-2xl) * -1 - 5px);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--surface-warm);
+            border: var(--border-medium) solid var(--accent-cerulean);
+        }
+
+        .timeline-phase {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-xs);
+        }
+
+        .timeline-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 var(--space-sm);
+            color: var(--ink-primary);
+        }
+
+        .timeline-content {
+            color: var(--ink-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* ============================================
+           BLOCKQUOTE
+           ============================================ */
+        blockquote {
+            margin: var(--space-lg) 0;
+            padding: var(--space-lg) var(--space-xl);
+            background: var(--surface-cool);
+            border-left: var(--border-medium) solid var(--accent-gold);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        blockquote p {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--ink-primary);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        blockquote cite {
+            display: block;
+            margin-top: var(--space-md);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-style: normal;
+            color: var(--ink-secondary);
+        }
+
+        blockquote cite::before {
+            content: '— ';
+        }
+
+        /* ============================================
+           LISTS
+           ============================================ */
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: var(--space-lg) 0;
+        }
+
+        .feature-list li {
+            position: relative;
+            padding-left: var(--space-xl);
+            margin-bottom: var(--space-md);
+        }
+
+        .feature-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            background: var(--ink-primary);
+            color: var(--surface-white);
+            padding: var(--space-2xl) var(--space-xl);
+            margin-top: var(--space-3xl);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+
+        .footer-text {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .footer-meta {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+
+        /* ============================================
+           PRINT STYLES
+           ============================================ */
+        @media print {
+            .scroll-progress,
+            .nav-container,
+            .side-nav,
+            .hero-cta {
+                display: none;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .main-container {
+                display: block;
+                max-width: 100%;
+                padding: 0;
+            }
+
+            .hero {
+                background: white;
+                color: black;
+                padding: var(--space-lg) 0;
+                border-bottom: var(--border-medium) solid black;
+            }
+
+            .hero-title,
+            .section-title {
+                color: black;
+            }
+
+            .section {
+                page-break-inside: avoid;
+            }
+
+            .p4-pillar {
+                break-inside: avoid;
+                border: var(--border-thin) solid #ccc;
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .side-nav {
+                display: none;
+            }
+
+            .p4-diagram {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: var(--space-xl) var(--space-md);
+            }
+
+            .main-container {
+                padding: var(--space-lg) var(--space-md);
+            }
+
+            .nav-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-sm);
+            }
+
+            .nav-links {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: var(--space-xs);
+            }
+
+            .nav-link {
+                white-space: nowrap;
+            }
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* ============================================
+           UTILITY CLASSES
+           ============================================ */
+        .text-accent {
+            color: var(--accent-cerulean);
+        }
+
+        .text-gold {
+            color: var(--accent-gold);
+        }
+
+        .font-mono {
+            font-family: var(--font-mono);
+        }
+
+        .mt-lg { margin-top: var(--space-lg); }
+        .mb-lg { margin-bottom: var(--space-lg); }
+        .mb-xl { margin-bottom: var(--space-xl); }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <span class="meta-tag">Synthesized Briefing — February 2026</span>
+            <h1 class="hero-title">Governance of Intelligence:<br>AI Integration in Business Doctoral Education</h1>
+            <p class="hero-subtitle">A strategic framework for transitioning from reactive policing to proactive governance. The P4 Framework: Permission, Process, Proof, and Reflection.</p>
+            <a href="#p4-framework" class="hero-cta">
+                <span>Explore the Framework</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 3L13 8L8 13M13 8H1"/>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- Sticky Navigation -->
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <span class="nav-title">P4 Framework Briefing</span>
+            <div class="nav-links">
+                <a href="#executive" class="nav-link">Executive Summary</a>
+                <a href="#themes" class="nav-link">Themes</a>
+                <a href="#critique" class="nav-link">Analysis</a>
+                <a href="#landscape" class="nav-link">2026 Landscape</a>
+                <a href="#p4-framework" class="nav-link">P4 Framework</a>
+                <a href="#implementation" class="nav-link">Implementation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Side Navigation -->
+        <aside class="side-nav">
+            <div class="side-nav-title">On This Page</div>
+            <ul class="side-nav-list">
+                <li class="side-nav-item"><a href="#executive" class="side-nav-link">Executive Summary</a></li>
+                <li class="side-nav-item"><a href="#themes" class="side-nav-link">Redefining Integrity</a></li>
+                <li class="side-nav-item"><a href="#critique" class="side-nav-link">Multi-Model Perspectives</a></li>
+                <li class="side-nav-item"><a href="#landscape" class="side-nav-link">2026 Landscape</a></li>
+                <li class="side-nav-item"><a href="#p4-framework" class="side-nav-link">The P4 Framework</a></li>
+                <li class="side-nav-item"><a href="#implementation" class="side-nav-link">Implementation</a></li>
+            </ul>
+        </aside>
+
+        <!-- Content -->
+        <main class="content">
+            <!-- Section 1: Executive Summary -->
+            <section id="executive" class="section">
+                <div class="section-header">
+                    <div class="section-number">Section 01</div>
+                    <h2 class="section-title">Executive Summary</h2>
+                    <p class="section-description">In the landscape of 2026, academic leadership faces a foundational crisis: the "commodity of output." As generative and agentic systems achieve the capacity to produce expert-level text, traditional proxies for scholarly achievement have lost their signal value.</p>
+                </div>
+
+                <p>This briefing addresses the strategic necessity of moving beyond reactive policing toward a proactive governance model. The survival of the business doctorate depends on transitioning from a focus on <em>authorship</em> (who produced the text) to <strong class="text-accent">Epistemic Accountability</strong> (who possesses the authority to warrant the claims).</p>
+
+                <p>Synthesizing the perspectives of four analytical models (<strong>Grok 4.1</strong>, <strong>Claude 4.5</strong>, <strong>Gemini 3</strong>, and <strong>GPT-5.2</strong>), we find that a doctoral degree must now certify the human as the <strong>Sole Responsible Party</strong> for the truth-value and ethical implications of research.</p>
+
+                <div class="consensus-box">
+                    <h3 class="consensus-title">Strategic Consensus on the P4 Framework</h3>
+                    <ul class="consensus-list">
+                        <li class="consensus-item">
+                            <span class="consensus-icon">P</span>
+                            <div>
+                                <div class="consensus-item-title">Permission</div>
+                                <p class="consensus-item-text">Establishing task-level boundaries (Green/Yellow/Red zones) for AI integration within every syllabus.</p>
+                            </div>
+                        </li>
+                        <li class="consensus-item">
+                            <span class="consensus-icon">P</span>
+                            <div>
+                                <div class="consensus-item-title">Process</div>
+                                <p class="consensus-item-text">Requiring an "Evidence Chain" of the student's cognitive workflow, shifting focus from the final artifact to the evolution of reasoning.</p>
+                            </div>
+                        </li>
+                        <li class="consensus-item">
+                            <span class="consensus-icon">P</span>
+                            <div>
+                                <div class="consensus-item-title">Proof</div>
+                                <p class="consensus-item-text">Designing assessments where students must defend their judgment and reproduce logic under cognitive constraints.</p>
+                            </div>
+                        </li>
+                        <li class="consensus-item">
+                            <span class="consensus-icon">P</span>
+                            <div>
+                                <div class="consensus-item-title">Reflection</div>
+                                <p class="consensus-item-text">Implementing metacognitive audits where students interrogate the biases and failure modes of the AI agents they employ.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <p>This transition represents more than a policy shift; it is a pedagogical renaissance, returning the business doctorate to its Socratic roots as a certification of high-level scholarly judgment and epistemic warrant.</p>
+            </section>
+
+            <!-- Section 2: Thematic Analysis -->
+            <section id="themes" class="section">
+                <div class="section-header">
+                    <div class="section-number">Section 02</div>
+                    <h2 class="section-title">Thematic Analysis: Redefining Academic Integrity</h2>
+                    <p class="section-description">Traditional definitions of integrity—centered on anti-plagiarism and original phrasing—are obsolete. We propose a shift toward <strong>Cognitive Ownership</strong>.</p>
+                </div>
+
+                <p>Integrity is no longer breached by the use of a tool, but by <em>"epistemic abdication"</em>—the transfer of responsibility for judgment to an algorithm.</p>
+
+                <blockquote>
+                    <p>"Before understanding, AI is dangerous; after understanding, AI is powerful."</p>
+                    <cite>Gemini 3</cite>
+                </blockquote>
+
+                <p>As <strong>Gemini 3</strong> observes, learning happens in the "struggle." If AI is used too early, it short-circuits the neural and conceptual growth required for mastery. However, once a student has established a foundational <strong>Epistemic Warrant</strong>, AI becomes a cognitive prosthetic that accelerates exploration and stress-tests hypotheses.</p>
+
+                <h3 class="mt-lg mb-lg">Primary Themes in AI Integration</h3>
+
+                <div class="themes-grid">
+                    <div class="theme-card">
+                        <div class="theme-card-title">The Shift in Agency</div>
+                        <div class="theme-card-content">
+                            We are moving from human-exclusive work to <em>human-accountable results</em>. <strong>GPT-5.2</strong> argues that we must certify "human-accountable competencies" where the student acts as the Principal Investigator, responsible for every claim regardless of its generative origin.
+                        </div>
+                    </div>
+
+                    <div class="theme-card">
+                        <div class="theme-card-title">Intellectual Invariants</div>
+                        <div class="theme-card-content">
+                            Skills that transcend tool evolution must become the curriculum's anchor. <strong>Grok 4.1</strong> identifies <em>problem framing</em>, <em>systems thinking</em>, and <em>ethical stewardship</em> as the primary "invariants" that shine brighter as execution becomes automated.
+                        </div>
+                    </div>
+
+                    <div class="theme-card">
+                        <div class="theme-card-title">The Shadow Curriculum</div>
+                        <div class="theme-card-content">
+                            <strong>Gemini 3</strong> highlights the sociological risk where "silent" AI use favors the privileged. The solution is "baseline access"—providing institutional, privacy-protected tools to ensure the "unwritten rules" of AI augmentation are transparent to all.
+                        </div>
+                    </div>
+
+                    <div class="theme-card">
+                        <div class="theme-card-title">Disciplinary Specificity</div>
+                        <div class="theme-card-content">
+                            <strong>Claude 4.5</strong> warns against applying a single policy across all business sub-disciplines. The requirements for Epistemic Warrant in Finance (e.g., algorithmic trading models) differ fundamentally from those in Organizational Behavior (e.g., qualitative sensemaking).
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Comparative Critique -->
+            <section id="critique" class="section">
+                <div class="section-header">
+                    <div class="section-number">Section 03</div>
+                    <h2 class="section-title">Comparative Critique: Multi-Model Perspectives</h2>
+                    <p class="section-description">A strategic "Council Debate" among four models identifies institutional blind spots, helping refine policy from general provocation into an operational lodestar.</p>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 150px;">Model</th>
+                                <th>Strategic Assessment & Critique</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="model-name">Grok 4.1</span></td>
+                                <td>Praised the <strong>parsimonious structure</strong> of the PPR meta-frame but demanded more empirical rigor. Critiqued the lack of business-specific examples, such as defending the choice of <em>SEM vs. PLS-SEM</em> in strategy research.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="model-name">Claude 4.5</span></td>
+                                <td>Warned against <strong>"disciplinary monolithic thinking."</strong> Argued that "human-only" outcomes are an <strong>ontological over-claim</strong>, as all sensemaking is assisted by inherited tools (mentors, software, theories).</td>
+                            </tr>
+                            <tr>
+                                <td><span class="model-name">GPT-5.2</span></td>
+                                <td>Identified <strong>"data governance"</strong> as a major omission. Insisted that doctoral programs must address model risk management and the risk of entering proprietary corporate financials into non-approved models.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="model-name">Gemini 3</span></td>
+                                <td>Focused on the transition to <strong>"Agentic AI"</strong> (AI that executes tasks). Proposed "Asynchronous Video Justifications" to maintain rigor without collapsing faculty workload.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout info">
+                    <h4 class="callout-title">The "Human-Accountable" Consensus</h4>
+                    <div class="callout-content">
+                        <p>The debate regarding "Human-Only" versus "Human-Accountable" outcomes reached a firm 2026 consensus: <strong>Human-Accountable</strong> is the only sustainable policy.</p>
+                        <p>As <strong>Claude 4.5</strong> articulated, attempting to certify work done in a vacuum is counterproductive. Instead, we must certify the student's ability to audit, justify, and own the logic of their AI-augmented research. The degree is a warrant of the scholar's authority over the results.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: 2026 Landscape -->
+            <section id="landscape" class="section">
+                <div class="section-header">
+                    <div class="section-number">Section 04</div>
+                    <h2 class="section-title">The 2026 Landscape: Agents, Multimodality, and Risk</h2>
+                    <p class="section-description">Institutional policy must be future-proofed against the shift from <strong>Generative AI</strong> (text production) to <strong>Agentic AI</strong> (autonomous task execution).</p>
+                </div>
+
+                <h3 class="mt-lg mb-lg">2026 Projections and Operational Impacts</h3>
+
+                <ul class="feature-list">
+                    <li><strong>Agentic Workflows:</strong> Research moves from prompting chatbots to orchestrating multi-step agents that conduct market research and run simulations. "Orchestration" becomes a core scholarly competency.</li>
+                    <li><strong>Data Sovereignty & Leakage:</strong> Business research involves high stakes. The risk of "leakage"—where proprietary corporate financials or IRB-protected interview data are fed into public models—is a primary threat to institutional reputation and legal standing.</li>
+                    <li><strong>Synthetic Data:</strong> As AI-generated datasets proliferate, doctoral work requires a new standard for <strong>provenance and verification</strong> to ensure empirical rigor is not compromised by hallucinated data.</li>
+                </ul>
+
+                <h3 class="mt-lg mb-lg">Institutional Risk Matrix</h3>
+
+                <div class="risk-grid">
+                    <div class="risk-card legal">
+                        <div class="risk-category">Risk Category</div>
+                        <div class="risk-title">Legal</div>
+                        <div class="risk-description">Violations of GDPR/FERPA, IP theft, and breaches of corporate confidentiality/NDA through non-approved tool use.</div>
+                    </div>
+
+                    <div class="risk-card reputational">
+                        <div class="risk-category">Risk Category</div>
+                        <div class="risk-title">Reputational</div>
+                        <div class="risk-description">Dissertations containing hallucinated sources or biased econometric forecasts eroding institutional credibility.</div>
+                    </div>
+
+                    <div class="risk-card accreditation">
+                        <div class="risk-category">Risk Category</div>
+                        <div class="risk-title">Accreditation</div>
+                        <div class="risk-description">Failure to demonstrate to bodies (e.g., AACSB) that the degree certifies independent judgment rather than tool-mediated performance.</div>
+                    </div>
+
+                    <div class="risk-card ethical">
+                        <div class="risk-category">Risk Category</div>
+                        <div class="risk-title">Ethical</div>
+                        <div class="risk-description">The "epistemic abdication" of moral responsibility in business decisions or research involving human subjects.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: P4 Framework -->
+            <section id="p4-framework" class="section">
+                <div class="section-header">
+                    <div class="section-number">Section 05</div>
+                    <h2 class="section-title">The Synthesized Framework: Permission, Process, Proof, Reflection</h2>
+                    <p class="section-description">The P4 Model serves as the "Gold Standard" for business schools, balancing academic rigor with the realities of agentic intelligence.</p>
+                </div>
+
+                <!-- P4 Visual Framework -->
+                <div class="p4-diagram">
+                    <div class="p4-pillar permission">
+                        <div class="p4-pillar-letter">P</div>
+                        <h3 class="p4-pillar-title">Permission</h3>
+                        <p class="p4-pillar-desc">The Traffic Light System establishes task-level boundaries for AI integration within every syllabus.</p>
+                    </div>
+
+                    <div class="p4-pillar process">
+                        <div class="p4-pillar-letter">P</div>
+                        <h3 class="p4-pillar-title">Process</h3>
+                        <p class="p4-pillar-desc">The Evidence Chain requires version-controlled reasoning documenting the cognitive workflow.</p>
+                    </div>
+
+                    <div class="p4-pillar proof">
+                        <div class="p4-pillar-letter">P</div>
+                        <h3 class="p4-pillar-title">Proof</h3>
+                        <p class="p4-pillar-desc">Assessments where students defend their judgment and reproduce logic under cognitive constraints.</p>
+                    </div>
+
+                    <div class="p4-pillar reflection">
+                        <div class="p4-pillar-letter">P</div>
+                        <h3 class="p4-pillar-title">Reflection</h3>
+                        <p class="p4-pillar-desc">Metacognitive audits where students interrogate biases and failure modes of AI agents.</p>
+                    </div>
+                </div>
+
+                <h3 class="mt-lg mb-lg">Pillar 1: Permission (The Traffic Light System)</h3>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">Zone</th>
+                                <th style="width: 120px;">Status</th>
+                                <th>Doctoral Task Examples</th>
+                                <th>Required Proof Artifact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="zone-badge green">
+                                        <span class="zone-dot"></span>
+                                        Green
+                                    </span>
+                                </td>
+                                <td>Encouraged</td>
+                                <td>Hypotheses brainstorming, code debugging, clarity edits</td>
+                                <td>AI Use Statement</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="zone-badge yellow">
+                                        <span class="zone-dot"></span>
+                                        Yellow
+                                    </span>
+                                </td>
+                                <td>Conditional</td>
+                                <td>Literature summarization, exploratory data analysis</td>
+                                <td>Decision Log + Provenance Audit</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="zone-badge red">
+                                        <span class="zone-dot"></span>
+                                        Red
+                                    </span>
+                                </td>
+                                <td>Restricted</td>
+                                <td>Problem framing, method selection, interpretation of results</td>
+                                <td>Live Viva or Video Justification</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="mt-lg mb-lg">Pillar 2: Process (The Evidence Chain)</h3>
+
+                <p>Institutions must require "Version-Controlled Reasoning," which includes:</p>
+
+                <ul class="feature-list">
+                    <li><strong>Decision Logs:</strong> A memo detailing key decisions, rejected AI alternatives, and the rationale for the final path.</li>
+                    <li><strong>Assumption Audits:</strong> Explicitly identifying the potential failure modes and biases of AI-generated frameworks.</li>
+                </ul>
+
+                <h3 class="mt-lg mb-lg">Pillar 3: Proof (The Assessment Menu)</h3>
+
+                <ul class="feature-list">
+                    <li><strong>Asynchronous Video Justifications:</strong> 3-minute walk-throughs of the logic behind a dataset or model.</li>
+                    <li><strong>Sampled Vivas:</strong> Brief, live interrogations of specific milestones to verify cognitive ownership.</li>
+                    <li><strong>Counterfactual Analysis:</strong> Requiring students to explain how results change if a core assumption is reversed.</li>
+                </ul>
+
+                <h3 class="mt-lg mb-lg">Pillar 4: Reflection (Metacognitive Audit)</h3>
+
+                <div class="callout warning">
+                    <h4 class="callout-title">Required Deliverable</h4>
+                    <div class="callout-content">
+                        <p>Students must submit a "Reflection Memo" evaluating the "Agentic Workflow," detailing how they interrogated the AI's output for shallow reasoning or "prompt artifacts."</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 6: Implementation -->
+            <section id="implementation" class="section">
+                <div class="section-header">
+                    <div class="section-number">Section 06</div>
+                    <h2 class="section-title">Implementation and Institutional Governance</h2>
+                    <p class="section-description">The transition to an AI-native doctoral program requires an urgent, phased rollout to avoid the devaluation of the credential signal.</p>
+                </div>
+
+                <h3 class="mt-lg mb-lg">Faculty Minimum Capabilities</h3>
+
+                <p>By 2026, faculty must possess <strong>Model Risk Literacy</strong>, specifically the ability to evaluate:</p>
+
+                <ul class="feature-list">
+                    <li><strong>Calibration:</strong> Ensuring AI outputs align with empirical reality.</li>
+                    <li><strong>Robustness:</strong> Testing how models hold up under "distribution shift" (e.g., market volatility).</li>
+                    <li><strong>Bias Detection:</strong> Identifying "prompt artifacts" where AI merely echoes the user's bias.</li>
+                </ul>
+
+                <h3 class="mt-lg mb-lg">The 2-Year Rollout Plan</h3>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-phase">Phase 1 — Year 1</div>
+                        <h4 class="timeline-title">Foundation & Capacity Building</h4>
+                        <p class="timeline-content">Mandatory faculty workshops on the P4 framework and the establishment of the <strong>Data Governance Memo</strong> requirement for all research.</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-phase">Phase 2 — Year 2</div>
+                        <h4 class="timeline-title">Full Integration</h4>
+                        <p class="timeline-content">Full integration of PPR/P4 into all syllabi and program-level audits to ensure consistency in "Epistemic Warrant" certification.</p>
+                    </div>
+                </div>
+
+                <h3 class="mt-lg mb-lg">Business School Appendix: High-Stakes Mandates</h3>
+
+                <div class="callout alert">
+                    <h4 class="callout-title">Critical Requirements</h4>
+                    <div class="callout-content">
+                        <p><strong>Confidentiality Mandates:</strong> Strict prohibition of entering proprietary corporate financials or client data into public models (GPT-5.2). All students must sign a "Data Sovereignty Agreement."</p>
+                        <p class="mt-lg"><strong>Model Risk Management:</strong> Standards for analytics-heavy dissertations (e.g., Finance/Economics) requiring students to demonstrate an understanding of <em>calibration and distribution shift</em> in AI-assisted modeling.</p>
+                    </div>
+                </div>
+
+                <blockquote class="mt-lg">
+                    <p>In this new era, the professor is the <strong>Arbiter of Relevance</strong>. By shifting the focus from the artifact to the logic, we preserve the signal value of the doctoral degree, ensuring it continues to certify scholars who possess the "sturdiness of judgment" required to lead in a world of automated intelligence.</p>
+                    <cite>This is not merely a policy change; it is the Socratic Renaissance of the business doctorate.</cite>
+                </blockquote>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">Governance of Intelligence: A Synthesized Briefing on AI Integration in Business Doctoral Education</p>
+            <p class="footer-meta">February 2026 · Synthesized from Grok 4.1, Claude 4.5, Gemini 3, and GPT-5.2</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Scroll Progress Indicator
+        function updateScrollProgress() {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            scrollProgress.style.width = scrollPercent + '%';
+        }
+
+        // Active Navigation Link
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link, .side-nav-link');
+
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 150) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Throttle function for performance
+        function throttle(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', throttle(() => {
+            updateScrollProgress();
+            updateActiveNav();
+        }, 50));
+
+        // Initial call
+        updateScrollProgress();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
