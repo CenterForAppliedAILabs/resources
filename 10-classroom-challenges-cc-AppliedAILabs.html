@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Critical AI Challenges | USU College Of Business & Technology</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #c05621;
+            --bg-light: #f7fafc;
+            --border: #e2e8f0;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f7fafc;
+            color: #1a202c;
+        }
+        .font-serif {
+            font-family: 'Source Serif 4', Georgia, serif;
+        }
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 2px;
+        }
+        .nav-item.active {
+            background: #ebf8ff;
+            border-left-color: #2c5282;
+            color: #1a365d;
+        }
+        .challenge-card {
+            border-left: 4px solid transparent;
+            transition: border-left-color 0.2s;
+        }
+        .challenge-card:hover {
+            border-left-color: #2c5282;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.open {
+            max-height: none;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-problem { background: #fed7d7; color: #9b2c2c; }
+        .badge-question { background: #feebc8; color: #9c4221; }
+        .badge-doctoral { background: #e6fffa; color: #285e61; }
+
+        .meta-frame-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            border-left: 1px solid #e2e8f0;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 25;
+            transition: transform 0.3s ease;
+        }
+        .meta-frame-panel.collapsed {
+            transform: translateX(100%);
+        }
+        .meta-frame-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+        .meta-frame-panel::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 2px;
+        }
+        .meta-frame-toggle {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e293b;
+            color: white;
+            border-radius: 8px 0 0 8px;
+            padding: 12px 8px;
+            cursor: pointer;
+            box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+        }
+        .meta-frame-toggle:hover {
+            background: #334155;
+        }
+        .meta-frame-toggle svg {
+            transition: transform 0.3s ease;
+        }
+        .meta-frame-panel.collapsed .meta-frame-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        @media print {
+            .sidebar, .mobile-toggle, .meta-frame-panel, .meta-frame-toggle { display: none !important; }
+            .main-content { margin-left: 0 !important; }
+            .accordion-content { max-height: none !important; }
+        }
+
+        @media (max-width: 1600px) {
+            .meta-frame-panel {
+                width: 260px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .meta-frame-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="react,env">
+        const { useState, useEffect, useRef } = React;
+
+        // Content data
+        const challenges = [
+            {
+                id: 1,
+                number: "01",
+                title: "What learning outcomes must remain human-only?",
+                problem: "AI can perform many academic tasks faster than students.",
+                coreQuestion: "Which cognitive, ethical, and judgment-based outcomes must students demonstrate without AI assistance?",
+                whyItMatters: "Without clarity, institutions unintentionally outsource learning itself.",
+                examples: null,
+                doctoral: {
+                    problem: "AI can now draft literature reviews, generate statistical code, summarize theories, and even propose research questions faster than most doctoral students. Without deliberate boundaries, doctoral education risks shifting from developing scholars to supervising AI outputs.",
+                    coreQuestion: "Which cognitive, ethical, and judgment-based outcomes must doctoral students demonstrate without AI assistance?",
+                    subsections: [
+                        {
+                            title: "A. Epistemic Judgment (Knowing What Counts as Knowledge)",
+                            content: "Doctoral students must independently demonstrate:",
+                            items: [
+                                "The ability to evaluate competing theoretical explanations.",
+                                "Discernment between signal and noise in empirical findings",
+                                "Judgment about what is worth studying and why."
+                            ],
+                            insight: "AI can recombine knowledge; it cannot justify why one explanation should prevail over another in ambiguous conditions.",
+                            humanOutcome: "Students must show they can make defensible knowledge claims under uncertainty."
+                        },
+                        {
+                            title: "B. Ethical Reasoning and Scholarly Responsibility",
+                            content: "AI is ethically agnostic; it optimizes outputs, not consequences. Doctoral education must therefore require students to demonstrate:",
+                            items: [
+                                "Independent ethical judgment in research design",
+                                "Awareness of power, bias, and harm in knowledge production",
+                                "Accountability for data integrity, authorship, and interpretation"
+                            ],
+                            insight: "AI can generate an IRB-compliant protocol; it cannot feel moral responsibility for its downstream effects.",
+                            humanOutcome: "Students must own the ethical implications of their scholarly choices."
+                        },
+                        {
+                            title: "C. Original Sensemaking (Beyond Pattern Recognition)",
+                            content: "AI excels at pattern detection. Doctoral education must protect the human capacity to:",
+                            items: [
+                                "Synthesize across incommensurable literatures.",
+                                "Generate novel conceptual frames.",
+                                "Detect when existing models fail to explain reality."
+                            ],
+                            insight: "Insight is not the same as inference. AI infers; humans reframe.",
+                            humanOutcome: "Students must demonstrate the capacity to create meaning, not just outputs."
+                        },
+                        {
+                            title: "D. Methodological Judgment (Not Mechanical Execution)",
+                            content: "While AI can run analyses, doctoral students must independently show:",
+                            items: [
+                                "The ability to choose appropriate methods, not just execute them.",
+                                "Understanding of assumptions, limitations, and tradeoffs",
+                                "Judgment about when results are technically correct but substantively wrong."
+                            ],
+                            insight: "Running a model is not the same as understanding what the model does to reality.",
+                            humanOutcome: "Students must defend methodological decisions without AI mediation."
+                        },
+                        {
+                            title: "E. Scholarly Voice and Intellectual Ownership",
+                            content: "Doctoral education is about forming scholars, not prompt engineers. Students must demonstrate:",
+                            items: [
+                                "A coherent intellectual identity",
+                                "The ability to argue a position and defend it publicly.",
+                                "Ownership of ideas under critique"
+                            ],
+                            insight: "AI can mimic a voice; it cannot stand behind one.",
+                            humanOutcome: "Students must be identifiable authors of their thinking."
+                        },
+                        {
+                            title: "F. Reflexivity and Metacognition",
+                            content: "Finally, doctoral students must independently demonstrate:",
+                            items: [
+                                "Awareness of their own assumptions and limitations",
+                                "Capacity to revise beliefs, considering evidence.",
+                                "Intellectual humility and self-correction"
+                            ],
+                            insight: "AI does not reflect on its own thinking. Doctoral scholars must.",
+                            humanOutcome: "Students must show they can think about how they think."
+                        }
+                    ],
+                    whyMatters: "Without explicit human-only learning outcomes, institutions risk: credentialing AI-mediated competence instead of scholarly mastery, eroding trust in the doctorate as a signal of independent judgment, and producing graduates who can generate outputs but cannot create and govern knowledge. The doctorate must certify not the ability to use intelligence, but the capacity to be responsible for it."
+                }
+            },
+            {
+                id: 2,
+                number: "02",
+                title: "Where does AI enhance learning vs. replace it?",
+                problem: "Faculty often ban or allow AI wholesale.",
+                coreQuestion: "At what points in the learning process does AI deepen understanding, and where does it short-circuit it?",
+                examples: [
+                    { label: "Positive", items: ["Brainstorming", "Scenario analysis", "Feedback loops"] },
+                    { label: "Potentially risky", items: ["First-draft thinking", "Conceptual formation", "Synthesis without critique"] }
+                ],
+                doctoral: {
+                    problem: "Faculty often respond to AI by either banning it outright or allowing unrestricted use. Both approaches miss the core pedagogical issue: AI changes where learning happens, not whether learning happens. The risk is not AI use per se but misplacing it within the learning process.",
+                    coreQuestion: "At what points in the learning process does AI deepen understanding, and where does it short-circuit it?",
+                    subsections: [
+                        {
+                            title: "A. Where AI Enhances Learning (Cognitive Amplification)",
+                            content: "AI enhances learning when it operates after or alongside human thinking, not in place of it.",
+                            items: [
+                                "Pre-Commitment Exploration (Idea Expansion) - Brainstorming alternative hypotheses, generating counterarguments, stress-testing assumptions, exploring edge cases",
+                                "Scenario Analysis and Simulation - Exploring 'what-if' policy or methodological scenarios, testing sensitivity to assumptions",
+                                "Feedback Loops and Iterative Refinement - Receiving critique on clarity, logic, or structure; identifying gaps in argumentation",
+                                "Technical Scaffolding - Statistical code drafting after method selection, formatting, citation checks"
+                            ],
+                            insight: "AI expands the option set; the learner makes the decision. The learning comes from comparing scenarios, not generating them. Feedback enhances judgment only if judgment already exists.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "B. Where AI Replaces Learning (Cognitive Short-Circuiting)",
+                            content: "AI undermines learning when it occupies the first-order cognitive act the student is supposed to develop.",
+                            items: [
+                                "First-Draft Thinking (Idea Origination) - Generating initial arguments, writing problem statements from scratch",
+                                "Conceptual Formation and Theory Building - Asking AI to develop a framework, allowing AI to define key constructs",
+                                "Synthesis Without Evaluation - AI-generated literature reviews without human critique, automated thematic synthesis",
+                                "Argument Substitution - AI-written discussion sections, auto-generated implications or conclusions"
+                            ],
+                            insight: "The student bypasses the discomfort that produces insight. If the student never struggles, they never own the idea. Concepts emerge through wrestling with ambiguity—something AI simulates but does not experience. Synthesis is not aggregation; it requires judgment, exclusion, and prioritization.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "C. The Guiding Principle",
+                            content: "AI should never occupy the cognitive position the student is being trained to master.",
+                            items: [
+                                "Before understanding → AI is dangerous",
+                                "After understanding → AI is powerful"
+                            ],
+                            insight: "AI may accelerate thinking, but it must never replace the act of thinking itself.",
+                            humanOutcome: null
+                        }
+                    ],
+                    whyMatters: "Without clarity about where AI belongs: Faculty enforce inconsistent and incoherent policies, students optimize for output rather than mastery, and doctoral education risks credentialing fluency instead of judgment. The question is not 'Can students use AI?' The question should be 'At which cognitive moments must they stand alone?'"
+                }
+            },
+            {
+                id: 3,
+                number: "03",
+                title: "How do we assess thinking, not output?",
+                problem: "AI produces polished artifacts that mask shallow cognition.",
+                coreQuestion: "What assessment designs reveal student reasoning, decision logic, and trade-offs?",
+                whyItMatters: "Move toward oral defenses, annotated reasoning, in-class problem solving, reflective justification.",
+                examples: null,
+                doctoral: {
+                    problem: "Faculty often respond to AI by banning it wholesale or allowing it without constraint. Both approaches fail because they focus on tools, not evidence of thinking. In an AI-rich environment, polished output is no longer a reliable signal of learning.",
+                    coreQuestion: "How can assessment be designed so that human reasoning, judgment, and sensemaking are visible—regardless of AI use?",
+                    subsections: [
+                        {
+                            title: "A. Re-Anchor Assessment to Cognitive Process",
+                            content: "The central shift is this:",
+                            items: ["Assess the path of thinking, not just the final product."],
+                            insight: "AI can generate outputs; it cannot credibly reconstruct a student's evolving reasoning under interrogation.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "B. Assessment Designs That Surface Human Thinking",
+                            content: "Five key assessment strategies:",
+                            items: [
+                                "Pre-Commitment Artifacts - Handwritten concept maps, oral articulation of research questions",
+                                "Justification-First Submissions - Methodological choices before results, theoretical commitments before synthesis",
+                                "Oral Defense and Live Interrogation - Short oral exams, dissertation proposal defenses",
+                                "Counterfactual and Failure Analysis - Explain why alternative theories were rejected",
+                                "Iterative Feedback Loops - Annotated revisions showing what changed and why"
+                            ],
+                            insight: "AI cannot replace pre-decisional cognition captured in real time. Decisions precede results in real scholarship—assessment should too. Fluency collapses quickly without understanding. Learning is visible in revision rationale, not textual polish.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "C. The Assessment Principle",
+                            content: "If an assessment can be completed convincingly by AI, it is mis-specified.",
+                            items: ["We do not need AI detectors. We need better questions."],
+                            insight: "Assessment must certify that the scholar (and not the system) can think, judge, and defend knowledge claims.",
+                            humanOutcome: null
+                        }
+                    ],
+                    whyMatters: "Without redesigning assessment: Faculty will fight a losing battle against tools, students will optimize for surface fluency, and the doctorate will lose its signal value as evidence of independent thought."
+                }
+            },
+            {
+                id: 4,
+                number: "04",
+                title: "What does academic integrity mean in an AI-native world?",
+                problem: "Traditional plagiarism models no longer apply.",
+                coreQuestion: "What constitutes misuse vs. legitimate augmentation? How is that declaration made explicit to students?",
+                whyItMatters: "Key shift: From prohibition → disclosure, attribution, and accountability.",
+                examples: null,
+                doctoral: {
+                    problem: "Traditional academic integrity frameworks were built to detect unauthorized copying of text or ideas. In an AI-native world, originality is no longer threatened primarily by copying, but by delegation of thinking. Plagiarism models focused on textual similarity are no longer fit for purpose.",
+                    coreQuestion: "What constitutes misuse versus legitimate augmentation of AI—and how is that boundary made explicit to students?",
+                    subsections: [
+                        {
+                            title: "A. Redefining Academic Integrity",
+                            content: "In an AI-native environment, academic integrity must shift from authorship policing to cognitive accountability.",
+                            items: ["Academic integrity means the scholar remains the primary agent of judgment, decision-making, and 'meaning-making'."],
+                            insight: "Integrity is violated not when AI is used, but when core intellectual responsibility is transferred.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "B. Legitimate Augmentation vs. Misuse",
+                            content: "Legitimate Augmentation (Permissible Use): AI use is legitimate when it supports idea exploration without determining conclusions, provides feedback that the student evaluates, or assists with technical execution after human decisions are made.",
+                            items: [
+                                "Key test: Could the student fully explain, defend, and revise the work without AI present?"
+                            ],
+                            insight: "Misuse occurs when AI generates first-order ideas the student cannot reconstruct, defines core concepts or frameworks, produces synthesis without human critique, or substitutes for judgment under uncertainty.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "C. The Integrity Boundary: Cognitive Ownership",
+                            content: "The central boundary is not how much AI was used, but where it was used in the thinking process.",
+                            items: [
+                                "Deciding what matters - Human-only",
+                                "Choosing theories or methods - Human-only",
+                                "Interpreting findings - Human-only",
+                                "Brainstorming options - AI-assisted",
+                                "Scenario testing - AI-assisted",
+                                "Editing and formatting - AI-assisted"
+                            ],
+                            insight: "AI may inform decisions but must never replace them.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "D. Making Integrity Explicit to Students",
+                            content: "Academic integrity in an AI-native world must be declared, not inferred.",
+                            items: [
+                                "Cognitive Disclosure Statements - Require students to specify where AI was used, for what purpose, and what decisions remained human",
+                                "Assignment-Level AI Charters - Each assignment should explicitly state AI-permitted zones, AI-restricted zones, and human-only expectations"
+                            ],
+                            insight: "Replace 'Did you use AI?' with: Explain how you arrived at this conclusion. Why was this framework chosen over alternatives? What would change your interpretation?",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "E. The New Integrity Standard",
+                            content: "Integrity is preserved when students can:",
+                            items: [
+                                "Reconstruct their reasoning.",
+                                "Defend their decisions under questioning.",
+                                "Accept responsibility for consequences."
+                            ],
+                            insight: "Academic integrity in the AI era is not about originality of text. It is about ownership of thought.",
+                            humanOutcome: null
+                        }
+                    ],
+                    whyMatters: "Without redefining academic integrity: Institutions will chase tools instead of governing learning, faculty will enforce inconsistent, indefensible rules, and doctoral credentials will quietly lose credibility."
+                }
+            },
+            {
+                id: 5,
+                number: "05",
+                title: "How do we teach students to interrogate AI outputs?",
+                problem: "Students trust fluent responses too easily.",
+                coreQuestion: "How do we train students to challenge assumptions, identify hallucinations, and test validity?",
+                whyItMatters: "This becomes a core literacy, not a technical skill.",
+                examples: null,
+                doctoral: {
+                    problem: "Doctoral students are trained to trust peer-reviewed prose, methodological rigor, and authoritative tone. AI systems exploit this training: they produce fluent, confident, and often plausible responses that simulate scholarly authority without guaranteeing validity.",
+                    coreQuestion: "How do we train doctoral students to challenge AI assumptions, detect hallucinations, and rigorously test validity?",
+                    subsections: [
+                        {
+                            title: "A. Reframing AI Interrogation as Scholarly Literacy",
+                            content: "At the doctoral level, interrogating AI is not a technical skill (e.g., prompt engineering). It is an extension of epistemological training.",
+                            items: ["Doctoral AI literacy means treating AI output as a hypothesis generator, but never as evidence."],
+                            insight: "Students must learn to approach AI text with the same skepticism applied to unreviewed manuscripts, industry white papers, or politically motivated analyses.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "B. Core Interrogation Practices to Teach Explicitly",
+                            content: "Five core interrogation practices:",
+                            items: [
+                                "Assumption Extraction - Identify implicit theoretical assumptions in AI responses, surface what the model presumes about causality",
+                                "Source Verification - Independently locate primary sources for any cited claim, check whether references exist",
+                                "Counterfactual Stress-Testing - Reverse key assumptions and observe how conclusions change, test edge cases",
+                                "Cross-Model Comparison - Query multiple AI systems and compare divergences, contrast AI outputs with empirical data",
+                                "Methodological Plausibility Checks - Examine whether proposed methods align with research questions, identify misapplications"
+                            ],
+                            insight: "AI rarely states assumptions explicitly, yet all claims depend on them. AI can generate syntactically perfect but nonexistent citations. AI is optimized for coherence, not robustness. Disagreement forces judgment.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "C. The Interrogation Heuristic for Doctoral Students",
+                            content: "Teach a simple but rigorous test:",
+                            items: [
+                                "What is the claim?",
+                                "What assumptions support it?",
+                                "What evidence would falsify it?",
+                                "What sources independently confirm it?",
+                                "Where might it fail?"
+                            ],
+                            insight: "Interrogating AI is now as fundamental to doctoral education as evaluating peer-reviewed research. It is not a technical competency, but a scholarly obligation.",
+                            humanOutcome: null
+                        }
+                    ],
+                    whyMatters: "If doctoral students are not explicitly trained to interrogate AI: Fluency will masquerade as rigor, hallucinations will quietly enter scholarship, and graduates will lack the judgment required to govern AI-informed knowledge."
+                }
+            },
+            {
+                id: 6,
+                number: "06",
+                title: "What faculty capabilities are now non-optional?",
+                problem: "Uneven faculty fluency creates inequity and confusion.",
+                coreQuestion: "What minimum AI literacy should every instructor possess to design, supervise, and assess learning responsibly?",
+                whyItMatters: "Includes: GAI Prompt critique, Bias awareness, Assignment redesign, Boundary setting",
+                examples: null,
+                doctoral: {
+                    problem: "In doctoral education, uneven faculty fluency with AI produces inconsistent policies, contradictory expectations, and inequitable assessment. Some faculty prohibit AI entirely; others permit it without boundaries.",
+                    coreQuestion: "What minimum AI literacy must every doctoral instructor possess to responsibly design, supervise, and assess doctoral learning?",
+                    subsections: [
+                        {
+                            title: "A. The Baseline Standard",
+                            content: "At the doctoral level, AI fluency is now a professional obligation, not an elective skill.",
+                            items: ["Every faculty member who teaches, supervises, or examines doctoral students must be able to distinguish augmentation of scholarship from substitution of judgment."],
+                            insight: "This is not about turning faculty into technologists. It is about preserving the integrity and signal value of the doctorate.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "B. Core Faculty Capabilities (Minimum Required)",
+                            content: "Five non-optional capabilities:",
+                            items: [
+                                "Generative AI Prompt Critique - Recognize how prompts shape AI outputs, identify leading or biased prompts",
+                                "Bias Awareness and Epistemic Risk - Explain how training data embeds historical bias, identify normative assumptions",
+                                "Assignment Redesign - Redesign assignments so that reasoning is observable, shift from polished output to defensible judgment",
+                                "Boundary Setting - Clearly articulate where AI use is permitted, bounded, or prohibited",
+                                "Evaluation Without Detection Tools - Assess reasoning through questioning, evaluate ownership of ideas independent of polish"
+                            ],
+                            insight: "Assignments designed for a pre-AI world no longer measure doctoral competence. If AI can complete the task unaided, the task is misaligned. Ambiguity creates inequity; explicit boundaries create fairness.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "C. What Faculty Are Not Required to Be",
+                            content: "To be clear, doctoral faculty are not required to:",
+                            items: [
+                                "Build or fine-tune AI models.",
+                                "Master every emerging platform.",
+                                "Become prompt engineers or technologists."
+                            ],
+                            insight: "The obligation is epistemic competence, not technical expertise.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "D. The Doctoral Faculty AI Literacy Checklist",
+                            content: "Every doctoral instructor should be able to answer yes to:",
+                            items: [
+                                "Can I explain where AI strengthens versus undermines doctoral learning?",
+                                "Can I critique an AI response in my field for assumptions and bias?",
+                                "Can I design an assessment that AI cannot complete convincingly?",
+                                "Can I clearly state AI-permitted and AI-restricted zones?",
+                                "Can I defend my AI policy as fair, coherent, and aligned with doctoral standards?"
+                            ],
+                            insight: "AI does not lower the bar for doctoral faculty. It clarifies where the bar must be held.",
+                            humanOutcome: null
+                        }
+                    ],
+                    whyMatters: "Without a shared baseline: Doctoral standards fragment across faculty, students receive mixed and contradictory signals, and the credibility of the doctorate erodes unevenly but inexorably."
+                }
+            },
+            {
+                id: 7,
+                number: "07",
+                title: "How do we ensure equity of access and expectations?",
+                problem: "AI advantages compound existing inequities.",
+                coreQuestion: "Are all students given equal access to AI tools? Do we have clear guidance on acceptable use?",
+                whyItMatters: "Equity issue: Silent use favors those already advantaged.",
+                examples: null,
+                doctoral: {
+                    problem: "In doctoral education, AI advantages compound existing inequities. Doctoral students enter programs with unequal access to resources, mentoring, methodological training, and informal guidance.",
+                    coreQuestion: "Are all doctoral students given equal access to AI tools? Moreover, do they receive clear, consistent guidance on acceptable use?",
+                    subsections: [
+                        {
+                            title: "A. Equity Requires Program-Level Access, Not Individual Workarounds",
+                            content: "Equity fails if doctoral AI access depends on:",
+                            items: [
+                                "Personal subscriptions to premium tools",
+                                "Advisor-specific norms",
+                                "Informal peer instruction"
+                            ],
+                            insight: "Doctoral standard: If AI is permitted, doctoral programs must provide a common baseline of access including institutionally supported AI tools, clear statements that use is allowed within defined bounds, and data-compliant platforms.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "B. Standardizing Expectations Across the Doctoral Lifecycle",
+                            content: "Doctoral students move across coursework, comprehensive exams, proposal development, and dissertation research. Equity requires continuity.",
+                            items: [
+                                "AI expectations during coursework.",
+                                "Disclosure and use standards for proposals and dissertations.",
+                                "Consistent norms across advisors and committees."
+                            ],
+                            insight: "No doctoral student should have to infer expectations from advisor temperament.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "C. Making AI Use Explicit and Safe to Declare",
+                            content: "Silence around AI use advantages students who receive private advisor guidance, are willing to take reputational risks, or have prior exposure to advanced tools.",
+                            items: [
+                                "Required AI Disclosure Norms - Brief AI-use statements where AI is permitted",
+                                "Formal Instruction - Doctoral students must be taught where AI is appropriate vs. prohibited"
+                            ],
+                            insight: "Transparency protects rule-followers; silence protects insiders. Equity fails when expectations are implicit.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "D. Preventing a Two-Tier Doctoral Experience",
+                            content: "Without governance, doctoral education splits into:",
+                            items: [
+                                "An official curriculum (what is stated)",
+                                "A shadow curriculum (what successful students quietly do)"
+                            ],
+                            insight: "To prevent this: AI guidance must be included in doctoral orientations, faculty advisors must align on baseline expectations, and programs must normalize open discussion of AI use. The shadow curriculum is where inequity accelerates.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "E. Assessment Design as an Equity Mechanism",
+                            content: "Assessments that reward polish or speed disproportionately advantage students using undisclosed AI.",
+                            items: [
+                                "Equitable doctoral assessment prioritizes reasoning, justification, and defense.",
+                                "Includes oral components and iterative review.",
+                                "Makes evaluation criteria explicit."
+                            ],
+                            insight: "When thinking and not output is assessed, hidden advantages diminish.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "F. Program-Level Accountability",
+                            content: "Equity in doctoral AI use is not a student responsibility, but a program obligation.",
+                            items: [
+                                "Provide access.",
+                                "Define boundaries.",
+                                "Train faculty advisors.",
+                                "Educate students.",
+                                "Enforce expectations consistently."
+                            ],
+                            insight: "Students cannot comply with norms that are unevenly communicated or selectively enforced.",
+                            humanOutcome: null
+                        }
+                    ],
+                    whyMatters: "If doctoral programs do not explicitly address AI equity: AI will quietly widen gaps in productivity and confidence, transparent students will be disadvantaged, and the credibility of doctoral training as fair and merit-based will erode. Equity in AI-enabled doctoral education is not about restricting tools. It is about ensuring that access and expectations are shared, explicit, and defensible."
+                }
+            },
+            {
+                id: 8,
+                number: "08",
+                title: "What institutional risks are we accepting, explicitly or implicitly?",
+                problem: "AI introduces legal, reputational, and accreditation risks.",
+                coreQuestion: "Where does responsibility lie when AI-assisted work is incorrect, biased, or harmful?",
+                whyItMatters: "This is governance, and not pedagogy.",
+                examples: null,
+                doctoral: {
+                    problem: "Doctoral education sits at the apex of an institution's knowledge-production enterprise. AI use within doctoral research introduces legal, reputational, accreditation, and ethical risks that extend far beyond individual classrooms or faculty discretion.",
+                    coreQuestion: "When AI-assisted doctoral work is incorrect, biased, or harmful, where does responsibility lie?",
+                    subsections: [
+                        {
+                            title: "A. The Central Governance Reality",
+                            content: "In doctoral education, responsibility cannot be fully delegated to students or individual faculty.",
+                            items: [
+                                "Institutions award the degree.",
+                                "Institutions certify competence.",
+                                "Institutions therefore bear ultimate risk."
+                            ],
+                            insight: "Any AI-mediated failure in doctoral research reflects not just on a candidate, but on the supervisory committee, the doctoral program, and the institution's academic standards.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "B. Categories of Institutional Risk",
+                            content: "Four major risk categories:",
+                            items: [
+                                "Legal and Compliance Risk - Use of proprietary data, violations of privacy or IRB standards, misrepresentation of authorship, copyright violations",
+                                "Reputational Risk - Dissertations are archived and indexed, AI-generated errors or fabricated citations can undermine trust in doctoral rigor",
+                                "Accreditation and Quality Assurance Risk - Accreditors expect institutions to demonstrate control over academic standards and verify that learning outcomes are authentically achieved",
+                                "Ethical and Harm-Based Risk - AI can reinforce bias, produce misleading conclusions with real-world consequences"
+                            ],
+                            insight: "Without clear policy, institutions may be liable for work they did not properly oversee. Reputational damage travels faster than policy revision. AI can amplify harm faster than traditional research pipelines.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "C. Where Responsibility Must Reside",
+                            content: "Responsibility in AI-assisted doctoral work is distributed but not diffuse.",
+                            items: [
+                                "Doctoral candidate - Primary authorship, disclosure, defensibility",
+                                "Advisor & committee - Oversight, interrogation, validation",
+                                "Program - Standards, consistency, milestone governance",
+                                "Institution - Policy, risk acceptance, accountability"
+                            ],
+                            insight: "When responsibility is unclear, institutions assume risk by default.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "D. The Risk of Implicit Acceptance",
+                            content: "Institutions accept risk implicitly when they:",
+                            items: [
+                                "Allow AI use without formal policy.",
+                                "Delegate decisions to individual faculty.",
+                                "Rely on detection tools instead of governance.",
+                                "Treat AI as a classroom issue rather than a research issue."
+                            ],
+                            insight: "Silence is not neutrality, but unmanaged risk.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "E. Governance Mechanisms That Mitigate Risk",
+                            content: "Institutions must move beyond permissive or prohibitive stances and implement:",
+                            items: [
+                                "Doctoral-level AI use policies tied to research integrity.",
+                                "Mandatory AI disclosure in proposals and dissertations.",
+                                "Faculty training on AI-related risk domains.",
+                                "Clear lines of accountability for oversight failures."
+                            ],
+                            insight: "Governance does not eliminate risk. Rather, it makes risk conscious, bounded, and defensible.",
+                            humanOutcome: null
+                        }
+                    ],
+                    whyMatters: "If institutions fail to govern AI in doctoral education: Legal exposure will be reactive rather than proactive, reputational harm will precede policy clarity, and accreditation scrutiny will intensify. The question is not whether AI introduces risk. The question is whether institutions are knowingly governing the risks they are already accepting."
+                }
+            },
+            {
+                id: 9,
+                number: "09",
+                title: "How do we future-proof curriculum in a fast-moving AI landscape?",
+                problem: "Tool-specific instruction ages quickly.",
+                coreQuestion: "What enduring skills do students need regardless of the platform?",
+                whyItMatters: "Focus: Judgment, framing, ethics, systems thinking, decision quality.",
+                examples: null,
+                doctoral: {
+                    problem: "AI platforms, models, and interfaces evolve faster than doctoral curricula can be revised. Tool-specific instruction becomes obsolete within semesters, creating a false sense of preparedness while diverting attention from the deeper purpose of doctoral education.",
+                    coreQuestion: "What enduring capabilities must doctoral students develop that remain valid regardless of AI platform or technological change?",
+                    subsections: [
+                        {
+                            title: "A. Shift the Curriculum from Tools to Intellectual Invariants",
+                            content: "Doctoral curricula must be designed around cognitive capabilities that persist even as technologies change.",
+                            items: [
+                                "Tools are transient. Judgment endures.",
+                                "Futureproofing means teaching students how to think with, about, and beyond AI, not how to operate a specific system."
+                            ],
+                            insight: null,
+                            humanOutcome: null
+                        },
+                        {
+                            title: "B. Enduring Doctoral Skills That Transcend Platforms",
+                            content: "Six enduring skills:",
+                            items: [
+                                "Judgment Under Uncertainty - Make defensible decisions with incomplete information, weigh tradeoffs rather than optimize single metrics",
+                                "Problem Framing and Question Formulation - Define the right problem before solving it, distinguish symptoms from root causes",
+                                "Ethical Reasoning and Responsibility - Understand ethical implications of research design, power and bias in knowledge production",
+                                "Systems Thinking and Second-Order Effects - Understand how interventions propagate through systems, anticipate unintended consequences",
+                                "Critical Evaluation of Knowledge Claims - Interrogate assumptions, distinguish plausibility from validity, detect bias and hallucination",
+                                "Decision Quality, Not Decision Speed - Justify decisions explicitly, explain why alternatives were rejected"
+                            ],
+                            insight: "AI can propose options; it cannot choose wisely. Judgment is the irreducible human function. AI responds to frames but does not create them. AI is ethically neutral; doctoral scholars must not be. AI often optimizes locally; scholars must reason globally. Fluency is not evidence. AI accelerates output; doctoral education must preserve deliberation.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "C. Curriculum Design Principles for Futureproofing",
+                            content: "To embed these enduring skills, doctoral curricula should:",
+                            items: [
+                                "Anchor courses around decision points, not deliverables.",
+                                "Emphasize oral defense, justification, and critique.",
+                                "Use AI as an object of interrogation, not mastery.",
+                                "Require students to explain why before how."
+                            ],
+                            insight: "If a learning outcome depends on a specific platform, it is already outdated.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "D. Assessing Enduring Skills",
+                            content: "Futureproof assessment focuses on:",
+                            items: [
+                                "Framing memos",
+                                "Assumption audits",
+                                "Ethical impact analyses",
+                                "Counterfactual reasoning",
+                                "Oral examinations and defenses"
+                            ],
+                            insight: "What cannot be defended should not be credentialed.",
+                            humanOutcome: null
+                        }
+                    ],
+                    whyMatters: "If doctoral curricula chase tools: Programs will perpetually lag technology, students will confuse fluency with expertise, and the doctorate's signal value will erode. Doctoral education must outlast platforms. Its purpose is to develop scholars whose judgment remains relevant even when today's tools disappear."
+                }
+            },
+            {
+                id: 10,
+                number: "10",
+                title: "What is the educator's role when information is abundant?",
+                problem: "AI challenges the traditional 'expert content deliverer' model.",
+                coreQuestion: "If AI scales intelligence, how do educators scale wisdom, context, and meaning?",
+                whyItMatters: "This reframes teaching as sense-making, not information transfer.",
+                examples: null,
+                doctoral: {
+                    problem: "Doctoral education has historically relied on faculty as primary content authorities. They have been gatekeepers of scarce knowledge, methods, and theoretical traditions. AI has collapsed that scarcity.",
+                    coreQuestion: "If AI scales intelligence, how do doctoral educators scale wisdom, context, and meaning?",
+                    subsections: [
+                        {
+                            title: "A. The Fundamental Shift in the Educator's Role",
+                            content: "In an AI-rich environment, the doctoral educator's value no longer lies in possessing information, but in curating, contextualizing, and interrogating it.",
+                            items: [
+                                "AI distributes intelligence. Educators cultivate judgment.",
+                                "The doctoral educator becomes an intellectual steward responsible for guiding how knowledge is framed, challenged, and responsibly advanced."
+                            ],
+                            insight: null,
+                            humanOutcome: null
+                        },
+                        {
+                            title: "B. Core Educator Roles in AI-Abundant Doctoral Education",
+                            content: "Six core educator roles:",
+                            items: [
+                                "Sense-Maker of Complex Knowledge - Help students distinguish important questions from merely interesting ones, surface underlying assumptions",
+                                "Modeler of Scholarly Judgment - Explain why one framework is chosen over another, demonstrate tradeoff reasoning under uncertainty",
+                                "Guardian of Epistemic Standards - Enforce what counts as valid evidence, challenge fluency that masks weak reasoning",
+                                "Designer of Intellectual Friction - Intentionally introduce ambiguity, contradictory evidence, uncomfortable counterarguments",
+                                "Ethical Steward and Boundary Setter - Clarify where AI use is appropriate, address power and bias in AI-mediated knowledge",
+                                "Coach of Scholarly Identity - Shape intellectual voice, scholarly confidence, ownership of ideas under critique"
+                            ],
+                            insight: "Meaning does not emerge from abundance; it emerges from interpretation. Doctoral students learn judgment by observing it exercised. In an AI world, standards matter more, not less. Learning occurs at the point of tension, not convenience. AI removes friction; educators must reintroduce it purposefully. Ethics is not a sidebar—it is the frame. AI can generate text; it cannot form scholars.",
+                            humanOutcome: null
+                        },
+                        {
+                            title: "C. Teaching as Sense-Making: What Changes in Practice",
+                            content: "The educator shifts from source to standard.",
+                            items: [
+                                "Delivering content → Interrogating meaning",
+                                "Lecturing → Facilitating critique",
+                                "Answering questions → Refining questions",
+                                "Grading outputs → Assessing judgment",
+                                "Policing tools → Governing cognition"
+                            ],
+                            insight: null,
+                            humanOutcome: null
+                        }
+                    ],
+                    whyMatters: "If doctoral educators cling to the content-delivery model: AI will outperform them at the wrong task, students will mistake access for understanding, and the doctorate's intellectual depth will erode. When information is abundant, the educator's role is not diminished—it is clarified. Doctoral educators scale wisdom by cultivating judgment, context, and responsibility in the next generation of scholars."
+                }
+            }
+        ];
+
+        const metaFrame = {
+            title: "",
+            description: "AI in the classroom must be governed across three domains:",
+            domains: [
+                { name: "Permission", description: "What is allowed, where, and why?" },
+                { name: "Process", description: "How is AI used within learning workflows?" },
+                { name: "Proof", description: "How is student understanding demonstrated?" }
+            ],
+            warning: "If any one of these is missing, confusion and risk will very likely follow."
+        };
+
+        // Icons component
+        const Icon = ({ name, size = 20, className = "" }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                if (iconRef.current && lucide[name]) {
+                    iconRef.current.innerHTML = '';
+                    const svg = lucide.createIcons({ icons: { [name]: lucide[name] } });
+                    // Create icon element
+                }
+            }, [name]);
+            return <i ref={iconRef} data-lucide={name} className={className} style={{ width: size, height: size }}></i>;
+        };
+
+        // Components
+        const Badge = ({ type, children }) => (
+            <span className={`badge badge-${type}`}>{children}</span>
+        );
+
+        const MetaFrameFloatingPanel = ({ isOpen, onToggle }) => (
+            <aside className={`meta-frame-panel ${isOpen ? '' : 'collapsed'}`}>
+                <button
+                    onClick={onToggle}
+                    className="meta-frame-toggle"
+                    aria-label="Toggle Meta-Frame panel"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+                <div className="p-6 relative">
+                    {/* Top-right collapse button */}
+                    <button
+                        onClick={onToggle}
+                        className="absolute top-4 right-4 p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                        aria-label="Collapse panel"
+                    >
+                        <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <div className="mb-6">
+                        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Meta-Frame</span>
+                        {metaFrame.title && <h2 className="text-lg font-serif font-bold text-slate-900 mt-2">{metaFrame.title}</h2>}
+                    </div>
+
+                    <p className="text-sm text-gray-600 mb-6">{metaFrame.description}</p>
+
+                    <div className="space-y-3 mb-6">
+                        {metaFrame.domains.map((domain, i) => (
+                            <div key={i} className="p-4 bg-slate-50 rounded-lg border-l-4 border-slate-700">
+                                <h3 className="font-bold text-slate-800 mb-1 text-sm">{domain.name}</h3>
+                                <p className="text-xs text-gray-600 leading-relaxed">{domain.description}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                        <p className="text-xs text-amber-800 font-medium flex items-start gap-2">
+                            <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            {metaFrame.warning}
+                        </p>
+                    </div>
+                </div>
+            </aside>
+        );
+
+        const MetaFrameSection = () => (
+            <section id="meta-frame" className="mb-12 p-6 bg-white rounded-lg border border-gray-200">
+                {metaFrame.title && <h2 className="text-2xl font-serif font-bold text-gray-900 mb-4">{metaFrame.title}</h2>}
+                <p className="text-gray-600 mb-6">{metaFrame.description}</p>
+                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                    {metaFrame.domains.map((domain, i) => (
+                        <div key={i} className="p-4 bg-slate-50 rounded border-l-4 border-slate-600">
+                            <h3 className="font-semibold text-slate-800 mb-2">{domain.name}</h3>
+                            <p className="text-sm text-gray-600">{domain.description}</p>
+                        </div>
+                    ))}
+                </div>
+                <p className="text-amber-700 font-medium flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    {metaFrame.warning}
+                </p>
+            </section>
+        );
+
+        const DoctoralAccordion = ({ doctoral, isOpen, onToggle }) => {
+            const contentRef = useRef(null);
+            const [height, setHeight] = useState(0);
+
+            useEffect(() => {
+                if (isOpen && contentRef.current) {
+                    setHeight(contentRef.current.scrollHeight);
+                } else {
+                    setHeight(0);
+                }
+            }, [isOpen]);
+
+            return (
+                <div className="mt-8 border-t border-teal-100 pt-6">
+                    <button
+                        onClick={onToggle}
+                        className="w-full flex items-center justify-between p-4 bg-teal-50 hover:bg-teal-100 rounded-lg transition-colors text-left"
+                    >
+                        <div>
+                            <h4 className="font-semibold text-teal-900">Application to Doctoral Studies</h4>
+                        </div>
+                        <svg
+                            className={`w-5 h-5 text-teal-700 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div
+                        ref={contentRef}
+                        className="accordion-content"
+                        style={{ maxHeight: isOpen ? height + 'px' : '0px' }}
+                    >
+                        <div className="p-6 space-y-6">
+                            <div className="bg-red-50 p-4 rounded border-l-4 border-red-300">
+                                <h5 className="font-semibold text-red-900 mb-2">Problem</h5>
+                                <p className="text-gray-700 text-sm">{doctoral.problem}</p>
+                            </div>
+                            <div className="bg-orange-50 p-4 rounded border-l-4 border-orange-300">
+                                <h5 className="font-semibold text-orange-900 mb-2">Core Question</h5>
+                                <p className="text-gray-700 text-sm">{doctoral.coreQuestion}</p>
+                            </div>
+                            {doctoral.subsections.map((subsection, i) => (
+                                <div key={i} className="space-y-3">
+                                    <h5 className="font-serif font-semibold text-gray-900">{subsection.title}</h5>
+                                    <p className="text-gray-700 text-sm">{subsection.content}</p>
+                                    {subsection.items && (
+                                        <ul className="space-y-2 ml-4">
+                                            {subsection.items.map((item, j) => (
+                                                <li key={j} className="text-sm text-gray-600 flex items-start gap-2">
+                                                    <span className="text-teal-600 mt-1">•</span>
+                                                    <span>{item}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                    {subsection.insight && (
+                                        <div className="bg-slate-100 p-4 rounded italic text-sm text-gray-700 border-l-2 border-slate-400">
+                                            {subsection.insight}
+                                        </div>
+                                    )}
+                                    {subsection.humanOutcome && (
+                                        <div className="bg-teal-50 p-4 rounded text-sm text-teal-900 font-medium border border-teal-200">
+                                            <strong>Human-only outcome:</strong> {subsection.humanOutcome}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                            <div className="bg-slate-800 text-white p-6 rounded-lg">
+                                <h5 className="font-semibold mb-3">Why This Matters</h5>
+                                <p className="text-gray-200 text-sm leading-relaxed">{doctoral.whyMatters}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ChallengeCard = ({ challenge, isActive, onInView }) => {
+            const cardRef = useRef(null);
+            const [doctoralOpen, setDoctoralOpen] = useState(false);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(
+                    ([entry]) => {
+                        if (entry.isIntersecting) {
+                            onInView(challenge.id);
+                        }
+                    },
+                    { threshold: 0.3 }
+                );
+
+                if (cardRef.current) {
+                    observer.observe(cardRef.current);
+                }
+
+                return () => observer.disconnect();
+            }, [challenge.id, onInView]);
+
+            return (
+                <div
+                    ref={cardRef}
+                    id={`challenge-${challenge.id}`}
+                    className={`challenge-card mb-8 p-6 bg-white rounded-lg shadow-sm ${isActive ? 'border-l-4 border-slate-700' : ''}`}
+                >
+                    <div className="flex items-start gap-4 mb-4">
+                        <span className="text-4xl font-light text-slate-300">{challenge.number}</span>
+                        <div className="flex-1">
+                            <h2 className="text-xl font-serif font-bold text-gray-900 leading-tight">{challenge.title}</h2>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="bg-red-50 p-4 rounded border-l-4 border-red-300">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Badge type="problem">Problem</Badge>
+                            </div>
+                            <p className="text-gray-700">{challenge.problem}</p>
+                        </div>
+
+                        <div className="bg-orange-50 p-4 rounded border-l-4 border-orange-300">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Badge type="question">Core Question</Badge>
+                            </div>
+                            <p className="text-gray-700 font-medium">{challenge.coreQuestion}</p>
+                        </div>
+
+                        {challenge.examples && (
+                            <div className="grid md:grid-cols-2 gap-4">
+                                {challenge.examples.map((exampleGroup, i) => (
+                                    <div key={i} className={`p-4 rounded ${exampleGroup.label === 'Positive' ? 'bg-green-50' : 'bg-amber-50'}`}>
+                                        <h4 className="font-semibold text-sm mb-2">{exampleGroup.label}</h4>
+                                        <ul className="space-y-1">
+                                            {exampleGroup.items.map((item, j) => (
+                                                <li key={j} className="text-sm text-gray-600">• {item}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {challenge.whyItMatters && (
+                            <div className="bg-slate-100 p-4 rounded text-sm text-gray-700">
+                                <strong>Why it matters:</strong> {challenge.whyItMatters}
+                            </div>
+                        )}
+
+                        {challenge.doctoral && (
+                            <DoctoralAccordion
+                                doctoral={challenge.doctoral}
+                                isOpen={doctoralOpen}
+                                onToggle={() => setDoctoralOpen(!doctoralOpen)}
+                            />
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const SidebarNavigation = ({ challenges, activeId, onNavigate, isMobileOpen, onClose, onMetaFrameToggle }) => (
+            <>
+                {isMobileOpen && (
+                    <div
+                        className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                        onClick={onClose}
+                    />
+                )}
+                <aside className={`
+                    sidebar bg-white border-r border-gray-200
+                    fixed md:sticky top-0 h-screen z-50
+                    w-[360px]
+                    transform transition-transform duration-300
+                    transform transition-transform duration-300
+                    ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+                `}>
+                    <div className="p-6 border-b border-gray-200">
+                        <h1 className="text-lg font-serif font-bold text-slate-800 leading-tight">
+                            10 Critical AI Challenges
+                        </h1>
+                        <p className="text-xs text-gray-500 mt-2">For the Classroom</p>
+                    </div>
+
+                    <nav className="p-4">
+                        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">
+                            Challenges
+                        </h3>
+                        <ul className="space-y-1">
+                            {challenges.map(challenge => (
+                                <li key={challenge.id}>
+                                    <button
+                                        onClick={() => {
+                                            onNavigate(challenge.id);
+                                            if (window.innerWidth < 768) onClose();
+                                        }}
+                                        className={`
+                                            nav-item w-full text-left px-3 py-2 rounded text-sm
+                                            border-l-2 transition-all duration-200
+                                            ${activeId === challenge.id
+                                                ? 'active border-slate-700 bg-slate-50 text-slate-900 font-medium'
+                                                : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                            }
+                                        `}
+                                    >
+                                        <span className="text-xs opacity-50 mr-2">{challenge.number}</span>
+                                        {challenge.title}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                            <button
+                                onClick={() => {
+                                    onMetaFrameToggle();
+                                    if (window.innerWidth < 768) onClose();
+                                }}
+                                className="w-full text-left px-3 py-2 rounded text-sm text-gray-600 hover:bg-gray-50 flex items-center gap-2"
+                            >
+                                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                                Meta-Frame Panel
+                            </button>
+                        </div>
+                    </nav>
+
+                    <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
+                        <p className="text-xs text-gray-400">
+                            A framework for educators navigating AI in higher education
+                        </p>
+                    </div>
+                </aside>
+            </>
+        );
+
+        const ProgressBar = ({ challenges, activeId }) => {
+            const activeIndex = challenges.findIndex(c => c.id === activeId);
+            const progress = ((activeIndex + 1) / challenges.length) * 100;
+
+            return (
+                <div className="fixed top-0 left-0 md:left-72 right-0 h-1 bg-gray-200 z-30">
+                    <div
+                        className="h-full bg-slate-700 transition-all duration-300"
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
+            );
+        };
+
+        // Main App
+        const App = () => {
+            const [activeId, setActiveId] = useState(1);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            const [metaFrameOpen, setMetaFrameOpen] = useState(true);
+
+            const handleNavigate = (id) => {
+                const element = document.getElementById(`challenge-${id}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            };
+
+            const handleInView = (id) => {
+                setActiveId(id);
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <ProgressBar challenges={challenges} activeId={activeId} />
+
+                    {/* Meta-Frame Toggle Button - Upper Left Corner */}
+                    <button
+                        onClick={() => setMetaFrameOpen(!metaFrameOpen)}
+                        className="hidden md:flex fixed top-16 left-4 z-30 items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-50 transition-all"
+                        title="Toggle Meta-Frame Panel"
+                    >
+                        <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                        <span className="text-xs font-semibold text-slate-700">Meta-Frame</span>
+                    </button>
+
+                    {/* Mobile Header */}
+                    <header className="md:hidden fixed top-1 left-0 right-0 h-14 bg-white border-b border-gray-200 z-20 flex items-center justify-between px-4">
+                        <div className="flex items-center gap-2">
+                            <img
+                                src="https://www.usuniversity.edu/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fusuniversity.f2a35715.png&w=256&q=75"
+                                alt="USU Logo"
+                                className="w-8 h-8 object-contain"
+                            />
+                            <span className="font-semibold text-blue-900 text-xs">USU COBT</span>
+                        </div>
+                        <button
+                            onClick={() => setMobileMenuOpen(true)}
+                            className="p-2 rounded hover:bg-gray-100"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </header>
+
+                    <div className="flex">
+                        <SidebarNavigation
+                            challenges={challenges}
+                            activeId={activeId}
+                            onNavigate={handleNavigate}
+                            isMobileOpen={mobileMenuOpen}
+                            onClose={() => setMobileMenuOpen(false)}
+                            onMetaFrameToggle={() => setMetaFrameOpen(!metaFrameOpen)}
+                        />
+
+                        <main className="main-content flex-1 md:ml-0 min-h-screen">
+                            <div className="max-w-4xl mx-auto px-4 pb-16 md:pb-24 md:pr-8" style={{ maxWidth: '960px', paddingLeft: '0px', marginLeft: '48px', paddingTop: '32px' }}>
+                                <header className="mb-12 text-center">
+                                    <div className="flex items-center justify-center gap-4 mb-6">
+                                        <a href="https://www.appliedailabs.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                                            <img
+                                                src="https://centerforappliedai.com/wp-content/uploads/2025/03/8e2adab0e3f168217b0338d68bba5992.png"
+                                                alt="Applied AI Labs"
+                                                className="h-12 object-contain"
+                                            />
+                                        </a>
+                                        <div className="w-px h-12 bg-gray-300"></div>
+                                        <img
+                                            src="https://www.usuniversity.edu/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fusuniversity.f2a35715.png&w=256&q=75"
+                                            alt="USU Logo"
+                                            className="w-16 h-16 object-contain"
+                                        />
+                                        <div className="text-left">
+                                            <p className="text-sm font-semibold text-blue-900">USU College Of Business & Technology</p>
+                                        </div>
+                                    </div>
+                                    <h1 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4">
+                                        10 Critical AI Challenges That Must Be Addressed in the Classroom
+                                    </h1>
+                                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                                        A framework for educators navigating the integration of AI in higher education
+                                    </p>
+                                </header>
+
+                                <MetaFrameSection />
+
+                                <section>
+                                    {challenges.map(challenge => (
+                                        <ChallengeCard
+                                            key={challenge.id}
+                                            challenge={challenge}
+                                            isActive={activeId === challenge.id}
+                                            onInView={handleInView}
+                                        />
+                                    ))}
+                                </section>
+
+                                <footer className="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
+                                    <div className="flex items-center justify-center gap-2 mb-4">
+                                        <img
+                                            src="https://www.usuniversity.edu/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fusuniversity.f2a35715.png&w=256&q=75"
+                                            alt="USU Logo"
+                                            className="w-8 h-8 object-contain"
+                                        />
+                                        <span className="font-semibold text-blue-900">USU College Of Business & Technology</span>
+                                    </div>
+                                    <p>Designed for educators, administrators, and policymakers in higher education.</p>
+                                    <p className="mt-2">Focus on doctoral education and advanced scholarship.</p>
+                                    <p className="mt-4">
+                                        <a href="https://www.appliedailabs.com" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:text-blue-900 hover:underline">
+                                            &copy; Applied AI Labs 2026
+                                        </a>
+                                    </p>
+                                </footer>
+                            </div>
+                        </main>
+
+                        <MetaFrameFloatingPanel
+                            isOpen={metaFrameOpen}
+                            onToggle={() => setMetaFrameOpen(!metaFrameOpen)}
+                        />
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
