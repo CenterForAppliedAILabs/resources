@@ -31,9 +31,12 @@
         h2 { font-size: 18px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;}
         h3 { font-size: 24px; margin-top: 35px; margin-bottom: 15px; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 5px;}
         h4 { font-size: 22px; margin-top: 25px; color: var(--text-primary); }
+        
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
 
         .container {
-            max-width: 1700px;
+            max-width: 1750px;
             margin: 0 auto;
             padding: 0 calc(var(--base-unit) * 10);
         }
@@ -43,7 +46,7 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            gap: 40px;
+            gap: 35px;
             padding: 10px 40px;
             background: white;
             border-bottom: 3px solid var(--primary);
@@ -55,14 +58,22 @@
             box-sizing: border-box;
         }
 
-        .logo-container img {
-            height: 60px;
+        .applied-ai-logo {
+            height: 50px;
             width: auto;
             display: block;
         }
 
+        .usu-logo {
+            height: 55px;
+            width: auto;
+            display: block;
+            border-left: 1px solid #ddd;
+            padding-left: 30px;
+        }
+
         .header-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: #333;
             max-width: 450px;
@@ -78,6 +89,7 @@
             border-radius: 50px;
             cursor: pointer;
             border: 1px solid #ddd;
+            margin-left: auto; /* Push to right of the logo/title block */
         }
         .toggle-btn {
             padding: 10px 20px;
@@ -104,7 +116,7 @@
         .sidebar {
             position: sticky;
             top: 140px; 
-            height: calc(100vh - 160px);
+            height: calc(100vh - 220px); /* Adjusted for footer */
             overflow-y: auto;
             padding-right: 15px;
         }
@@ -184,12 +196,25 @@
         th, td { border: 1px solid #ddd; padding: 15px; text-align: left; }
         th { background: #f4f4f4; font-weight: 700; }
 
+        /* --- FOOTER --- */
+        footer {
+            background: white;
+            border-top: 1px solid #eee;
+            padding: 20px 0;
+            margin-top: 60px;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+        footer a { color: var(--primary); font-weight: bold; }
+
         @media (max-width: 1400px) {
             .main-layout { grid-template-columns: 280px 1fr; }
             .right-sidebar { display: none; }
         }
         @media (max-width: 1000px) {
-            header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            header { flex-wrap: wrap; gap: 15px; }
+            .toggle-container { margin-left: 0; width: 100%; justify-content: center; }
             .main-layout { grid-template-columns: 1fr; }
             .sidebar { position: static; height: auto; overflow: visible; width: 100%; margin-bottom: 20px; }
         }
@@ -198,8 +223,11 @@
 <body class="active-classroom">
 
 <header>
+    <a href="https://www.appliedailabs.com" target="_blank">
+        <img src="https://centerforappliedai.com/wp-content/uploads/2025/03/8e2adab0e3f168217b0338d68bba5992.png" alt="Applied AI Labs" class="applied-ai-logo">
+    </a>
     <div class="logo-container">
-        <img src="https://www.usuniversity.edu/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fusuniversity.f2a35715.png&w=256&q=75" alt="USU Logo">
+        <img src="https://www.usuniversity.edu/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fusuniversity.f2a35715.png&w=256&q=75" alt="USU Logo" class="usu-logo">
     </div>
     <div class="header-title">
         College of Business & Technology<br>
@@ -856,6 +884,10 @@
             </div>
         </aside>
     </div>
+
+    <footer>
+        &copy; <a href="https://www.appliedailabs.com" target="_blank">Applied AI Labs 2026</a>
+    </footer>
 </div>
 
 <script>
@@ -865,6 +897,9 @@
         "Future-Proofing", "The Educator’s Role"
     ];
 
+    /**
+     * Toggles between views and anchors the scroll context
+     */
     function toggleMode(event, targetId = null) {
         event.stopPropagation();
         let anchorId = targetId;
@@ -883,6 +918,9 @@
         }
     }
 
+    /**
+     * Renders vertical navigation links
+     */
     function renderNav() {
         const navList = document.getElementById('nav-list');
         navItems.forEach((item, index) => {
@@ -894,6 +932,9 @@
         });
     }
 
+    /**
+     * Exact ID Matching to prevent c1 / c10 highlight collision
+     */
     function highlightNavOnScroll() {
         const sections = document.querySelectorAll('.challenge-section');
         const navLinks = document.querySelectorAll('.nav-link-item');
@@ -904,7 +945,6 @@
             });
             navLinks.forEach((a) => {
                 a.classList.remove("active-nav");
-                // EXACT MATCH CHECK to prevent c1 / c10 highlight collision
                 if (a.getAttribute("href") === "#" + current) { a.classList.add("active-nav"); }
             });
         });
