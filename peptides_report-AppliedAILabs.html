@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Peptides & Health: Fundamentals, Efficacy, and Safety</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-alt: #12182a;
+      --card: #181f33;
+      --accent: #4fd1c5;
+      --accent-soft: rgba(79, 209, 197, 0.15);
+      --text-main: #f7fafc;
+      --text-muted: #a0aec0;
+      --danger: #f56565;
+      --warn: #ecc94b;
+      --ok: #68d391;
+      --border-subtle: #2d3748;
+      --code-bg: #1a202c;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.45);
+      --radius-lg: 14px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #1a365d 0, #0b1020 55%);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 18px 64px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .pill {
+      border-radius: var(--radius-pill);
+      padding: 4px 12px;
+      border: 1px solid rgba(160, 174, 192, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(10px);
+    }
+
+    .pill-accent {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 3vw, 2.6rem);
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      max-width: 640px;
+      font-size: 0.98rem;
+    }
+
+    .hero-card {
+      margin-top: 10px;
+      padding: 18px 18px 16px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(
+          135deg,
+          rgba(79, 209, 197, 0.08),
+          rgba(56, 189, 248, 0.02)
+        ),
+        radial-gradient(circle at top left, #1a365d 0, transparent 55%);
+      border: 1px solid rgba(79, 209, 197, 0.35);
+      box-shadow: var(--shadow-soft);
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.1fr);
+      gap: 18px;
+      align-items: center;
+    }
+
+    @media (max-width: 780px) {
+      .hero-card {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .hero-main {
+      font-size: 0.95rem;
+    }
+
+    .hero-main strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .hero-list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 160px;
+      border-radius: 18px;
+      background: radial-gradient(circle at 20% 0, #4fd1c5 0, transparent 55%),
+        radial-gradient(circle at 80% 100%, #63b3ed 0, transparent 55%),
+        #0b1020;
+      overflow: hidden;
+      border: 1px solid rgba(79, 209, 197, 0.4);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 999px;
+      border: 1px solid rgba(226, 232, 240, 0.2);
+      background: radial-gradient(circle at 30% 20%, #f7fafc 0, #4fd1c5 40%, transparent 70%);
+      opacity: 0.9;
+      box-shadow: 0 0 30px rgba(79, 209, 197, 0.7);
+    }
+
+    .orb.small {
+      width: 46px;
+      height: 46px;
+      top: 18%;
+      left: 16%;
+    }
+
+    .orb.medium {
+      width: 70px;
+      height: 70px;
+      top: 40%;
+      left: 55%;
+    }
+
+    .orb.large {
+      width: 96px;
+      height: 96px;
+      top: 18%;
+      right: 10%;
+    }
+
+    .chain {
+      position: absolute;
+      width: 2px;
+      background: linear-gradient(
+        to bottom,
+        rgba(226, 232, 240, 0.7),
+        rgba(79, 209, 197, 0.1)
+      );
+      top: 10%;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.7;
+    }
+
+    .hero-label {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.8);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    nav {
+      margin: 26px 0 22px;
+      padding: 10px 14px;
+      border-radius: var(--radius-lg);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.88rem;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      transition: all 0.15s ease-out;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+      border-color: rgba(79, 209, 197, 0.6);
+      background: rgba(79, 209, 197, 0.08);
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    section {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: var(--radius-lg);
+      padding: 18px 18px 16px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    section h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    section h3 {
+      margin-top: 14px;
+      font-size: 1.02rem;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    p {
+      margin: 0 0 10px;
+      font-size: 0.94rem;
+    }
+
+    .muted {
+      color: var(--text-muted);
+    }
+
+    ul, ol {
+      margin: 0 0 10px 18px;
+      padding: 0;
+      font-size: 0.92rem;
+    }
+
+    li + li {
+      margin-top: 4px;
+    }
+
+    .callout {
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      margin: 8px 0 4px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .callout.ok {
+      border-color: rgba(104, 211, 145, 0.8);
+      background: rgba(22, 101, 52, 0.25);
+    }
+
+    .callout.warn {
+      border-color: rgba(236, 201, 75, 0.9);
+      background: rgba(180, 83, 9, 0.22);
+    }
+
+    .callout.danger {
+      border-color: rgba(245, 101, 101, 0.9);
+      background: rgba(153, 27, 27, 0.25);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: var(--text-muted);
+    }
+
+    .tag.ok {
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    .tag.warn {
+      border-color: var(--warn);
+      color: var(--warn);
+    }
+
+    .tag.danger {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 4px;
+      font-size: 0.86rem;
+    }
+
+    th, td {
+      padding: 8px 6px;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.9);
+      vertical-align: top;
+    }
+
+    th {
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 600;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    code {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+        Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid rgba(45, 55, 72, 0.9);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 780px) {
+      .grid-2 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .question-card {
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px dashed rgba(148, 163, 184, 0.8);
+      font-size: 0.9rem;
+    }
+
+    .question-card strong {
+      color: var(--accent);
+    }
+
+    .score-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 0.86rem;
+    }
+
+    .score-pill {
+      border-radius: var(--radius-pill);
+      padding: 4px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .score-pill span {
+      font-weight: 600;
+    }
+
+    .score-pill.ok {
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    .score-pill.warn {
+      border-color: var(--warn);
+      color: var(--warn);
+    }
+
+    .score-pill.danger {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    footer {
+      margin-top: 26px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="badge-row">
+        <span class="pill">Audience: health‑literate, non‑specialist</span>
+        <span class="pill pill-accent">Topic: Peptides in health & wellness</span>
+      </div>
+      <h1>Peptides & You: What’s Real, What’s Hype, and What’s Risky</h1>
+      <p class="subtitle">
+        Peptides are having a moment—from GLP‑1 weight‑loss drugs to “healing” injections
+        sold online. This guide walks through the fundamentals, the evidence, and the
+        safety questions so you can decide whether peptide‑related topics are worth
+        exploring for your own health and wellness.
+      </p>
+
+      <div class="hero-card">
+        <div class="hero-main">
+          <div class="eyebrow">Big picture</div>
+          <p>
+            Think of <strong>peptides</strong> as short instruction strings your body uses
+            to coordinate jobs: appetite, healing, tanning, growth, and more. Modern
+            medicine is learning to “quote” those instructions in a targeted way—sometimes
+            life‑changing, sometimes over‑sold, sometimes not well‑tested.
+          </p>
+          <ul class="hero-list">
+            <li><strong>Fundamentals:</strong> what peptides are and how they signal.</li>
+            <li><strong>Efficacy:</strong> where we have strong data vs. early‑stage hype.</li>
+            <li><strong>Safety:</strong> real risks, especially with gray‑market products.</li>
+            <li><strong>Decision guide:</strong> is this worth your time, money, and risk budget?</li>
+          </ul>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="chain"></div>
+          <div class="orb small"></div>
+          <div class="orb medium"></div>
+          <div class="orb large"></div>
+          <div class="hero-label">Peptide chains “talking” to cells</div>
+        </div>
+      </div>
+    </header>
+
+    <nav>
+      <a href="#fundamentals">Fundamentals</a>
+      <a href="#how-they-work">How peptides work</a>
+      <a href="#types-table">Common peptide types</a>
+      <a href="#efficacy">Efficacy: what’s solid vs. speculative</a>
+      <a href="#safety">Safety & risk patterns</a>
+      <a href="#decision">Should you explore peptides?</a>
+    </nav>
+
+    <main>
+      <section id="fundamentals">
+        <div class="eyebrow">1 · Foundations</div>
+        <h2>What are peptides, in plain language?</h2>
+        <p>
+          At the simplest level, a <strong>peptide</strong> is a short chain of amino acids
+          (the same building blocks that make up proteins). If a full protein is a long
+          paragraph, a peptide is more like a short sentence or phrase.
+        </p>
+        <p>
+          Your body constantly uses peptides as <strong>signals</strong>—little biochemical
+          text messages. Some tell you you’re full (like GLP‑1), some help regulate blood
+          sugar, some influence skin repair, and others are involved in inflammation,
+          blood pressure, and more.
+        </p>
+        <div class="callout">
+          <strong>Analogy:</strong> Imagine your body as a city. Proteins are the big
+          infrastructure projects (bridges, power plants). Peptides are the short memos
+          and text messages that tell workers what to do next. Modern peptide therapies
+          are like carefully crafted text messages we inject or apply to nudge the system.
+        </div>
+        <h3>Endogenous vs. therapeutic peptides</h3>
+        <ul>
+          <li>
+            <strong>Endogenous peptides:</strong> naturally produced by your body
+            (e.g., insulin, GLP‑1, many hormones and signaling molecules).
+          </li>
+          <li>
+            <strong>Therapeutic or cosmetic peptides:</strong> manufactured versions or
+            analogs of those signals, used as drugs, injections, or topical products.
+          </li>
+        </ul>
+        <p class="muted">
+          The key idea: we’re not introducing alien chemistry; we’re modifying or mimicking
+          messages your body already understands—sometimes in very powerful ways.
+        </p>
+      </section>
+
+      <section id="how-they-work">
+        <div class="eyebrow">2 · Mechanism</div>
+        <h2>How do peptides actually work in the body?</h2>
+        <p>
+          Most peptides work by binding to specific <strong>receptors</strong> on cell
+          surfaces. When the peptide docks, it flips a biochemical switch inside the cell
+          that changes behavior: release a hormone, slow stomach emptying, increase
+          collagen production, reduce inflammation, etc.
+        </p>
+        <div class="grid-2">
+          <div>
+            <h3>Signal‑and‑response model</h3>
+            <ol>
+              <li><strong>Peptide arrives</strong> (injected, secreted, or applied).</li>
+              <li><strong>Receptor recognizes it</strong> like a lock recognizing a key.</li>
+              <li><strong>Cellular response</strong> is triggered (enzyme cascades, gene expression changes, etc.).</li>
+              <li><strong>System‑level effect</strong> emerges (lower appetite, better glucose control, faster healing).</li>
+            </ol>
+            <p class="muted">
+              The same basic pattern applies whether we’re talking about a diabetes drug,
+              a “healing” peptide, or a cosmetic peptide in a face cream.
+            </p>
+          </div>
+          <div>
+            <h3>Why small size matters</h3>
+            <ul>
+              <li>
+                <strong>More targeted:</strong> short sequences can be tuned to specific
+                receptors, reducing some off‑target effects.
+              </li>
+              <li>
+                <strong>Faster on/off:</strong> many peptides are broken down quickly by
+                enzymes, so their effects can be more controllable in time.
+              </li>
+              <li>
+                <strong>Delivery challenges:</strong> the same fragility means many
+                peptides can’t survive the gut and must be injected or specially formulated.
+              </li>
+            </ul>
+            <div class="callout">
+              <strong>Analogy:</strong> A peptide is like a short‑lived push notification,
+              not a permanent software update. It nudges the system, then disappears.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="types-table">
+        <div class="eyebrow">3 · Landscape</div>
+        <h2>Common peptide categories, uses, and safety patterns</h2>
+        <p>
+          Not all peptides live in the same evidence universe. Some are
+          <strong>fully approved drugs</strong> with large clinical trials. Others are
+          <strong>research chemicals</strong> sold online with minimal human data.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Peptide / Category</th>
+              <th>Main intended use</th>
+              <th>Evidence strength (human data)</th>
+              <th>Key safety notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>GLP‑1 receptor agonists</strong> (e.g., semaglutide, liraglutide)</td>
+              <td>Type 2 diabetes, obesity, cardiometabolic risk reduction</td>
+              <td>
+                High: multiple large randomized trials, long‑term follow‑up, regulatory
+                approvals in many countries.
+              </td>
+              <td>
+                GI side effects (nausea, vomiting), risk of gallbladder issues, rare
+                pancreatitis; ongoing monitoring for long‑term effects.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Insulin & related metabolic peptides</strong></td>
+              <td>Blood glucose control in diabetes</td>
+              <td>
+                Very high: decades of use, extensive safety and efficacy data, standard of care.
+              </td>
+              <td>
+                Hypoglycemia risk, weight gain, injection‑site issues; well‑characterized
+                risk–benefit profile.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>BPC‑157</strong> (Body Protection Compound‑157)</td>
+              <td>Marketed informally for tissue repair, gut healing, musculoskeletal injuries</td>
+              <td>
+                Low–moderate: mostly animal and preclinical data; limited, small‑scale or
+                uncontrolled human data.
+              </td>
+              <td>
+                Not approved as a drug in most jurisdictions; quality and dosing vary;
+                theoretical concerns about pro‑angiogenic effects and cancer risk; long‑term
+                safety unknown.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>TB‑500 / Thymosin‑β4 analogs</strong></td>
+              <td>Marketed for wound healing, performance recovery</td>
+              <td>
+                Low–moderate: preclinical and early‑phase data; limited robust human trials
+                for wellness indications.
+              </td>
+              <td>
+                Similar regulatory and quality issues as BPC‑157; theoretical concerns about
+                influencing tumor biology; long‑term safety not established.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Cosmetic peptides</strong> (e.g., “matrixyl”‑type, copper peptides)</td>
+              <td>Skin appearance, fine lines, pigmentation, barrier support</td>
+              <td>
+                Low–moderate: some small human studies and plausible mechanisms; many claims
+                exceed available data.
+              </td>
+              <td>
+                Generally low systemic risk when used topically; main issues are irritation,
+                allergy, and marketing overreach rather than serious toxicity.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Growth hormone–related peptides</strong> (e.g., GHRP analogs)</td>
+              <td>Muscle gain, fat loss, “anti‑aging” (often in bodybuilding circles)</td>
+              <td>
+                Low–moderate: some data in specific medical contexts; wellness/anti‑aging
+                use is poorly studied.
+              </td>
+              <td>
+                Potential for edema, joint pain, insulin resistance, and theoretical cancer
+                promotion; often used without medical supervision.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="tag-row">
+          <span class="tag ok">High‑evidence: GLP‑1, insulin</span>
+          <span class="tag warn">Emerging: BPC‑157, TB‑500, cosmetic peptides</span>
+          <span class="tag danger">High‑risk if unsupervised: GH‑related peptides</span>
+        </div>
+      </section>
+
+      <section id="efficacy">
+        <div class="eyebrow">4 · What actually works?</div>
+        <h2>Efficacy: where peptides shine vs. where the jury is still out</h2>
+
+        <h3>Areas with strong, mainstream evidence</h3>
+        <ul>
+          <li>
+            <strong>Type 2 diabetes and obesity (GLP‑1 medicines):</strong>
+            GLP‑1 receptor agonists like semaglutide and liraglutide have robust evidence
+            for lowering blood sugar, reducing body weight, and improving some
+            cardiometabolic outcomes in high‑risk patients.
+          </li>
+          <li>
+            <strong>Classic peptide hormones (insulin, etc.):</strong>
+            These are foundational therapies with decades of outcome data and clear
+            risk–benefit profiles.
+          </li>
+        </ul>
+        <div class="callout ok">
+          <strong>Takeaway:</strong> In the metabolic space, peptide drugs are not fringe;
+          they are front‑line, guideline‑supported therapies with strong clinical trial
+          backing.
+        </div>
+
+        <h3>Areas with promising but preliminary evidence</h3>
+        <ul>
+          <li>
+            <strong>BPC‑157 and TB‑500:</strong> Animal and lab studies suggest benefits
+            for tissue repair, angiogenesis (new blood vessel growth), and inflammation
+            modulation. Human data are limited, often small, and not yet definitive for
+            broad wellness use.
+          </li>
+          <li>
+            <strong>Cosmetic peptides:</strong> Some small studies and mechanistic data
+            support modest improvements in skin texture, hydration, and fine lines, but
+            effects are generally subtle and highly formulation‑dependent.
+          </li>
+        </ul>
+        <div class="callout warn">
+          <strong>Analogy:</strong> Think of these as early‑stage startups with a cool
+          prototype and good lab demos, but not yet a long track record in real‑world
+          customers. Interesting, but not something you’d bet your retirement on.
+        </div>
+
+        <h3>Areas where claims outpace evidence</h3>
+        <ul>
+          <li>
+            <strong>“Anti‑aging” and longevity peptides:</strong> Many protocols are based
+            on extrapolating from cell or animal data. Human trials for lifespan or
+            broad “rejuvenation” outcomes are sparse.
+          </li>
+          <li>
+            <strong>DIY performance stacks:</strong> Stacks promoted in bodybuilding or
+            biohacking communities often combine multiple peptides at untested doses and
+            schedules, with little or no formal safety data.
+          </li>
+        </ul>
+        <p class="muted">
+          When you see sweeping claims (“reverse aging,” “heal anything,” “no side
+          effects”), that’s a strong signal to slow down and look for actual human trial
+          data, not just mechanisms and anecdotes.
+        </p>
+      </section>
+
+      <section id="safety">
+        <div class="eyebrow">5 · Risk patterns</div>
+        <h2>Safety: what can go wrong, and where risk clusters</h2>
+
+        <h3>Regulated vs. gray‑market peptides</h3>
+        <div class="grid-2">
+          <div>
+            <h3>Regulated medical peptides</h3>
+            <ul>
+              <li>
+                <strong>Examples:</strong> GLP‑1 agonists, insulin, some parenteral
+                hormone analogs.
+              </li>
+              <li>
+                <strong>Characteristics:</strong> standardized manufacturing, known
+                dosing, clear indications, and ongoing pharmacovigilance.
+              </li>
+              <li>
+                <strong>Risks:</strong> real but well‑characterized; typically managed
+                with lab monitoring and clinical follow‑up.
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Gray‑market / research peptides</h3>
+            <ul>
+              <li>
+                <strong>Examples:</strong> many BPC‑157, TB‑500, GHRP products sold online
+                as “research only.”
+              </li>
+              <li>
+                <strong>Characteristics:</strong> variable purity, uncertain dosing,
+                limited or no regulatory oversight.
+              </li>
+              <li>
+                <strong>Risks:</strong> contamination, mislabeling, under‑ or overdosing,
+                and unknown long‑term effects.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Mechanism‑linked safety concerns</h3>
+        <ul>
+          <li>
+            <strong>Pro‑angiogenic effects:</strong> Peptides that promote new blood
+            vessel growth (e.g., some tissue‑repair peptides) may theoretically influence
+            tumor growth or metastasis, especially in people with undiagnosed cancers.
+          </li>
+          <li>
+            <strong>Metabolic shifts:</strong> Growth‑hormone–related peptides can affect
+            insulin sensitivity, fluid balance, and joint health.
+          </li>
+          <li>
+            <strong>Immune and inflammatory modulation:</strong> Tweaking immune signaling
+            can be helpful—or can backfire in people with autoimmune or inflammatory
+            conditions.
+          </li>
+        </ul>
+
+        <div class="callout danger">
+          <strong>Key point:</strong> “It’s just a peptide” does not mean “it’s
+          automatically safe.” These are powerful signaling molecules. The more they
+          meaningfully change physiology, the more you should treat them like real drugs,
+          not supplements.
+        </div>
+
+        <h3>Practical red flags</h3>
+        <ul>
+          <li>Products labeled “not for human use” but marketed in influencer content.</li>
+          <li>Vials with no batch number, no expiry date, or no manufacturer details.</li>
+          <li>Protocols that combine multiple injectable peptides with no lab monitoring.</li>
+          <li>Vendors making disease‑treatment claims without regulatory approval.</li>
+        </ul>
+      </section>
+
+      <section id="decision">
+        <div class="eyebrow">6 · Personal relevance</div>
+        <h2>Should you explore peptide‑related topics for your own health?</h2>
+        <p>
+          Here’s a simple way to think about it: match your situation to the “lane” of
+          peptide use, then decide how deep you want to go.
+        </p>
+
+        <div class="grid-2">
+          <div>
+            <h3>Lane 1: Established medical indications</h3>
+            <div class="question-card">
+              <strong>Examples:</strong> Type 2 diabetes, obesity with complications,
+              certain endocrine disorders.
+              <ul>
+                <li>
+                  In these settings, peptide drugs (GLP‑1 agonists, insulin, etc.) are
+                  mainstream tools with strong evidence.
+                </li>
+                <li>
+                  The main question is not “Are peptides legit?” but “Is this specific
+                  drug appropriate for me, given my history and other options?”
+                </li>
+              </ul>
+            </div>
+            <div class="score-row">
+              <div class="score-pill ok">
+                <span>Evidence:</span> High
+              </div>
+              <div class="score-pill warn">
+                <span>Risk:</span> Manageable with medical supervision
+              </div>
+              <div class="score-pill ok">
+                <span>Worth exploring?</span> Yes, via your clinician
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Lane 2: Wellness, recovery, and “optimization”</h3>
+            <div class="question-card">
+              <strong>Examples:</strong> injury recovery, joint pain, “anti‑aging,”
+              cosmetic goals, performance enhancement.
+              <ul>
+                <li>
+                  Evidence ranges from promising to speculative, depending on the peptide
+                  and indication.
+                </li>
+                <li>
+                  Many products live in regulatory gray zones with variable quality and
+                  limited long‑term safety data.
+                </li>
+              </ul>
+            </div>
+            <div class="score-row">
+              <div class="score-pill warn">
+                <span>Evidence:</span> Mixed / early‑stage
+              </div>
+              <div class="score-pill danger">
+                <span>Risk:</span> Highly variable; quality & oversight are key
+              </div>
+              <div class="score-pill warn">
+                <span>Worth exploring?</span> Maybe, but only with eyes wide open
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Questions to ask yourself before going further</h3>
+        <ul>
+          <li>
+            <strong>What problem am I actually trying to solve?</strong> Weight, pain,
+            glucose, skin, performance, “longevity,” or just curiosity?
+          </li>
+          <li>
+            <strong>Is there a peptide with strong evidence for that specific problem?</strong>
+            If not, you may be stepping into experiment territory.
+          </li>
+          <li>
+            <strong>Can this be done within a regulated medical context?</strong>
+            For example, GLP‑1 therapy for obesity vs. unregulated “fat loss” peptide stacks.
+          </li>
+          <li>
+            <strong>What’s my risk budget?</strong> How comfortable am I with unknown
+            long‑term effects in exchange for potential short‑term gains?
+          </li>
+          <li>
+            <strong>Do I have a clinician willing to engage?</strong> Even if they’re
+            cautious, a skeptical ally is safer than going solo.
+          </li>
+        </ul>
+
+        <div class="callout ok">
+          <strong>Practical bottom line:</strong>
+          <ul>
+            <li>
+              If you have a condition where peptide drugs are standard of care (e.g.,
+              diabetes, obesity), it’s absolutely worth discussing them with your clinician.
+            </li>
+            <li>
+              For gray‑market or “optimization” peptides, treat them as experimental:
+              scrutinize evidence, prioritize quality and supervision, and be honest about
+              your risk tolerance.
+            </li>
+            <li>
+              For general wellness, sleep, nutrition, and movement still deliver more
+              predictable benefit per unit risk than any peptide stack on the market.
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        This page is an educational overview, not medical advice. For decisions about
+        peptide therapies, discuss options, risks, and alternatives with a qualified
+        healthcare professional.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Smooth scroll for in‑page navigation
+    document.querySelectorAll('nav a[href^="#"]').forEach(function (link) {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        var target = document.querySelector(this.getAttribute("href"));
+        if (!target) return;
+        window.scrollTo({
+          top: target.offsetTop - 16,
+          behavior: "smooth",
+        });
+      });
+    });
+  </script>
+</body>
+</html>
