@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applied AI Labs | Newcomers Club Prompt Library</title>
+    <style>
+        :root {
+            --primary: #2c5f58; /* Park City Sage */
+            --secondary: #e8f1f2; /* Light Mist */
+            --accent: #d9835a; /* Warm Sunset */
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --white: #ffffff;
+            --body-bg: #f3f4f6;
+            --card-border: #f3f4f6;
+            --prompt-border: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 12px;
+            --font-header: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --primary: #4a8c83;
+            --secondary: #2d3748;
+            --text-dark: #f3f4f6;
+            --text-light: #9ca3af;
+            --white: #1a202c;
+            --body-bg: #111827;
+            --card-border: #2d3748;
+            --prompt-border: #4a5568;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--body-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        [data-theme="dark"] .sun-icon { display: block; }
+        [data-theme="dark"] .moon-icon { display: none; }
+        .sun-icon { display: none; }
+        .moon-icon { display: block; }
+
+        /* Header Section */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a3c39 100%);
+            color: var(--white);
+            padding: 2.5rem 1rem 4.5rem 1rem;
+            text-align: center;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .brand-tag {
+            background-color: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        /* Navigation & Search */
+        .controls-container {
+            max-width: 1000px;
+            margin: -2.5rem auto 2rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            border-radius: var(--radius);
+            border: none;
+            box-shadow: var(--shadow);
+            font-size: 1.1rem;
+            background: var(--white);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: 3px solid var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .filter-btn {
+            background: var(--white);
+            border: 1px solid var(--prompt-border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        /* Grid Layout */
+        .prompt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Prompt Cards */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-top: 5px solid var(--primary);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .card-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .prompt-box {
+            background-color: var(--secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--prompt-border);
+            white-space: pre-wrap; 
+            overflow-wrap: break-word;
+            position: relative;
+            height: 150px;
+            overflow-y: auto;
+        }
+
+        .card-footer {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background-color: var(--text-dark);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary);
+        }
+
+        .copy-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Toast Notification */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--primary);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .prompt-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+            <svg class="moon-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg class="sun-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+        </button>
+        <span class="brand-tag">Applied AI Labs Workshop</span>
+        <h1>AI Prompt Library</h1>
+        <p>Interactive prompts tailored for the <strong>Newcomers Club of Greater Park City.</strong></p>
+    </header>
+
+    <div class="controls-container">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search activities (e.g., 'Skiing', 'Book Club', 'Bunko')...">
+        <div class="filter-buttons" id="filterContainer">
+            <button class="filter-btn active" data-filter="all">All Activities</button>
+            <button class="filter-btn" data-filter="games">Games & Strategy</button>
+            <button class="filter-btn" data-filter="outdoor">Outdoor & Adventure</button>
+            <button class="filter-btn" data-filter="creative">Creative & Social</button>
+            <button class="filter-btn" data-filter="dining">Foodies & Dining</button>
+        </div>
+    </div>
+
+    <main class="prompt-grid" id="promptGrid">
+        <!-- Cards will be injected here via JS -->
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Applied AI Labs | Prepared for Newcomers Club of Greater Park City</p>
+    </footer>
+
+    <div id="toast">Prompt copied to clipboard!</div>
+
+    <script>
+        // Theme Management
+        const themeToggle = document.getElementById('themeToggle');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            if (theme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Data Source derived from the provided text
+        const promptsData = [
+            // --- GAMES & STRATEGY ---
+            {
+                category: "games",
+                title: "Mah Jongg Beginner Lesson Plan",
+                prompt: "You are a senior member of the Newcomers Club mentoring a beginner. Create a concise, encouraging step-by-step guide to the basics of American Mah Jongg. Explain the goal of the game, how to form a hand, and basic terminology (like Chows and Pongs) for someone playing their first time at the Park City Library."
+            },
+            {
+                category: "games",
+                title: "Duplicate Bridge Invitation Email",
+                prompt: "Write a friendly email inviting intermediate Bridge players to the weekly Duplicate Bridge group meeting. Highlight that we use bidding boxes and duplicate scoring. Mention the location will be emailed upon signup. The tone should be welcoming but emphasize the fun of strategic play."
+            },
+            {
+                category: "games",
+                title: "Bunko Snack Sign-Up Rotation",
+                prompt: "I am hosting the next Bunko night at Jordanelle Clubhouse on the 2nd Monday of the month. Create a sign-up sheet template for 12 attendees. We need to coordinate who brings the salty snacks, sweet snacks, and ice. Remind everyone it is a potluck style."
+            },
+            {
+                category: "games",
+                title: "Canasta Rules for One-Trial Guests",
+                prompt: "We are inviting a potential new member for a 'one free trial' at our Canasta group. Summarize the rules of Canasta specifically for a new player so they can prepare. Focus on scoring melds and the object of the game. Keep it under 200 words."
+            },
+
+            // --- OUTDOOR & ADVENTURE ---
+            {
+                category: "outdoor",
+                title: "Bark Buddies Location Announcement",
+                prompt: "Act as the 'Bark Buddies' coordinator. Write a short social media post or newsletter blurb announcing this week's dog meetup time (Friday 10 AM). The location is secret until the morning of! Ask owners to bring poop bags and keep their dogs on leash until in the park."
+            },
+            {
+                category: "outdoor",
+                title: "Deer Valley Ski Day Itinerary",
+                prompt: "Plan a day-long itinerary for the Club's Deer Valley Ski Group. We meet at the Carpenter lift. Create a schedule that accommodates strong skiers (double blues/blacks) while ensuring the leader sets aside time in the afternoon to ski blues with the rest of the group. Include lunch suggestions at Silver Lake Lodge."
+            },
+            {
+                category: "outdoor",
+                title: "High Desert Garden Speaker Invitation",
+                prompt: "Write an invitation letter to a local horticulturist to speak at our Garden Group meeting. Focus on the unique challenges of gardening in Park City's high desert environment (altitude, frost, soil). Ask if they can discuss water-wise gardening techniques for the upcoming summer season."
+            },
+            {
+                category: "outdoor",
+                title: "Snowshoe Group Gear Checklist",
+                prompt: "Create a printable checklist for the Newcomers Snowshoe Group. List essential gear members should bring (boots, layers, poles, snacks) and safety tips for winter hiking in the Wasatch backcountry."
+            },
+
+            // --- CREATIVE & SOCIAL ---
+            {
+                category: "creative",
+                title: "Book Club: Harvest Brunch Menu",
+                prompt: "We are hosting the November 'Harvest Brunch' book exchange. Suggest a menu for 10 people that features fall flavors (pumpkin, apple, cinnamon). Include one savory item, one sweet bread/pastry, and a signature beverage. The vibe should be cozy and intellectual."
+            },
+            {
+                category: "creative",
+                title: "CATS Group Project Inspiration",
+                prompt: "I am a member of the 'CATS' (Creating Art Together Socially) group. Suggest 5 simple art projects I can bring to the next meeting that are easy to start and finish in 2 hours. Include a brief supply list for each (e.g., watercolor, journaling, calligraphy)."
+            },
+            {
+                category: "creative",
+                title: "JULIETS Host Thank You Note",
+                prompt: "Draft a warm thank-you note from the group organizer to the host of last night's JULIETS evening. Mention how much everyone enjoyed the appetizers (wine and cheese) and the great conversation. Politely remind them that we'll rotate hosting duties for the next month."
+            },
+            {
+                category: "creative",
+                title: "Gone Wild: Mystery Activity Teaser",
+                prompt: "Write a cryptic but exciting announcement for the 'Gone Wild' group's next outing. It's an overnight activity. Do not reveal exactly what it is, just the date and the required fitness level. Make it sound adventurous and 'unusual'."
+            },
+
+            // --- DINING ---
+            {
+                category: "dining",
+                title: "Cooking & Dining Menu Rotation",
+                prompt: "Create a menu rotation schedule for the Cooking & Dining Adventures group (8 people). Assign the Main Course, Appetizer, Salad, and Dessert to specific members. Suggest a theme (e.g., 'Mediterranean Night') and suggest a wine pairing for the Main Course."
+            },
+            {
+                category: "dining",
+                title: "Denim Dining Potluck Coordination",
+                prompt: "I am hosting a 'Denim Dining' night with an 'International Street Food' theme. Draft a message to the 7 other participants asking them what dish they would like to bring so we don't end up with 3 types of tacos. Keep the tone casual and fun."
+            },
+            {
+                category: "dining",
+                title: "Supper Club Fine Dining Reservation",
+                prompt: "Draft a script for calling a high-end Park City restaurant to book a table for 12 people for the Supper Club. We need to ask about private dining options, dietary restrictions (2 vegetarians), and corkage fees."
+            },
+            {
+                category: "dining",
+                title: "Wine Tasting Flight Notes",
+                prompt: "Generate a template for a 'Wine Tasting Scorecard' for our Wine Tasting group. Include fields for Region, Grape Varietal, Notes on Nose/Palate, and a Rating. Add a section for 'Best Pairing Food'."
+            }
+        ];
+
+        // --- Application Logic ---
+
+        const grid = document.getElementById('promptGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const toast = document.getElementById('toast');
+
+        // Function to create Card HTML
+        function createCard(promptObj) {
+            const card = document.createElement('div');
+            card.className = `card fade-in`;
+            
+            // Icon mapping based on category
+            let icon = "📝";
+            if(promptObj.category === 'games') icon = "🎲";
+            if(promptObj.category === 'outdoor') icon = "⛰️";
+            if(promptObj.category === 'creative') icon = "🎨";
+            if(promptObj.category === 'dining') icon = "🍽️";
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-tag">${promptObj.category}</span>
+                    <h3 class="card-title">${icon} ${promptObj.title}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="prompt-box" id="prompt-${Math.random().toString(36).substr(2, 9)}">${promptObj.prompt}</div>
+                </div>
+                <div class="card-footer">
+                    <span style="font-size:0.8rem; color:#9ca3af;">Click copy to use in your AI chat</span>
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                        <svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        // Rendering Function
+        function renderPrompts(filter = 'all', searchTerm = '') {
+            grid.innerHTML = '';
+            
+            const filtered = promptsData.filter(item => {
+                const matchesCategory = filter === 'all' || item.category === filter;
+                const matchesSearch = (item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                       item.prompt.toLowerCase().includes(searchTerm.toLowerCase()));
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-light);">No prompts found matching your search.</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                grid.appendChild(createCard(item));
+            });
+        }
+
+        // Copy Functionality
+        window.copyToClipboard = function(btn) {
+            // Find the prompt text in the sibling container
+            const cardBody = btn.closest('.card').querySelector('.prompt-box');
+            const text = cardBody.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+                // Visual feedback on button
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `<svg class="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied!`;
+                btn.style.backgroundColor = 'var(--primary)';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = ''; 
+                }, 2000);
+            });
+        }
+
+        function showToast() {
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        // Event Listeners
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update UI
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Filter Data
+                const filter = btn.getAttribute('data-filter');
+                renderPrompts(filter, searchInput.value);
+            });
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const activeBtn = document.querySelector('.filter-btn.active');
+            const filter = activeBtn.getAttribute('data-filter');
+            renderPrompts(filter, e.target.value);
+        });
+
+        // Initial Render
+        renderPrompts();
+
+    </script>
+</body>
+</html>

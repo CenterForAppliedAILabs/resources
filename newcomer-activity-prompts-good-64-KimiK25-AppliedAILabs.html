@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Library | Newcomers Club of Greater Park City</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        mountain: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        sunset: {
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                        }
+                    }
+                }
+            }
+        }
+
+        // Dark mode initialization
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+        }
+        .dark body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .prompt-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .prompt-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .dark .prompt-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+        .copy-btn {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .prompt-row:hover .copy-btn {
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .copy-btn {
+                opacity: 1;
+            }
+        }
+        .toast {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .category-pill.active {
+            background: linear-gradient(135deg, #0284c7 0%, #0c4a6e 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);
+        }
+        .dark .category-pill.active {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #0284c7 0%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-200 min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 sticky top-0 z-40 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-mountain-500 to-sunset-500 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                        <i class="fa-solid fa-mountain-sun"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">AI Prompt Sample Library</h1>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Newcomers Club of Greater Park City <span class="text-sunset-500">by </span> Applied AI Labs</p>
+                    </div>
+                </div>
+                
+                <!-- Search & Theme Toggle -->
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <div class="relative flex-1 md:w-80 group">
+                        <input type="text" id="searchInput" placeholder="Search activities..." 
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-mountain-500 focus:border-transparent transition-all shadow-sm group-hover:shadow-md dark:text-white">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-gray-400 dark:text-gray-500"></i>
+                        <div id="searchStats" class="absolute right-3 top-3 text-xs text-gray-400 hidden"></div>
+                    </div>
+                    <button id="themeToggle" class="p-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all shadow-sm">
+                        <i class="fa-solid fa-moon dark:hidden"></i>
+                        <i class="fa-solid fa-sun hidden dark:block"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="hidden lg:block w-64 flex-shrink-0">
+            <div class="sticky top-24 space-y-6">
+                <div>
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Categories</h3>
+                    <nav class="space-y-2" id="categoryNav">
+                        <button onclick="filterCategory('all')" class="category-pill active w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between group">
+                            <span><i class="fa-solid fa-layer-group w-5 mr-2"></i> All Activities</span>
+                            <span class="bg-gray-100 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700 px-2 py-0.5 rounded-full text-xs transition-colors" id="count-all">0</span>
+                        </button>
+                        <button onclick="filterCategory('games')" class="category-pill w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between group">
+                            <span><i class="fa-solid fa-dice w-5 mr-2"></i> Games & Strategy</span>
+                            <span class="bg-gray-100 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700 px-2 py-0.5 rounded-full text-xs transition-colors" id="count-games">0</span>
+                        </button>
+                        <button onclick="filterCategory('outdoor')" class="category-pill w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between group">
+                            <span><i class="fa-solid fa-person-hiking w-5 mr-2"></i> Outdoor & Adventure</span>
+                            <span class="bg-gray-100 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700 px-2 py-0.5 rounded-full text-xs transition-colors" id="count-outdoor">0</span>
+                        </button>
+                        <button onclick="filterCategory('creative')" class="category-pill w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between group">
+                            <span><i class="fa-solid fa-palette w-5 mr-2"></i> Creative & Social</span>
+                            <span class="bg-gray-100 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700 px-2 py-0.5 rounded-full text-xs transition-colors" id="count-creative">0</span>
+                        </button>
+                        <button onclick="filterCategory('dining')" class="category-pill w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between group">
+                            <span><i class="fa-solid fa-utensils w-5 mr-2"></i> Dining & Food</span>
+                            <span class="bg-gray-100 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700 px-2 py-0.5 rounded-full text-xs transition-colors" id="count-dining">0</span>
+                        </button>
+                    </nav>
+                </div>
+                
+                <div class="bg-gradient-to-br from-mountain-50 to-sunset-50 dark:from-mountain-900/20 dark:to-sunset-900/20 rounded-xl p-4 border border-mountain-100 dark:border-mountain-800">
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-lightbulb text-sunset-500 mt-1"></i>
+                        <div class="text-sm">
+                            <p class="font-medium text-mountain-900 dark:text-mountain-200">Pro Tip</p>
+                            <p class="text-mountain-700 dark:text-mountain-400 mt-1">Click the copy button to grab any prompt for your AI workshop exercises.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mobile Category Selector -->
+        <div class="lg:hidden mb-4 overflow-x-auto pb-2 flex gap-2 sticky top-20 z-30 bg-gray-50/95 dark:bg-slate-900/95 backdrop-blur p-2 rounded-lg transition-colors">
+            <button onclick="filterCategory('all')" class="category-pill active whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm transition-colors">All</button>
+            <button onclick="filterCategory('games')" class="category-pill whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm transition-colors">Games</button>
+            <button onclick="filterCategory('outdoor')" class="category-pill whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm transition-colors">Outdoor</button>
+            <button onclick="filterCategory('creative')" class="category-pill whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm transition-colors">Creative</button>
+            <button onclick="filterCategory('dining')" class="category-pill whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm transition-colors">Dining</button>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            <div id="promptsContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-6 pb-12">
+                <!-- Content injected via JS -->
+            </div>
+            
+            <div id="emptyState" class="hidden text-center py-20">
+                <div class="text-6xl mb-4">🔍</div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No prompts found</h3>
+                <p class="text-gray-500 dark:text-gray-400">Try adjusting your search or category filter</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // Prompt Library Data
+        const promptData = [
+            // Games & Strategy
+            {
+                category: 'games',
+                activity: 'American Mah Jongg',
+                icon: 'fa-dragon',
+                color: 'text-red-600',
+                bgColor: 'bg-red-50',
+                description: 'Classic tile-based game of skill and luck at Park City Library',
+                prompts: [
+                    { text: "Explain the basic rules of American Mah Jongg as if I'm a complete beginner who has never played tile games. Include how to read the 2024 National Mah Jongg League card and basic etiquette for Tuesday morning library games.", useCase: "Beginner Onboarding" },
+                    { text: "Create a friendly reminder email for our Tuesday 9:30am Mah Jongg group at Park City Library. Include parking tips, what to bring, and a warm welcome for newcomers joining the beginner tables.", useCase: "Meeting Coordination" },
+                    { text: "Generate 3 practice hand scoring scenarios for Mah Jongg beginners focusing on simple pairs, pungs, and common combinations found on the current year's card.", useCase: "Skill Building" },
+                    { text: "Suggest icebreaker questions for new members joining Mah Jongg to help them feel welcomed while waiting for tiles to be dealt.", useCase: "Social Connection" }
+                ]
+            },
+            {
+                category: 'games',
+                activity: 'Bridge Clubs',
+                icon: 'fa-clone',
+                color: 'text-blue-600',
+                bgColor: 'bg-blue-50',
+                description: 'Duplicate and Fun Bridge for intermediate to advanced players',
+                prompts: [
+                    { text: "Explain the difference between Duplicate Bridge and Fun Bridge for a newcomer deciding which Newcomers Club group to join. Include skill level recommendations and what 'bidding boxes and boards' means.", useCase: "New Member Guidance" },
+                    { text: "Create a weekly signup email template for Duplicate Bridge that reminds players about location announcements, scoring sheets, and maintains a welcoming but competitive tone.", useCase: "Weekly Logistics" },
+                    { text: "Analyze this bridge hand: Spades: AKJ32, Hearts: Q54, Diamonds: 76, Clubs: Q83. What should I bid in a duplicate format and why? Explain the strategy for intermediate players.", useCase: "Strategy Help" },
+                    { text: "Draft a bridge hand review guide that helps partners discuss their play constructively after duplicate rounds without causing offense.", useCase: "Sportsmanship" }
+                ]
+            },
+            {
+                category: 'games',
+                activity: 'Bunko',
+                icon: 'fa-dice',
+                color: 'text-pink-600',
+                bgColor: 'bg-pink-50',
+                description: 'Fast-paced dice game requiring no skill—pure luck and social fun',
+                prompts: [
+                    { text: "Write a fun, enthusiastic invitation for Bunko night at Retreat at Jordanelle Clubhouse. Emphasize that absolutely no experience is needed, explain the basics of the dice game, and mention the snack-sharing tradition.", useCase: "Event Promotion" },
+                    { text: "Create a simple Bunko score sheet template for 12 players that accommodates rotating partners throughout the 2nd Monday evening event.", useCase: "Game Materials" },
+                    { text: "Suggest 5 easy appetizer ideas that transport well to the Retreat at Jordanelle and are easy to eat while rolling dice and socializing.", useCase: "Host Planning" },
+                    { text: "Generate conversation starters for Bunko partners to use during the game that work well for introverts who find networking challenging.", useCase: "Icebreakers" }
+                ]
+            },
+            {
+                category: 'games',
+                activity: 'Canasta',
+                icon: 'fa-cards-blank',
+                color: 'text-green-600',
+                bgColor: 'bg-green-50',
+                description: 'Classic card game forming melds at Park City Library',
+                prompts: [
+                    { text: "Explain Canasta rules focusing on melding requirements, the 'frozen' deck, and scoring compared to Rummy. Keep it to one page for new players at the Park City Library.", useCase: "Rule Guide" },
+                    { text: "Draft a welcome message explaining the 'one free trial' policy for potential Newcomers Club members interested in trying Canasta on the 1st or 3rd Monday.", useCase: "Membership Conversion" },
+                    { text: "Create a tournament bracket format for 12 Canasta players that rotates partnerships fairly over a 1-4pm session.", useCase: "Tournament Organization" },
+                    { text: "Suggest strategies for forming canastas efficiently when playing with partners who've just met each other.", useCase: "Partnership Play" }
+                ]
+            },
+
+            // Outdoor & Adventure
+            {
+                category: 'outdoor',
+                activity: 'Bark Buddies',
+                icon: 'fa-dog',
+                color: 'text-amber-600',
+                bgColor: 'bg-amber-50',
+                description: 'Weekly Friday socializing for dogs and their owners',
+                prompts: [
+                    { text: "Create dog park etiquette guidelines for Bark Buddies Friday gatherings that ensure safety and fun for all breeds and temperaments.", useCase: "Safety Guidelines" },
+                    { text: "Recommend 3 dog-friendly trails near Park City suitable for Friday 10am walks, ranging from easy to moderate, with parking information.", useCase: "Route Planning" },
+                    { text: "Draft a winter safety checklist for Bark Buddies including paw protection, cold weather limits for different coat types, and emergency contacts.", useCase: "Seasonal Safety" },
+                    { text: "Generate conversation starters for dog owners that go beyond 'What breed is that?' to foster deeper connections among Newcomers Club members.", useCase: "Social Engagement" }
+                ]
+            },
+            {
+                category: 'outdoor',
+                activity: 'Downhill Skiing Groups',
+                icon: 'fa-person-skiing',
+                color: 'text-sky-600',
+                bgColor: 'bg-sky-50',
+                description: 'Wednesday Deer Valley & PCMR groups for all levels',
+                prompts: [
+                    { text: "Compare the Deer Valley (Wednesdays, Carpenter lift, blue/black focus) and PCMR groups to help me choose which fits my intermediate skiing ability better.", useCase: "Group Selection" },
+                    { text: "Draft a weekly conditions update email template for ski group leaders that includes snow reports, meeting point confirmations at Carpenter lift, and après-ski plans.", useCase: "Weekly Updates" },
+                    { text: "Create a ski ability self-assessment guide to help Newcomers Club members honestly evaluate if they're ready for blue/double blue runs or should stick to afternoon green runs.", useCase: "Skill Assessment" },
+                    { text: "Suggest après-ski venues near Deer Valley that accommodate groups and offer good conversation environments for Wednesday afternoon socializing.", useCase: "Social Planning" }
+                ]
+            },
+            {
+                category: 'outdoor',
+                activity: 'Garden Group',
+                icon: 'fa-leaf',
+                color: 'text-emerald-600',
+                bgColor: 'bg-emerald-50',
+                description: 'High-altitude gardening education and monthly gatherings',
+                prompts: [
+                    { text: "Explain the unique challenges of high-altitude gardening in Park City's mountain environment (Zone 4) for newcomers from sea level. Include frost dates and soil considerations.", useCase: "Education" },
+                    { text: "Suggest native plants and hardy perennials that thrive in Park City's high desert climate for a beginner's garden that blooms throughout the short growing season.", useCase: "Plant Recommendations" },
+                    { text: "Create discussion questions for a Garden Group field trip to a member's garden that encourage sharing of failures as well as successes.", useCase: "Meeting Facilitation" },
+                    { text: "Draft a monthly garden maintenance calendar for Park City with reminders for when to start seeds indoors, hardening off, and fall preparation.", useCase: "Calendar Planning" }
+                ]
+            },
+            {
+                category: 'outdoor',
+                activity: 'Trail Activities',
+                icon: 'fa-person-hiking',
+                color: 'text-stone-600',
+                bgColor: 'bg-stone-50',
+                description: 'Hiking, Snowshoeing, and Walking groups',
+                prompts: [
+                    { text: "Recommend appropriate gear for winter snowshoeing in the Wasatch Back including traction devices, layers, and safety equipment for beginners.", useCase: "Gear Guide" },
+                    { text: "Create a hiking route plan for a moderate 3-mile group walk that starts/ends near Kimball Junction with minimal elevation gain but scenic views.", useCase: "Route Planning" },
+                    { text: "Draft a hiking group safety protocol including headcount procedures, weather cancellation criteria, and wildlife encounter guidelines.", useCase: "Risk Management" },
+                    { text: "Generate a 'trail games' list for keeping walking groups engaged during longer trests without being disruptive to other hikers.", useCase: "Group Engagement" }
+                ]
+            },
+
+            // Creative & Social
+            {
+                category: 'creative',
+                activity: 'Book Club',
+                icon: 'fa-book-open',
+                color: 'text-indigo-600',
+                bgColor: 'bg-indigo-50',
+                description: 'Monthly discussions at Kimball Junction Library or Zoom',
+                prompts: [
+                    { text: "Generate thought-provoking discussion questions for a contemporary novel that work equally well for in-person attendees at Summit County Library and Zoom participants.", useCase: "Discussion Prep" },
+                    { text: "Plan a literary-themed menu for the November Harvest Brunch book exchange, including dishes inspired by classic novels and easy transport options.", useCase: "Event Planning" },
+                    { text: "Create a nomination and voting process description for the annual book selection that ensures diverse genres, authors, and lengths for the upcoming year.", useCase: "Democratic Selection" },
+                    { text: "Draft hybrid meeting guidelines for Book Club that ensure remote members on Zoom feel as included as those physically present at Kimball Junction.", useCase: "Inclusive Facilitation" }
+                ]
+            },
+            {
+                category: 'creative',
+                activity: 'CATS (Creating Art Together)',
+                icon: 'fa-paintbrush',
+                color: 'text-purple-600',
+                bgColor: 'bg-purple-50',
+                description: 'Casual 2nd & 4th Friday art gatherings',
+                prompts: [
+                    { text: "Suggest collaborative art projects that work well for CATS where members bring different mediums (jewelry, watercolor, ceramics) to the same 2nd/4th Friday gathering.", useCase: "Project Ideas" },
+                    { text: "Create a supply sharing coordination system so CATS members can sign up to bring shared tools like cutting mats, extra brushes, or kiln space.", useCase: "Resource Sharing" },
+                    { text: "Recommend beginner-friendly techniques in watercolor, fabric design, and calligraphy that require minimal supplies for newcomers.", useCase: "Beginner Guidance" },
+                    { text: "Draft a 'no pressure' invitation for CATS emphasizing that projects can be unfinished, experimental, or simply social.", useCase: "Inclusive Messaging" }
+                ]
+            },
+            {
+                category: 'creative',
+                activity: 'JULIETS',
+                icon: 'fa-wine-glass',
+                color: 'text-rose-600',
+                bgColor: 'bg-rose-50',
+                description: 'Just Us Ladies Imbibing, Eating, Talking, Socializing',
+                prompts: [
+                    { text: "Suggest easy appetizer recipes that pair well with various wines, are easy to eat while standing, and transport well to private homes in Park City.", useCase: "Food Planning" },
+                    { text: "Create conversation prompts specifically designed for women new to the Park City area that spark meaningful connections beyond small talk.", useCase: "Deep Connection" },
+                    { text: "Draft a hosting guide for first-time JULIETS hosts covering space setup for 8 people, background music suggestions, and managing dietary restrictions gracefully.", useCase: "Host Support" },
+                    { text: "Suggest rotation systems to ensure all JULIETS attendees eventually host, while accommodating those in temporary housing or small apartments.", useCase: "Scheduling" }
+                ]
+            },
+            {
+                category: 'creative',
+                activity: 'Gone Wild',
+                icon: 'fa-compass',
+                color: 'text-teal-600',
+                bgColor: 'bg-teal-50',
+                description: 'Monthly unusual activities for adventurers',
+                prompts: [
+                    { text: "Suggest unusual activities available in the Park City area (within 1 hour drive) that fit the 'Gone Wild' theme of trying new things, ranging from $20-$200 per person.", useCase: "Activity Sourcing" },
+                    { text: "Create a mystery itinerary template for a 'Gone Wild' event where details are revealed gradually to build excitement while providing necessary safety info.", useCase: "Experience Design" },
+                    { text: "Draft liability disclaimer and safety guideline language for adventurous activities that protects the Newcomers Club while encouraging participation.", useCase: "Risk Management" },
+                    { text: "Suggest overnight trip ideas within 2 hours of Park City that offer unique experiences (stargazing, hot springs, ghost towns) for mixed gender Gone Wild groups.", useCase: "Extended Adventures" }
+                ]
+            },
+            {
+                category: 'creative',
+                activity: 'Stitch \'N Chat / Writer\'s Circle',
+                icon: 'fa-pen-nib',
+                color: 'text-amber-700',
+                bgColor: 'bg-amber-50',
+                description: 'Fiber arts and writing groups',
+                prompts: [
+                    { text: "Create a beginner knitting pattern for worsted weight yarn suitable for Stitch 'N Chat members who want to learn basics while socializing.", useCase: "Instructional" },
+                    { text: "Generate memoir writing prompts for Writer's Circle that focus on 'new beginnings' themes appropriate for newcomers to Park City.", useCase: "Creative Prompts" },
+                    { text: "Draft critique guidelines for Writer's Circle that provide constructive feedback while maintaining the supportive, social atmosphere of the Newcomers Club.", useCase: "Feedback Framework" }
+                ]
+            },
+
+            // Dining & Food
+            {
+                category: 'dining',
+                activity: 'Cooking & Dining Adventures',
+                icon: 'fa-utensils',
+                color: 'text-orange-600',
+                bgColor: 'bg-orange-50',
+                description: 'Intimate 8-person dinner parties with assigned courses',
+                prompts: [
+                    { text: "Create a 4-course 'Mountain Elegance' menu with wine pairings for a Cooking & Dining Adventure where the host prepares the main and others bring appetizer, salad, and dessert.", useCase: "Menu Planning" },
+                    { text: "Draft a coordination email template assigning courses to members that includes the suggested wine pairing for each dish and arrival times.", useCase: "Logistics" },
+                    { text: "Suggest accommodations for common dietary restrictions (gluten-free, vegetarian, dairy-free) within a traditional French or Italian menu.", useCase: "Dietary Inclusion" },
+                    { text: "Create a hosting timeline checklist for the home host covering setup, cooking schedule, and hosting duties during the 8-person dinner.", useCase: "Event Management" }
+                ]
+            },
+            {
+                category: 'dining',
+                activity: 'Denim Dining',
+                icon: 'fa-bowl-food',
+                color: 'text-blue-500',
+                bgColor: 'bg-blue-50',
+                description: 'Casual themed potlucks for 8 participants',
+                prompts: [
+                    { text: "Suggest creative themes for Denim Dining potlucks (like 'International Street Food' or 'Brunch for Dinner') with coordinating playlist ideas.", useCase: "Theme Planning" },
+                    { text: "Create a dish assignment system for themed potlucks that ensures variety (not everyone bringing dessert) while letting participants choose their contribution.", useCase: "Coordination" },
+                    { text: "Draft casual invitation wording emphasizing the jeans-friendly, relaxed atmosphere different from the more formal Cooking & Dining Adventures.", useCase: "Tone Setting" },
+                    { text: "Suggest space-efficient seating arrangements for 8 people in typical Park City condos and townhomes where dining space is limited.", useCase: "Space Planning" }
+                ]
+            },
+            {
+                category: 'dining',
+                activity: 'Wine Tasting & Supper Club',
+                icon: 'fa-wine-glass',
+                color: 'text-red-500',
+                bgColor: 'bg-red-50',
+                description: 'Exploring varietals and restaurant experiences',
+                prompts: [
+                    { text: "Create a wine tasting note template for beginners with vocabulary that describes flavors without being intimidating or pretentious.", useCase: "Education" },
+                    { text: "Suggest approachable wine varietals for a first-time Wine Tasting group and provide conversation starters about each selection.", useCase: "Curated Selection" },
+                    { text: "Draft a restaurant rotation schedule for Supper Club that includes a mix of Park City Main Street, Kimball Junction, and Heber locations with varying price points.", useCase: "Rotation Planning" },
+                    { text: "Create guidelines for splitting bills fairly at Supper Club while accommodating those who may only want appetizers or non-alcoholic drinks.", useCase: "Financial Etiquette" }
+                ]
+            }
+        ];
+
+        let currentCategory = 'all';
+        let searchTerm = '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCounts();
+            renderPrompts();
+            
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                searchTerm = e.target.value.toLowerCase();
+                renderPrompts();
+            });
+
+            // Theme toggle functionality
+            const themeToggleBtn = document.getElementById('themeToggle');
+            themeToggleBtn.addEventListener('click', function() {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            });
+        });
+
+        function updateCounts() {
+            const categories = ['all', 'games', 'outdoor', 'creative', 'dining'];
+            categories.forEach(cat => {
+                const count = cat === 'all' ? promptData.length : promptData.filter(item => item.category === cat).length;
+                const el = document.getElementById(`count-${cat}`);
+                if (el) el.textContent = count;
+            });
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // Update UI
+            document.querySelectorAll('.category-pill').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            renderPrompts();
+        }
+
+        function renderPrompts() {
+            const container = document.getElementById('promptsContainer');
+            const emptyState = document.getElementById('emptyState');
+            
+            // Filter data
+            let filtered = promptData;
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(item => item.category === currentCategory);
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(item => {
+                    const inActivity = item.activity.toLowerCase().includes(searchTerm);
+                    const inDescription = item.description.toLowerCase().includes(searchTerm);
+                    const inPrompts = item.prompts.some(p => 
+                        p.text.toLowerCase().includes(searchTerm) || 
+                        p.useCase.toLowerCase().includes(searchTerm)
+                    );
+                    return inActivity || inDescription || inPrompts;
+                });
+            }
+
+            // Update search stats
+            const statsEl = document.getElementById('searchStats');
+            if (searchTerm && filtered.length > 0) {
+                statsEl.textContent = `${filtered.length} found`;
+                statsEl.classList.remove('hidden');
+            } else {
+                statsEl.classList.add('hidden');
+            }
+
+            // Render
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            container.innerHTML = filtered.map((item, index) => `
+                <div class="prompt-card bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden flex flex-col transition-all duration-300" style="animation: fadeIn 0.5s ease-out ${index * 0.05}s forwards; opacity: 0;">
+                    <div class="p-6 border-b border-gray-100 dark:border-slate-700 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-800/50">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 ${item.bgColor} dark:bg-opacity-20 ${item.color} rounded-xl flex items-center justify-center text-lg shadow-sm">
+                                    <i class="fa-solid ${item.icon}"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">${item.activity}</h3>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.bgColor} dark:bg-opacity-20 ${item.color}">
+                                        ${getCategoryName(item.category)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">${item.description}</p>
+                    </div>
+                    
+                    <div class="flex-1 p-4 space-y-3">
+                        ${item.prompts.map((prompt, idx) => `
+                            <div class="prompt-row group relative bg-gray-50 dark:bg-slate-900/40 rounded-xl p-4 border border-gray-100 dark:border-slate-700/50 hover:border-mountain-200 dark:hover:border-mountain-700 hover:bg-mountain-50/30 dark:hover:bg-mountain-900/20 transition-all cursor-pointer" onclick="copyPrompt('${escapeHtml(prompt.text)}')">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="flex-1">
+                                        <div class="text-xs font-semibold text-sunset-500 mb-1 uppercase tracking-wide">${prompt.useCase}</div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3 group-hover:line-clamp-none transition-all">${prompt.text}</p>
+                                    </div>
+                                    <button class="copy-btn flex-shrink-0 w-8 h-8 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm flex items-center justify-center text-gray-400 hover:text-mountain-600 hover:border-mountain-300 transition-all" onclick="event.stopPropagation(); copyPrompt('${escapeHtml(prompt.text)}')" title="Copy to clipboard">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="px-6 py-3 bg-gray-50 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-700 text-xs text-gray-500 dark:text-gray-400 flex justify-between items-center">
+                        <span>${item.prompts.length} prompts available</span>
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-bolt text-yellow-500"></i> AI Ready</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add fade-in animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function getCategoryName(cat) {
+            const names = {
+                'games': 'Games & Strategy',
+                'outdoor': 'Outdoor & Adventure',
+                'creative': 'Creative & Social',
+                'dining': 'Dining & Food'
+            };
+            return names[cat] || cat;
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/'/g, "\\'");
+        }
+
+        async function copyPrompt(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('Prompt copied to clipboard!', 'success');
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("Copy");
+                textArea.remove();
+                showToast('Prompt copied to clipboard!', 'success');
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast pointer-events-auto bg-gray-900 dark:bg-slate-800 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center space-x-3 min-w-[300px] border dark:border-slate-700 transition-all`;
+            toast.innerHTML = `
+                <i class="fa-solid fa-check-circle text-green-400"></i>
+                <div>
+                    <p class="font-medium text-sm">${message}</p>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

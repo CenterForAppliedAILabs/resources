@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercer Auto Spa | AI 101 Guide</title>
+    <style>
+        /* MERCER AUTO SPA THEME - DARK MODE & RED ACCENTS */
+        :root {
+            --primary-red: rgb(89, 200, 193);
+            --primary-hover: #b71c1c;
+            --bg-dark: #121212;
+            --bg-panel: #1e1e1e;
+            --bg-black: #000000;
+            --text-white: #ffffff;
+            --text-grey: #b3b3b3;
+            --border: #333333;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+       body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-image: url("https://static.wixstatic.com/media/9293f6_b5cbb37252b74e079cd7d0fc3e899ea9~mv2.jpg/v1/fill/w_1884,h_1240,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/9293f6_b5cbb37252b74e079cd7d0fc3e899ea9~mv2.jpg");
+    background-size: cover;          /* makes it fill the screen */
+    background-position: center;     /* keeps it centered */
+    background-repeat: no-repeat;    /* prevents tiling */
+    background-attachment: fixed;    /* optional: parallax-style effect */
+    color: var(--text-white);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* 50% darkness */
+    pointer-events: none; /* keeps page clickable */
+    z-index: -1; /* sits behind all content */
+}
+
+
+        /* HEADER */
+        header {
+            background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+            border-bottom: 3px solid var(--primary-red);
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        header h1 {
+            text-transform: uppercase;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        header span { color: var(--primary-red); }
+        header p { color: var(--text-grey); font-size: 0.9rem; }
+
+        /* NAVIGATION */
+        nav {
+            background-color: var(--bg-black);
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-grey);
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary-red);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background-color: var(--primary-red);
+            color: white;
+            border-color: var(--primary-red);
+        }
+
+        /* MAIN CONTENT */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .section {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            border-left: 4px solid var(--primary-red);
+            padding-left: 15px;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        p { margin-bottom: 1rem; color: #ccc; }
+
+        /* CARDS */
+        .card {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .highlight-box {
+            background-color: rgba(211, 47, 47, 0.1);
+            border: 1px solid var(--primary-red);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .highlight-box strong { color: var(--primary-red); }
+
+        ul { margin-left: 20px; margin-bottom: 20px; color: #ccc; }
+        li { margin-bottom: 10px; }
+
+        /* TOOL LINKS */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tool-card {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .tool-card:hover { transform: translateY(-3px); border-color: var(--primary-red); }
+        .tool-card h3 { color: white; margin-bottom: 10px; }
+        .tool-card p { font-size: 0.85rem; color: #aaa; margin-bottom: 15px; }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--primary-red);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .btn-link:hover { background-color: var(--primary-hover); }
+
+        /* PROMPT BOXES */
+        .prompt-wrapper {
+            background: black;
+            border: 1px solid #444;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .prompt-header {
+            background: #333;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #ccc;
+            letter-spacing: 1px;
+        }
+
+        .prompt-content {
+            padding: 15px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            white-space: pre-wrap; /* Keeps formatting */
+        }
+
+        .copy-btn {
+            background: var(--primary-red);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .copy-btn:hover { background: var(--primary-hover); }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #555;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Mercer <span>Auto Spa</span></h1>
+<p>AI Training Portal: <strong style="color: var(--primary-red);">Level 1 Basics</strong></p>
+
+
+</header>
+
+<nav>
+    <div class="nav-container">
+        <button class="nav-btn active" onclick="showSection('intro')">1. What is AI?</button>
+        <button class="nav-btn" onclick="showSection('access')">2. Get Access</button>
+        <button class="nav-btn" onclick="showSection('tasks')">3. Try It</button>
+    </div>
+</nav>
+
+<main>
+
+    <!-- SECTION 1: WHAT IS AI? -->
+    <div id="intro" class="section active">
+        <h2>The "Digital Apprentice"</h2>
+        <p>If you have never used AI, forget what you have seen in movies. It is not a robot that thinks for itself. It is much simpler than that.</p>
+        
+        <div class="card">
+            <h3>Think of AI like a new employee...</h3>
+            <p>Imagine you hired a very smart assistant for the front desk. They have read every book in the world, they know perfect grammar, and they know everything about cars.</p>
+            <p><strong>But there is a catch:</strong> They are completely silent. They will sit there and do nothing until you ask them a question. </p>
+            <p>AI is simply a text box. You type a question, and it types an answer back instantly.</p>
+        </div>
+
+        <div class="highlight-box">
+            <strong>What AI is NOT:</strong>
+            <ul style="margin-top: 10px; margin-bottom: 0;">
+                <li>❌ It is not a search engine (it doesn't just give you links).</li>
+                <li>❌ It cannot physically "see" the car in your bay.</li>
+                <li>❌ It is not always right (you must check its work).</li>
+            </ul>
+        </div>
+        
+        <p><strong>Bottom Line:</strong> Treat it like a helper. Use it to write emails, calculate dilution ratios, or come up with Facebook posts.</p>
+    </div>
+
+    <!-- SECTION 2: HOW TO ACCESS -->
+    <div id="access" class="section">
+        <h2>How to Get In</h2>
+        <p>You do not need to install complicated software. If you can log into Gmail or Facebook, you can use AI. It lives in your web browser.</p>
+
+        <h3>The Big Three</h3>
+        <p>There are three main "Chat Bots." They are all free to start, and they all work roughly the same way.</p>
+
+        <div class="tool-grid">
+            <div class="tool-card">
+                <h3>ChatGPT</h3>
+                <p>The most popular one. Great for general questions and writing emails.</p>
+                <a href="https://chatgpt.com" target="_blank" class="btn-link">Go to ChatGPT</a>
+            </div>
+            
+            <div class="tool-card">
+                <h3>Claude</h3>
+                <p>Writes very naturally. Sounds human and polite. Great for customer service.</p>
+                <a href="https://claude.ai" target="_blank" class="btn-link">Go to Claude</a>
+            </div>
+
+            <div class="tool-card">
+                <h3>Gemini</h3>
+                <p>Made by Google. If you already have a Google account, this is the easiest to access.</p>
+                <a href="https://gemini.google.com" target="_blank" class="btn-link">Go to Gemini</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>How to Log In (The Easy Way)</h3>
+            <ol style="margin-left: 20px; color: #ccc;">
+                <li>Click one of the buttons above (we recommend <strong>ChatGPT</strong> or <strong>Gemini</strong> to start).</li>
+                <li>Look for a button that says <strong>"Continue with Google"</strong> or "Log in."</li>
+                <li>Use your existing email account.</li>
+                <li>You will see a text box at the bottom of the screen. You are ready.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- SECTION 3: TRY IT NOW -->
+    <div id="tasks" class="section">
+        <h2>Let's Try It: 3 Real Examples</h2>
+        <p>Don't overthink it. You are just texting a friend who happens to be a genius. Copy these examples and paste them into the AI chat box to see what happens.</p>
+
+        <!-- EXAMPLE 1 -->
+        <h3>1. The "Rain Check" Text</h3>
+        <p>It's raining, and you need to tell a customer to wait to pick up their car so the wax doesn't get ruined. You don't want to sound rude.</p>
+        
+        <div class="prompt-wrapper">
+            <div class="prompt-header">
+                <span>Customer Service</span>
+                <button class="copy-btn" onclick="copyText(this)">COPY TEXT</button>
+            </div>
+            <div class="prompt-content">Write a polite text message to a customer named Mike. Tell him his car looks amazing, but because it is pouring rain, we suggest he picks it up tomorrow morning so the fresh sealant cures properly. Keep it short and friendly.</div>
+        </div>
+
+        <!-- EXAMPLE 2 -->
+        <h3>2. The Chemical Math</h3>
+        <p>Hate doing math in your head? Stop doing it. Let the AI do it.</p>
+        
+        <div class="prompt-wrapper">
+            <div class="prompt-header">
+                <span>Shop Math</span>
+                <button class="copy-btn" onclick="copyText(this)">COPY TEXT</button>
+            </div>
+            <div class="prompt-content">I have a 32oz spray bottle. I need to mix All Purpose Cleaner at a 1:10 ratio. Exactly how many ounces of water and how many ounces of chemical do I need to pour in?</div>
+        </div>
+
+        <!-- EXAMPLE 3 -->
+        <h3>3. The Social Media Post</h3>
+        <p>You finished a great job on a red Ferrari, but you don't know what to write on Instagram.</p>
+        
+        <div class="prompt-wrapper">
+            <div class="prompt-header">
+                <span>Marketing</span>
+                <button class="copy-btn" onclick="copyText(this)">COPY TEXT</button>
+            </div>
+            <div class="prompt-content">I just finished detailing a vintage red Ferrari. It looks wet and glossy. Write an exciting Instagram caption for this photo. Use some fire emojis and include 3 hashtags for auto detailing.</div>
+        </div>
+        
+        <div class="highlight-box" style="text-align: center; margin-top: 30px;">
+            <strong>Tip:</strong> If you don't like the answer it gives you, just type: <br><em>"Try again, but make it shorter."</em>
+        </div>
+    </div>
+
+</main>
+
+<footer>
+    Mercer Auto Spa Internal Training &copy; 2024
+</footer>
+
+<script>
+    function showSection(sectionId) {
+        // 1. Hide all sections
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(sec => sec.classList.remove('active'));
+
+        // 2. Deactivate all buttons
+        const btns = document.querySelectorAll('.nav-btn');
+        btns.forEach(btn => btn.classList.remove('active'));
+
+        // 3. Show selected section
+        document.getElementById(sectionId).classList.add('active');
+
+        // 4. Highlight the button that was clicked
+        // Note: checking innerHTML or onclick attribute to match the button
+        btns.forEach(btn => {
+            if(btn.getAttribute('onclick').includes(sectionId)) {
+                btn.classList.add('active');
+            }
+        });
+    }
+
+    function copyText(button) {
+        // Get the text from the sibling div (.prompt-content)
+        const text = button.parentElement.nextElementSibling.innerText;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = button.innerText;
+            button.innerText = "COPIED!";
+            button.style.backgroundColor = "#2e7d32"; // Green for success
+            
+            setTimeout(() => {
+                button.innerText = originalText;
+                button.style.backgroundColor = ""; // Revert to CSS default
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>
