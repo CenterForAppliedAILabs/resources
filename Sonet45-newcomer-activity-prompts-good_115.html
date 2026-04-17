@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newcomers Club AI Prompt Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c5f7c;
+            --secondary-color: #4a9eba;
+            --accent-color: #e8735d;
+            --success: #00b894;
+            --border-radius: 12px;
+            
+            /* Light theme */
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --container-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.15);
+            --prompt-bg: #ffffff;
+            --prompt-card-bg: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            --stats-bg: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --border-light: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            --container-bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text-dark: #e9ecef;
+            --text-light: #adb5bd;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.4);
+            --prompt-bg: #0f3460;
+            --prompt-card-bg: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --stats-bg: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            --border-light: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-hover);
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle-wrapper {
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--secondary-color);
+            border-radius: 25px;
+            padding: 5px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            font-size: 0.9em;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-bottom: 3px solid var(--secondary-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            transition: background 0.3s ease;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            background: var(--container-bg);
+            border: 2px solid var(--secondary-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9em;
+        }
+
+        .category-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .category-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .search-box {
+            flex: 0 0 300px;
+            padding: 10px 20px;
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border: 2px solid var(--secondary-color);
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box::placeholder {
+            color: var(--text-light);
+            opacity: 0.7;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 95, 124, 0.1);
+        }
+
+        /* Main Content */
+        main {
+            padding: 30px;
+            display: grid;
+            gap: 30px;
+        }
+
+        .activity-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .activity-section:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .activity-section.hidden {
+            display: none;
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .activity-icon {
+            font-size: 2.5em;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .activity-title {
+            flex: 1;
+        }
+
+        .activity-title h2 {
+            color: var(--primary-color);
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .activity-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .prompts-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .prompt-card {
+            background: var(--prompt-card-bg);
+            border: 2px solid var(--border-light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .prompt-card:hover {
+            border-color: var(--secondary-color);
+            box-shadow: var(--shadow);
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .prompt-number {
+            background: var(--accent-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .copy-btn {
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+        }
+
+        .prompt-text {
+            color: var(--text-dark);
+            font-size: 1em;
+            line-height: 1.6;
+            padding: 15px;
+            background: var(--prompt-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+            font-family: 'Courier New', monospace;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer-logo {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .activity-section {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                flex: 1;
+                width: 100%;
+            }
+
+            .category-filter {
+                width: 100%;
+            }
+
+            .activity-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .activity-icon {
+                font-size: 2em;
+            }
+
+            .theme-toggle-wrapper {
+                justify-content: center;
+                order: -1;
+            }
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5em;
+            box-shadow: var(--shadow-hover);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: var(--secondary-color);
+            transform: translateY(-5px);
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background: var(--stats-bg);
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px 20px;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Newcomers Club AI Prompt Library</h1>
+            <p>Making Friends, Having Fun, Creating Memories - with AI!</p>
+            <p class="subtitle">Presented by Applied AI Labs</p>
+        </header>
+
+        <nav>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number" id="activityCount">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="promptCount">0</div>
+                    <div class="stat-label">Prompts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="categoryCount">0</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+            </div>
+            <div class="nav-controls">
+                <div class="category-filter">
+                    <button class="category-btn active" data-category="all">All Activities</button>
+                    <button class="category-btn" data-category="games">🎲 Games</button>
+                    <button class="category-btn" data-category="outdoor">🏔️ Outdoor</button>
+                    <button class="category-btn" data-category="creative">🎨 Creative</button>
+                    <button class="category-btn" data-category="dining">🍽️ Dining</button>
+                </div>
+                <input type="text" class="search-box" placeholder="Search prompts..." id="searchBox">
+                <div class="theme-toggle-wrapper">
+                    <button class="theme-toggle" id="themeToggle">
+                        <span id="themeIcon">🌙</span>
+                        <span id="themeText">Dark Mode</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <main id="mainContent">
+            <!-- Content will be generated by JavaScript -->
+        </main>
+
+        <footer>
+            <p><strong class="footer-logo">Applied AI Labs</strong></p>
+            <p>Empowering the Newcomers Club of Greater Park City with AI</p>
+            <p style="opacity: 0.7; font-size: 0.9em; margin-top: 15px;">
+                💡 Tip: Use these prompts with ChatGPT, Claude, or your favorite AI assistant
+            </p>
+        </footer>
+    </div>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script>
+        const promptData = {
+            "American Mah Jongg": {
+                category: "games",
+                icon: "🀄",
+                prompts: [
+                    "I'm a complete beginner to American Mah Jongg. Can you explain the basic rules, objectives, and how the game differs from traditional Chinese Mah Jongg?",
+                    "Create a beginner-friendly practice guide for American Mah Jongg that I can use to prepare for my first club meeting on Tuesday. Include common tile combinations and strategies.",
+                    "I'm hosting a Mah Jongg table next week. Generate a friendly welcome script I can use to make new players feel comfortable and explain the flow of our 2-hour session.",
+                    "What are some conversation starters I can use during Mah Jongg games to get to know other players while we play? Keep them light and fun.",
+                    "Help me create a simple tracking sheet to monitor my Mah Jongg progress over the next 3 months, including wins, favorite hands, and skills I want to improve."
+                ]
+            },
+            "Duplicate Bridge": {
+                category: "games",
+                icon: "🃏",
+                prompts: [
+                    "Explain the duplicate bridge format and scoring system to someone familiar with social bridge. What strategic differences should I be aware of?",
+                    "I'm intermediate level and want to improve my bidding conventions for duplicate bridge. Create a 30-day study plan focusing on common conventions used in club play.",
+                    "Generate 5 practice hands for duplicate bridge with explanations of optimal bidding sequences and play strategies for each.",
+                    "What are the key etiquette rules for duplicate bridge that differ from casual bridge? Help me prepare for my first club session.",
+                    "Create a post-game analysis template I can use to review my duplicate bridge hands and identify areas for improvement."
+                ]
+            },
+            "Bunko": {
+                category: "games",
+                icon: "🎲",
+                prompts: [
+                    "I've never played Bunko before and I'm attending my first game on Monday. Explain the rules in simple terms and tell me what to expect at the Retreat at Jordanelle Clubhouse.",
+                    "Suggest 5 easy, crowd-pleasing snacks I can bring to share at Bunko night that travel well and don't require plates or utensils.",
+                    "Create fun conversation starters I can use during Bunko to connect with other members as we rotate tables throughout the evening.",
+                    "I'm thinking of hosting a Bunko-themed party. Generate ideas for decorations, themes, and variations on the traditional game format.",
+                    "Help me understand the social dynamics of Bunko - what makes it such a popular game for building friendships? How can I make the most of the rotation format to meet everyone?"
+                ]
+            },
+            "Canasta": {
+                category: "games",
+                icon: "🎴",
+                prompts: [
+                    "Teach me the fundamentals of Canasta - rules, scoring, and basic strategy. I want to be prepared for the 1st Monday session at Park City Library.",
+                    "I'm bringing a friend to try Canasta for their free trial. Create a simple cheat sheet we can reference during the game covering basic melds and scoring.",
+                    "What are effective partnership strategies in Canasta? Help me understand how to communicate and coordinate with my partner within the rules.",
+                    "Generate a practice scenario for Canasta with sample hands to help me understand when to freeze the discard pile versus when to take it.",
+                    "I want to improve my Canasta skills between our twice-monthly meetings. Create a list of online resources, apps, or practice methods I can use."
+                ]
+            },
+            "Bark Buddies": {
+                category: "outdoor",
+                icon: "🐕",
+                prompts: [
+                    "My dog is friendly but sometimes overexcited with new dogs. Give me tips for successfully introducing my dog to the Bark Buddies group and ensuring positive interactions.",
+                    "Create a checklist of items I should bring to Bark Buddies every Friday (treats, water, toys, etc.) and explain dog park etiquette for group settings.",
+                    "I want to learn more about dog behavior to better understand play vs. problematic interactions. Explain what to look for during the Bark Buddies socialization time.",
+                    "Suggest conversation starters for Bark Buddies that help me connect with other dog owners while our pets play. Include questions about training, care, and local resources.",
+                    "Help me create a 'dog profile' card I can share with other Bark Buddies members including my dog's name, breed, age, play style, and any important information."
+                ]
+            },
+            "Deer Valley Skiing": {
+                category: "outdoor",
+                icon: "⛷️",
+                prompts: [
+                    "I'm an intermediate skier (comfortable on blues) interested in joining the Deer Valley group. What should I know about the terrain, the group dynamics, and the Wednesday meeting spot at Carpenter lift?",
+                    "Create a preparation checklist for my first Deer Valley ski day with the Newcomers Club, including gear, timing, and what to expect from the group.",
+                    "I want to improve my skiing to keep up with the stronger skiers in the group. Design a progression plan to build confidence on double blues and eventually black runs.",
+                    "What are good conversation topics for the chairlift rides with new people? Help me prepare some friendly questions and talking points about skiing and Park City life.",
+                    "Generate a packing list for a day of skiing at Deer Valley with the club, including optional items and tips for dealing with varying weather conditions."
+                ]
+            },
+            "PCMR Skiing": {
+                category: "outdoor",
+                icon: "🎿",
+                prompts: [
+                    "I'm new to Park City Mountain Resort. Help me understand the mountain layout, best groomed blue runs, and what to expect from the Wednesday PCMR ski group.",
+                    "I'm a solid blue skier wanting to progress to blacks. Create a confidence-building plan using PCMR terrain to help me make this transition with the group.",
+                    "What should I know about skiing etiquette in a group setting at PCMR? Include tips for keeping pace, regrouping, and communicating on the mountain.",
+                    "Generate ideas for après-ski socializing with the PCMR group after our Wednesday sessions. Where can we grab food or drinks nearby?",
+                    "I'm worried about being the slowest in the group. Help me prepare mentally and practically for skiing with people who may be faster than me."
+                ]
+            },
+            "Garden Group": {
+                category: "outdoor",
+                icon: "🌱",
+                prompts: [
+                    "I'm new to gardening in Park City's high desert environment. What are the unique challenges and what plants thrive at this altitude and climate?",
+                    "Create a beginner's gardening plan for someone living in Park City, including what to plant, when to plant, and essential supplies for high-altitude gardening.",
+                    "I'm hosting a Garden Group meeting at my home. Generate ideas for making it engaging - what should I highlight in my garden, what questions should I prepare for?",
+                    "Suggest topics I could research to contribute valuable knowledge to the Garden Group. What are common problems or interests for Park City gardeners?",
+                    "Help me prepare questions to ask experienced members of the Garden Group to learn from their successes and failures in this unique growing environment."
+                ]
+            },
+            "Hiking Group": {
+                category: "outdoor",
+                icon: "🥾",
+                prompts: [
+                    "I'm interested in joining the Hiking Group but I'm not sure of my fitness level. How can I assess if I'm ready and what training should I do to prepare?",
+                    "Create a packing list for a typical Park City area group hike, including essentials, safety items, and nice-to-haves for different weather conditions.",
+                    "What are the best practices for group hiking? Include etiquette, pace management, and how to be a good hiking companion to newcomers I'm meeting.",
+                    "I want to learn about the local flora, fauna, and geology while hiking. Suggest resources or apps I can use to enhance my hiking experience and share knowledge with the group.",
+                    "Generate conversation topics and ice-breakers perfect for hiking, when you have long stretches to chat but also need to watch your footing."
+                ]
+            },
+            "Snowshoe Group": {
+                category: "outdoor",
+                icon: "❄️",
+                prompts: [
+                    "I've never snowshoed before. Explain what equipment I need, basic technique, and what fitness level is required for typical Newcomers Club snowshoe outings.",
+                    "Compare snowshoeing to hiking - what are the key differences in difficulty, pace, and experience? Help me set realistic expectations for my first outing.",
+                    "Create a winter safety guide for snowshoeing in the Park City area, including layering tips, avalanche awareness basics, and emergency preparedness.",
+                    "I want to buy my first pair of snowshoes. What features should I look for, and what's a reasonable budget for someone joining the club's regular outings?",
+                    "Suggest ways to make snowshoeing more fun and social. What games, challenges, or activities work well for a group snowshoe outing?"
+                ]
+            },
+            "Walking Group": {
+                category: "outdoor",
+                icon: "🚶",
+                prompts: [
+                    "I'm interested in a low-impact way to meet people and stay active. Tell me about the Walking Group - typical distances, pace, and what to expect socially.",
+                    "Create a personal walking progression plan to help me build stamina and keep up with the group if I'm currently quite sedentary.",
+                    "What are the best walking routes in the Park City area for groups? Include scenic options, varying difficulty levels, and good spots to stop and chat.",
+                    "Generate interesting conversation topics perfect for walking - things that keep chat flowing naturally without requiring too much breath during exercise.",
+                    "I want to track my progress with the Walking Group. Help me create a simple log to record distances, routes, people I've met, and how I'm feeling."
+                ]
+            },
+            "Book Club": {
+                category: "creative",
+                icon: "📚",
+                prompts: [
+                    "I'm joining the Book Club for the first time. How can I prepare for a 'rousing discussion'? What makes a good book club contribution vs. dominating the conversation?",
+                    "Create a book discussion preparation template I can use each month to organize my thoughts before the meeting - questions to consider, themes to explore, etc.",
+                    "I'm interested in the November Harvest Brunch book exchange. Generate creative ideas for presenting my book recommendation to make it appealing to others.",
+                    "What are strategies for reading both fiction and non-fiction critically? Help me develop questions and observation skills to enhance my book club experience.",
+                    "I can't always attend in person. How can I participate meaningfully via Zoom? Give me tips for virtual book club engagement and etiquette."
+                ]
+            },
+            "CATS (Creating Art Together Socially)": {
+                category: "creative",
+                icon: "🎨",
+                prompts: [
+                    "I'm a complete beginner to art but interested in CATS. Suggest 3 beginner-friendly portable art projects I could bring to my first meeting on the 2nd Friday.",
+                    "Create a supply list for someone wanting to try watercolor painting at CATS meetings, including budget-friendly options and what's truly essential vs. nice-to-have.",
+                    "I do jewelry making. Generate ideas for small projects I can work on during a 2-hour CATS session that allow me to socialize while creating.",
+                    "What are good questions to ask other CATS members to learn new techniques and get inspired? Help me prepare conversation starters about their art.",
+                    "I want to try something new at each CATS meeting. Create a 6-month plan rotating through different art forms (calligraphy, ceramics, fabric design, etc.) with starter projects for each."
+                ]
+            },
+            "JULIETS": {
+                category: "creative",
+                icon: "🥂",
+                prompts: [
+                    "I'm attending my first JULIETS event. Suggest 5 impressive but easy appetizers I can make and bring, plus beverage pairing ideas.",
+                    "Create conversation starter questions perfect for JULIETS - topics that help women connect on a deeper level while keeping things fun and positive.",
+                    "I'm considering hosting a future JULIETS event. Generate creative themes or activities I could incorporate to make my evening memorable and engaging.",
+                    "What are thoughtful ways to ensure everyone feels included at JULIETS? Help me prepare ice-breakers and inclusion strategies for different personality types.",
+                    "I'm new to Park City and nervous about JULIETS. Give me confidence-building tips and remind me what these events are really about - connection and friendship."
+                ]
+            },
+            "Gone Wild": {
+                category: "creative",
+                icon: "🎭",
+                prompts: [
+                    "I love the concept of Gone Wild trying unusual activities. Brainstorm 10 unique, 'never-done-before' activity ideas suitable for the Park City area and our demographic.",
+                    "I'm organizing a Gone Wild event. Create a planning checklist covering logistics, safety, cost estimation, and how to make it appeal to both men and women.",
+                    "Generate a pre-event communication template for Gone Wild activities that builds excitement, clearly explains what to expect, and covers what participants need to bring or prepare.",
+                    "I'm nervous about trying new things outside my comfort zone. Give me a pep talk and strategies for embracing the Gone Wild philosophy of adventure.",
+                    "Create a post-event feedback form for Gone Wild activities that captures participant experiences and generates ideas for future unusual adventures."
+                ]
+            },
+            "Evening Book Club": {
+                category: "creative",
+                icon: "📖",
+                prompts: [
+                    "How does the Evening Book Club differ from the morning one? Help me decide which fits my reading style and schedule better.",
+                    "Create a speed-reading strategy guide to help me finish the book club selection even during busy months. Include comprehension retention techniques.",
+                    "I want to host an Evening Book Club meeting. Generate ideas for creating the right ambiance, timing the discussion, and providing refreshments.",
+                    "Suggest ways to deepen my reading experience beyond just finishing the book. How can I analyze themes, characters, and writing style to contribute more to discussions?",
+                    "Generate thought-provoking discussion questions for various book genres (mystery, historical fiction, memoir, etc.) that I can adapt for our selections."
+                ]
+            },
+            "LADS": {
+                category: "creative",
+                icon: "🍻",
+                prompts: [
+                    "I'm new to the area and want to join LADS (Lads And Dads Socializing). What should I expect and how can I make a good first impression?",
+                    "Create conversation topics perfect for LADS events - subjects that help men connect over shared interests and experiences in Park City.",
+                    "I'm considering organizing a LADS activity. Suggest 10 male-friendly social activities suitable for the Park City area ranging from casual to adventurous.",
+                    "What are strategies for making genuine friendships as an adult male in a new community? Help me approach LADS with the right mindset and expectations.",
+                    "Generate ice-breaker questions for LADS that go beyond surface small talk but aren't too personal for getting to know someone."
+                ]
+            },
+            "Stitch 'N Chat": {
+                category: "creative",
+                icon: "🧶",
+                prompts: [
+                    "I knit but I've never done it socially. What should I bring to Stitch 'N Chat and what are the unwritten rules of crafting in a group?",
+                    "Create a list of portable, social-friendly knitting or crochet projects - things I can easily work on while chatting without too much concentration.",
+                    "I'm a beginner at crochet. Should I join Stitch 'N Chat or wait until I'm more skilled? Help me understand if the group welcomes learners.",
+                    "Generate conversation starters for Stitch 'N Chat that blend crafting topics with getting to know people personally - questions that create real connections.",
+                    "I want to expand my skills. Create a learning plan where I ask different Stitch 'N Chat members to teach me one new technique each month."
+                ]
+            },
+            "Writer's Circle": {
+                category: "creative",
+                icon: "✍️",
+                prompts: [
+                    "I've always wanted to write but I'm intimidated by joining Writer's Circle. What level of writing experience is expected? Help me prepare for my first meeting.",
+                    "Create a gentle writing exercise I can use to prepare a piece to share with Writer's Circle - something that helps me find my voice without being too vulnerable.",
+                    "Generate guidelines for giving and receiving constructive feedback in a writing group. How can I be helpful without being harsh, and receptive without being defensive?",
+                    "I'm stuck on a writing project. Suggest creative prompts and exercises specific to [memoir/fiction/poetry] that could help me break through my block.",
+                    "What are best practices for a successful Writer's Circle? Help me understand the format, etiquette, and how to get maximum value from the group."
+                ]
+            },
+            "Cooking & Dining Adventures": {
+                category: "dining",
+                icon: "👨‍🍳",
+                prompts: [
+                    "I'm assigned to bring the appetizer course for Cooking & Dining Adventures. Suggest 5 impressive but manageable appetizer recipes with wine pairings from the menu.",
+                    "I can't host but want to join as an alternate. Create a strategy for being the best possible alternate - reliable, flexible, and adding value when called upon.",
+                    "Help me prepare to host my first Cooking & Dining Adventures evening. Create a timeline and checklist for a stress-free main course preparation and hosting experience.",
+                    "I have dietary restrictions. How do I communicate these tactfully to the Cooking & Dining Adventures group while remaining flexible and appreciative?",
+                    "Generate conversation topics perfect for intimate dinner parties of 8 - subjects that encourage everyone to participate and create meaningful connections."
+                ]
+            },
+            "Denim Dining": {
+                category: "dining",
+                icon: "🍝",
+                prompts: [
+                    "I'm hosting my first Denim Dining and chose an Italian theme. Help me coordinate the menu - suggest dishes for each course that guests could choose to prepare.",
+                    "Create 10 creative Denim Dining themes beyond the obvious (international cuisines, brunch, holidays) that would be fun and manageable for 8 people.",
+                    "I'm attending Denim Dining with a 'breakfast for dinner' theme. Suggest 3 options each for appetizer, main, and dessert that I could offer to bring.",
+                    "Generate a host guide for Denim Dining - how to communicate the theme, coordinate dishes, set up the space, and ensure everyone has a great casual experience.",
+                    "What makes Denim Dining different from Cooking & Dining Adventures? Help me understand which group fits my entertaining style and schedule better."
+                ]
+            },
+            "Supper Club": {
+                category: "dining",
+                icon: "🍷",
+                prompts: [
+                    "I'm new to Supper Club. What's the typical format, dress code, and what should I expect from the dining experience and social atmosphere?",
+                    "Create a restaurant suggestion form for Supper Club including cuisine type, price range, ambiance, and why this spot would be great for group dining.",
+                    "Generate conversation starters perfect for supper club settings - topics that work well in restaurants and help a larger group connect meaningfully.",
+                    "I want to be a good Supper Club participant. What are etiquette tips for group dining, splitting checks, dietary accommodations, and being easy to dine with?",
+                    "Help me discover new Park City restaurants perfect for Supper Club. What criteria should I consider when exploring and evaluating potential venues?"
+                ]
+            },
+            "Wine Tasting": {
+                category: "dining",
+                icon: "�葡",
+                prompts: [
+                    "I'm a wine novice joining the Wine Tasting group. Create a crash course in wine basics - tasting techniques, terminology, and how to describe what I'm experiencing.",
+                    "Generate a wine tasting journal template I can use to track wines we try, my impressions, food pairings, and what I'm learning about my preferences.",
+                    "I'm hosting a Wine Tasting evening. Create a plan for selecting wines, structuring the tasting, providing palate cleansers, and facilitating discussion.",
+                    "What are sophisticated but approachable conversation topics for Wine Tasting events that blend wine education with personal connection?",
+                    "Help me expand my wine knowledge between tastings. Suggest resources, apps, or practices to deepen my appreciation and confidence with wine."
+                ]
+            }
+        };
+
+        // Generate HTML content
+        function generateContent() {
+            const mainContent = document.getElementById('mainContent');
+            let html = '';
+            let totalPrompts = 0;
+            const categories = new Set();
+
+            for (const [activity, data] of Object.entries(promptData)) {
+                categories.add(data.category);
+                totalPrompts += data.prompts.length;
+                
+                html += `
+                    <section class="activity-section" data-category="${data.category}" data-activity="${activity.toLowerCase()}">
+                        <div class="activity-header">
+                            <div class="activity-icon">${data.icon}</div>
+                            <div class="activity-title">
+                                <h2>${activity}</h2>
+                                <span class="activity-category">${data.category}</span>
+                            </div>
+                        </div>
+                        <div class="prompts-grid">
+                `;
+
+                data.prompts.forEach((prompt, index) => {
+                    html += `
+                        <div class="prompt-card">
+                            <div class="prompt-header">
+                                <div class="prompt-number">${index + 1}</div>
+                                <button class="copy-btn" onclick="copyPrompt(this, \`${prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">
+                                    <span>📋</span> Copy
+                                </button>
+                            </div>
+                            <div class="prompt-text">${prompt}</div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </section>
+                `;
+            }
+
+            mainContent.innerHTML = html;
+
+            // Update stats
+            document.getElementById('activityCount').textContent = Object.keys(promptData).length;
+            document.getElementById('promptCount').textContent = totalPrompts;
+            document.getElementById('categoryCount').textContent = categories.size;
+        }
+
+        // Copy prompt to clipboard
+        function copyPrompt(button, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<span>✓</span> Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Filter by category
+        function filterByCategory(category) {
+            const sections = document.querySelectorAll('.activity-section');
+            sections.forEach(section => {
+                if (category === 'all' || section.dataset.category === category) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+        }
+
+        // Search functionality
+        function searchPrompts(query) {
+            const sections = document.querySelectorAll('.activity-section');
+            const lowerQuery = query.toLowerCase();
+
+            sections.forEach(section => {
+                const activityName = section.dataset.activity;
+                const prompts = section.querySelectorAll('.prompt-text');
+                let hasMatch = false;
+
+                if (activityName.includes(lowerQuery)) {
+                    hasMatch = true;
+                }
+
+                prompts.forEach(prompt => {
+                    if (prompt.textContent.toLowerCase().includes(lowerQuery)) {
+                        hasMatch = true;
+                    }
+                });
+
+                if (query === '' || hasMatch) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            generateContent();
+
+            // Theme switching
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            const html = document.documentElement;
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-theme', savedTheme);
+            updateThemeUI(savedTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeUI(newTheme);
+            });
+
+            function updateThemeUI(theme) {
+                if (theme === 'dark') {
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Light Mode';
+                } else {
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Dark Mode';
+                }
+            }
+
+            // Category filter buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filterByCategory(btn.dataset.category);
+                });
+            });
+
+            // Search box
+            const searchBox = document.getElementById('searchBox');
+            searchBox.addEventListener('input', (e) => {
+                searchPrompts(e.target.value);
+            });
+
+            // Scroll to top button
+            const scrollTopBtn = document.getElementById('scrollTop');
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollTopBtn.classList.add('visible');
+                } else {
+                    scrollTopBtn.classList.remove('visible');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

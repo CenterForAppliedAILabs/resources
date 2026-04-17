@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Newcomers Club of Greater Park City – AI Prompt Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --accent: #2a9d8f;
+    --dark: #264653;
+    --light: #f4f1de;
+    --gray: #e9c46a;
+    --orange: #f4a261;
+    --bg-gradient: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    --text-color: #264653;
+    --section-bg: #ffffff;
+    --nav-bg: #ffffff;
+    --prompt-bg: #f4f1de;
+    --pre-bg: #ffffff;
+    --border-color: #e9ecef;
+  }
+
+  [data-theme="dark"] {
+    --dark: #f4f1de;
+    --light: #264653;
+    --bg-gradient: linear-gradient(135deg, #121212, #1a1a1a);
+    --text-color: #e0e0e0;
+    --section-bg: #1e1e1e;
+    --nav-bg: #1e1e1e;
+    --prompt-bg: #2a2a2a;
+    --pre-bg: #252525;
+    --border-color: #333333;
+  }
+
+  body {
+    margin:0; padding:0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background 0.3s, color 0.3s;
+  }
+  header {
+    background: #264653;
+    color: white;
+    text-align: center;
+    padding: 3rem 1rem;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%2321292e" fill-opacity="0.8" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,0L0,0Z"></path></svg>');
+    background-size: cover;
+  }
+  h1 { margin:0; font-size: 2.8rem; }
+  h2 { color: var(--accent); border-bottom: 3px solid var(--accent); padding-bottom: .5rem; }
+  nav {
+    background: var(--nav-bg);
+    padding: 1rem;
+    position: sticky; top:0; z-index:10;
+    box-shadow: 0 2px 10px rgba(0,0,0,.1);
+    transition: background 0.3s;
+  }
+  nav ul {
+    list-style:none; margin:0; padding:0;
+    display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; align-items:center;
+  }
+  nav a {
+    color: var(--text-color); text-decoration:none; font-weight:600;
+    padding:.5rem 1rem; border-radius:6px; transition:.3s;
+  }
+  nav a:hover { background:var(--accent); color:white; }
+  
+  .theme-toggle {
+    background: none; border: 2px solid var(--accent); color: var(--accent);
+    padding: 6px 12px; border-radius: 20px; cursor: pointer;
+    font-weight: bold; font-size: 0.9rem; margin-left: 1rem;
+    display: flex; align-items: center; gap: 8px; transition: 0.3s;
+  }
+  .theme-toggle:hover { background: var(--accent); color: white; }
+
+  main { max-width:1100px; margin:2rem auto; padding:0 1rem; }
+  section { background: var(--section-bg); margin-bottom:2rem; padding:2rem; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,.08); transition: background 0.3s; }
+  .prompt {
+    background: var(--prompt-bg);
+    padding:1rem;
+    margin:1rem 0;
+    border-radius:8px;
+    position:relative;
+    transition:transform .2s, background 0.3s;
+  }
+  .prompt:hover { transform:translateY(-4px); }
+  .prompt pre {
+    margin:0; white-space:pre-wrap; word-wrap:break-word;
+    background: var(--pre-bg); padding:1rem; border-radius:6px; border-left:4px solid var(--accent);
+    color: var(--text-color); transition: background 0.3s, color 0.3s;
+  }
+  button.copy {
+    position:absolute; top:8px; right:8px;
+    background:var(--accent); color:white; border:none;
+    padding:6px 12px; border-radius:6px; cursor:pointer;
+    font-size:.9rem; transition:.3s;
+  }
+  button.copy:hover { background:#21867a; }
+  button.copied { background:#52b788 !important; }
+  footer { text-align:center; padding:2rem; background:#264653; color:white; margin-top:3rem; }
+  
+  h3 { color: var(--text-color); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Newcomers Club of Greater Park City</h1>
+  <p style="font-size:1.4rem; opacity:.9;">AI Prompt Library – Powered by Applied AI Labs</p>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#games">Card & Strategy Games</a></li>
+    <li><a href="#outdoor">Outdoor & Adventure</a></li>
+    <li><a href="#creative">Creative & Social</a></li>
+    <li><a href="#dining">Foodies & Dining</a></li>
+    <li>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+        <span class="icon">🌓</span> <span class="label">Dark Mode</span>
+      </button>
+    </li>
+  </ul>
+</nav>
+
+<main id="top">
+
+<!-- ==================== CARD & STRATEGY GAMES ==================== -->
+<section id="games">
+  <h2>Get Your Game On: Cards, Dice & Strategy</h2>
+
+  <h3>American Mah Jongg</h3>
+  <div class="prompt"><pre>You are an enthusiastic Mah Jongg mentor for the Newcomers Club. Write a warm, beginner-friendly email inviting new members to Tuesday 9:30 am sessions at Park City Library, explaining that tables are grouped by experience and that patient mentoring is always available.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Create a short TikTok/Reels script (30-45 sec) showing a beginner’s first day at Newcomers Mah Jongg: arriving nervous, being welcomed, learning the Charleston, and ending with laughter and new friends.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Draft a one-page “Mah Jongg Cheat Sheet” for absolute beginners that fits on a single letter-size page and can be laminated – include basic tile types, how hands are built, and the famous phrase “It’s just like rummy with beautiful tiles!”</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Write a fun Instagram carousel post announcing the new American Mah Jongg group with 4 slides: 1) beautiful tiles photo, 2) “All levels welcome!”, 3) Tuesday 9:30-11:30 at Park City Library, 4) “Mentors waiting to teach you!”</pre><button class="copy">Copy</button></div>
+
+  <h3>Bridge (Duplicate & Fun)</h3>
+  <div class="prompt"><pre>You are the Bridge coordinator. Write the weekly sign-up email that goes out every Sunday evening with next week’s location, start time, and a fun bridge pun in the subject line.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Create a polite reminder message for members who repeatedly forget their bidding boxes, emphasizing club etiquette while keeping the tone light and friendly.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Draft a short recruiting blurb for the newsletter: “Love bridge but hate finding partners? Join our Duplicate Bridge group – we guarantee you a seat and a smile every week!”</pre><button class="copy">Copy</button></div>
+
+  <h3>Bunko</h3>
+  <div class="prompt"><pre>Write a hilarious, over-the-top Bunko invitation email titled “Roll into Mayhem!” that explains “absolutely no skill required” and reminds everyone to bring a snack and beverage for the 2nd Monday at the Retreat at Jordanelle.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Create 10 funny prize categories for Bunko night (e.g., Most Spectacular Bunko, Traveler Extraordinaire, Queen of the Fuzzy Dice, etc.).</pre><button class="copy">Copy</button></div>
+
+  <h3>Canasta</h3>
+  <div class="prompt"><pre>Draft a friendly reminder for the 1st & 3rd Monday Canasta group that includes the “one free trial for prospective members” policy and mentions light snacks are welcome.</pre><button class="copy">Copy</button></div>
+</section>
+
+<!-- ==================== OUTDOOR & ADVENTURE ==================== -->
+<section id="outdoor">
+  <h2>Outdoor & Adventure Groups</h2>
+
+  <h3>Bark Buddies (Dog Play Group)</h3>
+  <div class="prompt"><pre>Write a cheerful weekly Bark Buddies announcement for Friday 10 am, including the park location, weather forecast, and a reminder to bring poop bags and water.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Create a short, heartwarming Instagram post with a photo of happy dogs and owners captioned: “Where tails wag and friendships grow – Bark Buddies every Friday!”</pre><button class="copy">Copy</button></div>
+
+  <h3>Downhill Skiing – Deer Valley & PCMR Groups</h3>
+  <div class="prompt"><pre>You are the ski coordinator. Write the Wednesday morning ski email for Deer Valley that includes meeting spot (Carpenter lift), carpool options, and a note that the leader will ski greens/blues in the afternoon for newer skiers.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Create a “Ski Day FAQ” one-pager for new members covering lift tickets, parking, what to wear, and après options.</pre><button class="copy">Copy</button></div>
+
+  <h3>Garden Group</h3>
+  <div class="prompt"><pre>Draft a Garden Group newsletter blurb announcing June’s meeting: a tour of three members’ high-altitude gardens followed by lemonade and plant swap.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Write a short, encouraging note to a member who just lost most of their seedlings to frost: remind them this is normal at 7,000 ft and invite them to the next hands-on workshop.</pre><button class="copy">Copy</button></div>
+</section>
+
+<!-- ==================== CREATIVE & SOCIAL ==================== -->
+<section id="creative">
+  <h2>Creative & Social Pursuits</h2>
+
+  <h3>Book Club (Daytime)</h3>
+  <div class="prompt"><pre>Write the monthly Book Club email announcing next month’s selection, the host home (or Zoom), and the famous November Harvest Brunch reminder.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Create 8 thought-provoking discussion questions for “Lessons in Chemistry” by Bonnie Garmus that work equally well in-person or on Zoom.</pre><button class="copy">Copy</button></div>
+
+  <h3>CATS – Creating Art Together Socially</h3>
+  <div class="prompt"><pre>Write a no-signup-needed invitation for the 2nd & 4th Friday CATS sessions: “Bring whatever you’re working on – watercolor, knitting, jewelry, anything!”</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Create an Instagram story series template (3 slides) welcoming people to drop in to CATS with photos of past projects.</pre><button class="copy">Copy</button></div>
+
+  <h3>JULIETS</h3>
+  <div class="prompt"><pre>Draft a classy yet fun JULIETS invitation: “Just Us Ladies Imbibing, Eating, Talking, Socializing at Susan’s on Thursday the 18th – bring an appetizer and your favorite beverage!”</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Write a gentle reminder to past attendees asking who would like to host the next JULIETS gathering.</pre><button class="copy">Copy</button></div>
+
+  <h3>Gone Wild (Unusual Activities)</h3>
+  <div class="prompt"><pre>Create a mysterious teaser email titled “Gone Wild – June Edition” revealing only “Pack bug spray and a sense of adventure” and promising details 48 hours before the event.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Write the big reveal for a Gone Wild event: overnight yurt camping with stargazing and s’mores in the Uintas.</pre><button class="copy">Copy</button></div>
+</section>
+
+<!-- ==================== DINING GROUPS ==================== -->
+<section id="dining">
+  <h2>Foodies & Friends: Dining Groups</h2>
+
+  <h3>Cooking & Dining Adventures</h3>
+  <div class="prompt"><pre>You are the coordinator. Write the May menu email: Tuscan Night – host provides Chicken Saltimbocca, assignments for antipasto, risotto, tiramisu, and matching wines.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Draft a polite note to a member who keeps signing up as alternate but never hosts, gently encouraging them to consider hosting once a year.</pre><button class="copy">Copy</button></div>
+
+  <h3>Denim Dining (Casual Themed Potluck)</h3>
+  <div class="prompt"><pre>Write an exciting announcement for next month’s Denim Dining theme: “Breakfast for Dinner Pajama Party!” – limited to 8, pick your dish when you RSVP.</pre><button class="copy">Copy</button></div>
+  <div class="prompt"><pre>Create a sign-up sheet template (Google Forms style) for Denim Dining with theme, host address, and dish selection dropdown.</pre><button class="copy">Copy</button></div>
+
+  <h3>Supper Club & Wine Tasting</h3>
+  <div class="prompt"><pre>Draft an elegant invitation to the next Wine Tasting evening: “Spring Rosé Revival” – 6 wines, paired bites, at the Thompson home.</pre><button class="copy">Copy</button></div>
+</section>
+
+</main>
+
+<footer>
+  <p>© 2025 Newcomers Club of Greater Park City • AI Workshop powered by Applied AI Labs</p>
+</footer>
+
+<script>
+// Theme Toggle Logic
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+const themeLabel = themeToggle.querySelector('.label');
+
+// Check for saved theme
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+  document.documentElement.setAttribute('data-theme', 'dark');
+  themeLabel.textContent = 'Light Mode';
+}
+
+themeToggle.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  if (currentTheme === 'dark') {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('theme', 'light');
+    themeLabel.textContent = 'Dark Mode';
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('theme', 'dark');
+    themeLabel.textContent = 'Light Mode';
+  }
+});
+
+document.querySelectorAll('button.copy').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.previousElementSibling.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  });
+});
+
+// Smooth scroll for nav links
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const targetId = link.getAttribute('href');
+    if (targetId.startsWith('#')) {
+      const target = document.querySelector(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
