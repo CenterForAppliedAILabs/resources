@@ -1,0 +1,5 @@
+- https://centerforappliedailabs.github.io/resources/newcomer-activity-prompts-good_115-sonnet45-AppliedAILabs.html
+- https://centerforappliedailabs.github.io/resources/newcomer-activity-prompts-grok41-AppliedAILabs.html
+- https://centerforappliedailabs.github.io/resources/newcomer-activity-prompts-good-big-glm5-AppliedAILabs.html
+- https://centerforappliedailabs.github.io/resources/newcomer-activity-prompts-good-64-KimiK25-AppliedAILabs.html
+- https://centerforappliedailabs.github.io/resources/newcomer-activity-prompts-good-16-qwen35-AppliedAILabs.html
