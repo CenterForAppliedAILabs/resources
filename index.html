@@ -12,6 +12,9 @@
     a{color:#0366d6}
     .muted{color:#6a737d;font-size:0.95rem}
     .error{color:#842029;background:#f8d7da;padding:.5rem;border-radius:6px}
+    .section{margin-top:2rem}
+    .section h2{margin-bottom:.25rem;font-size:1.15rem;border-bottom:1px solid #e1e4e8;padding-bottom:.3rem}
+    .section .desc{color:#6a737d;font-size:.9rem;margin-top:0;margin-bottom:.5rem}
   </style>
 </head>
 <body>
@@ -93,30 +96,103 @@
         return data.tree.filter(item => item.type === 'blob').map(b=>b.path);
       }
 
-      function renderList(paths){
+      function globToRegex(pattern) {
+        const esc = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&');
+        const regexStr = esc.replace(/\*/g, '.*').replace(/\?/g, '.');
+        return new RegExp('^' + regexStr + '$');
+      }
+
+      function matchFile(file, patterns) {
+        return patterns.some(p => globToRegex(p).test(file));
+      }
+
+      async function renderSections(paths){
         const files = paths.filter(p => p !== 'index.html' && p.includes('-AppliedAILabs')).sort((a,b)=>a.localeCompare(b));
         if(!files.length){
           listingEl.innerHTML = '<p class="muted">No matching files found (looking for files containing "-AppliedAILabs").</p>';
           return;
         }
-        const ul = document.createElement('ul');
-        files.forEach(path => {
-          const li = document.createElement('li');
-          const a = document.createElement('a');
-          a.href = encodeURI(path);
-          a.textContent = path;
-          li.appendChild(a);
-          ul.appendChild(li);
+
+        let sections;
+        try {
+          const resp = await fetch('sections.json');
+          sections = await resp.json();
+        } catch(e) {
+          const ul = document.createElement('ul');
+          files.forEach(path => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = encodeURI(path);
+            a.textContent = path;
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+          listingEl.innerHTML = '';
+          listingEl.appendChild(ul);
+          return;
+        }
+
+        const matched = new Set();
+        const frag = document.createDocumentFragment();
+
+        sections.forEach(section => {
+          const sectionFiles = files.filter(f => !matched.has(f) && matchFile(f, section.patterns));
+          if (!sectionFiles.length) return;
+          sectionFiles.forEach(f => matched.add(f));
+
+          const div = document.createElement('div');
+          div.className = 'section';
+          const h2 = document.createElement('h2');
+          h2.textContent = section.title;
+          div.appendChild(h2);
+          if (section.description) {
+            const p = document.createElement('p');
+            p.className = 'desc';
+            p.textContent = section.description;
+            div.appendChild(p);
+          }
+          const ul = document.createElement('ul');
+          sectionFiles.forEach(path => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = encodeURI(path);
+            a.textContent = path;
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+          div.appendChild(ul);
+          frag.appendChild(div);
         });
+
+        const uncategorized = files.filter(f => !matched.has(f));
+        if (uncategorized.length) {
+          const div = document.createElement('div');
+          div.className = 'section';
+          const h2 = document.createElement('h2');
+          h2.textContent = 'Uncategorized';
+          div.appendChild(h2);
+          const ul = document.createElement('ul');
+          uncategorized.forEach(path => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = encodeURI(path);
+            a.textContent = path;
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+          div.appendChild(ul);
+          frag.appendChild(div);
+        }
+
         listingEl.innerHTML = '';
-        listingEl.appendChild(ul);
+        listingEl.appendChild(frag);
       }
 
       (async function init(){
         setBaseForPages();
         try{
           const paths = await fetchFiles();
-          renderList(paths);
+          renderSections(paths);
         }catch(err){
           console.error(err);
           showError('Could not load file list from GitHub API. View repository on GitHub: <a href="https://github.com/' + owner + '/' + repo + '">https://github.com/' + owner + '/' + repo + '</a>');
