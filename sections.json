@@ -1,0 +1,41 @@
+[
+  {
+    "title": "1. AI Mindset and Leadership",
+    "description": "Frameworks for understanding AI's impact on work and leadership",
+    "patterns": [
+      "The AI Mindset*-AppliedAILabs.pdf",
+      "Adaptive Leadership*-AppliedAILabs*",
+      "Leading Through*-AppliedAILabs*",
+      "Adaption vs Adoption-AppliedAILabs*",
+      "The Dangers of AI Adoption*-AppliedAILabs*"
+    ]
+  },
+  {
+    "title": "2. Vibe Coding",
+    "description": "Hands-on AI coding tutorials and tools",
+    "patterns": ["Vibe Coding*-AppliedAILabs*"]
+  },
+  {
+    "title": "3. Newcomer Activity Prompts",
+    "description": "Prompt examples and activities for people new to AI",
+    "patterns": ["*newcomer*-AppliedAILabs*", "Newcomers-activity*", "prompt-best-practices*-AppliedAILabs*"]
+  },
+  {
+    "title": "4. Classroom Challenges",
+    "description": "AI challenge sets for classroom and workshop use",
+    "patterns": ["10-classroom-challenges-*-AppliedAILabs*"]
+  },
+  {
+    "title": "5. AI Feature Comparisons",
+    "patterns": ["ai-feature-comparison-AppliedAILabs*"]
+  },
+  {
+    "title": "6. AI for Detailers",
+    "description": "AI guides tailored for the auto detailing industry",
+    "patterns": ["*Detailers*-AppliedAILabs*"]
+  },
+  {
+    "title": "7. Governance and Analysis",
+    "patterns": ["synth-governance*-AppliedAILabs*", "Gemini Analysis*-AppliedAILabs*", "Emergent Properties*-AppliedAILabs*"]
+  }
+]

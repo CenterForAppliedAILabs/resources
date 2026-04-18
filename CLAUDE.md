@@ -8,13 +8,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-The project consists of three main components:
+The project consists of four main components:
 
 1. **index.html** - The main entry point, currently configured as a dynamic index page that uses JavaScript and the GitHub API to fetch and display files from the repository. Can be regenerated as a static version using the Python script.
 
 2. **scripts/update_index.py** - A Python utility that generates a static version of `index.html` by reading files from git. This is useful when you want a version that doesn't depend on JavaScript or GitHub API calls.
 
 3. **.github/workflows/update-index.ymx** - GitHub Actions workflow that automatically regenerates `index.html` when code is pushed to the main branch. The workflow prevents infinite loops by only running when pushes are not from the `github-actions[bot]` user.
+
+4. **sections.json** - Config file that defines how files are organized into named sections on the index page. Contains section titles, descriptions, and glob patterns for matching files.
 
 ## Development Workflow
 
@@ -46,7 +48,15 @@ Open `index.html` in a browser. The JavaScript will fetch from the GitHub API an
 Both the dynamic JavaScript version and static Python version filter files the same way:
 - Include only files where the filename contains "-AppliedAILabs"
 - Exclude `index.html` itself
-- Sort results alphabetically
+- Sort results alphabetically within each section
+
+### Section Organization
+Files are grouped into named sections defined in `sections.json`. The config is an ordered JSON array of section objects:
+- `title` (required): The section heading displayed on the page
+- `description` (optional): A subtitle shown below the heading
+- `patterns` (required): Array of glob patterns (using `*` and `?` wildcards) that match filenames
+
+Files matching a section's patterns are grouped under that section heading. Files not matched by any section appear in an "Uncategorized" section at the bottom. Both renderers (JS and Python) read the same `sections.json` file.
 
 ### Dynamic vs Static Index Generation
 - **Dynamic (current)**: `index.html` uses JavaScript to call the GitHub API (requires internet, supports real-time updates)
@@ -65,12 +75,13 @@ The workflow in `.github/workflows/update-index.ymx`:
 resources/
 ├── CLAUDE.md                          # This file
 ├── index.html                         # Main index page (dynamic)
+├── sections.json                      # Section definitions (titles, descriptions, glob patterns)
 ├── scripts/
 │   └── update_index.py               # Static index generator
 ├── .github/
 │   └── workflows/
 │       └── update-index.ymx          # GitHub Actions workflow
-└── *.pdf                             # Whitepapers and content files
+└── *.pdf / *.html                    # Whitepapers and content files
 ```
 
 ## Common Modifications
@@ -78,8 +89,16 @@ resources/
 ### Adding a new static file
 1. Create or add your file to the repository
 2. Ensure the filename contains "-AppliedAILabs" for it to be indexed
-3. Commit and push to `main` (or `working` first)
-4. The GitHub Actions workflow will automatically regenerate the index
+3. If the filename matches an existing glob pattern in `sections.json`, it will appear in that section automatically
+4. If it doesn't match any pattern, add a new pattern to the appropriate section in `sections.json` (or create a new section)
+5. Commit and push to `main` (or `working` first)
+6. The GitHub Actions workflow will automatically regenerate the index
+
+### Adding or modifying a section
+Edit `sections.json` to add, remove, or reorder sections. Each section has:
+- `title`: Section heading (e.g., "1. AI Mindset and Leadership")
+- `description` (optional): Subtitle text
+- `patterns`: Array of glob patterns (e.g., `["Vibe Coding*-AppliedAILabs*"]`)
 
 ### Changing the file filter pattern
 Edit the file pattern check in:
