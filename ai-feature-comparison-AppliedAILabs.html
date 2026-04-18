@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot Feature Comparison</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg-page: #FAF9F7;
+            --bg-card: #FFFFFF;
+            --text-primary: #1A1412;
+            --text-secondary: #6B5E54;
+            --text-tertiary: #9C8E82;
+            --accent: #D97757;
+            --accent-light: #FDF0EB;
+            --border: #E8E2DC;
+            --border-light: #F0EBE5;
+            --shadow: 0 1px 3px rgba(26, 20, 18, 0.06), 0 1px 2px rgba(26, 20, 18, 0.04);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 48px 24px 64px;
+        }
+
+        /* Header */
+        .page-header { text-align: center; margin-bottom: 40px; }
+
+        .page-header .badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 100px;
+            margin-bottom: 14px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        /* Table Container */
+        .table-wrap {
+            background: var(--bg-card);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        /* Header Row */
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: #F5F3F0;
+            padding: 16px 18px;
+            text-align: left;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-tertiary);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+
+        thead th:first-child {
+            width: 200px;
+            min-width: 180px;
+            color: var(--text-secondary);
+        }
+
+        .th-inner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .th-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-chatgpt    { background: #10A37F; }
+        .dot-gemini     { background: #4285F4; }
+        .dot-copilot    { background: #0078D4; }
+        .dot-claude     { background: var(--accent); }
+        .dot-perplexity { background: #20B8CD; }
+        .dot-grok       { background: #1D1D1F; }
+
+        /* Body Rows */
+        tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background: #FAFAF8;
+        }
+
+        tbody td {
+            padding: 16px 18px;
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: top;
+            line-height: 1.55;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Feature name cell */
+        td.td-feature {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.86rem;
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-light);
+        }
+
+        tbody tr:hover td.td-feature {
+            background: #FAFAF8;
+        }
+
+        .feature-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-emoji {
+            font-size: 1rem;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F5F3F0;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .page-footer p {
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-wrapper { padding: 24px 12px 40px; }
+            .page-header h1 { font-size: 1.5rem; }
+            .page-header p { font-size: 0.88rem; }
+
+            thead th, tbody td { padding: 12px 12px; font-size: 0.78rem; }
+
+            td.td-feature {
+                width: 140px;
+                min-width: 130px;
+                font-size: 0.78rem;
+            }
+
+            .feature-emoji { display: none; }
+
+            .table-wrap {
+                border-radius: 10px;
+                margin: 0 -12px;
+                border-left: none;
+                border-right: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+
+        <header class="page-header">
+            <span class="badge">2025 Comparison</span>
+            <h1>AI Chatbot Feature Comparison</h1>
+            <p>Side-by-side look at how the leading AI platforms stack up across core features on the free tier.</p>
+        </header>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>
+                            <div class="th-inner"><span class="th-dot dot-chatgpt"></span>ChatGPT</div>
+                        </th>
+                        <th>
+                            <div class="th-inner"><span class="th-dot dot-gemini"></span>Gemini</div>
+                        </th>
+                        <th>
+                            <div class="th-inner"><span class="th-dot dot-copilot"></span>Copilot</div>
+                        </th>
+                        <th>
+                            <div class="th-inner"><span class="th-dot dot-claude"></span>Claude</div>
+                        </th>
+                        <th>
+                            <div class="th-inner"><span class="th-dot dot-perplexity"></span>Perplexity</div>
+                        </th>
+                        <th>
+                            <div class="th-inner"><span class="th-dot dot-grok"></span>Grok</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="td-feature">
+                            <div class="feature-label"><span class="feature-emoji">&#128269;</span>Search Previous Chats</div>
+                        </td>
+                        <td>Search chats</td>
+                        <td>History + search</td>
+                        <td>Conversation history</td>
+                        <td>Projects / longer conversations</td>
+                        <td>History + Spaces</td>
+                        <td>Chat history sidebar; DeepSearch scans web + X</td>
+                    </tr>
+
+                    <tr>
+                        <td class="td-feature">
+                            <div class="feature-label"><span class="feature-emoji">&#128196;</span>Mouse-over Full Chat Title</div>
+                        </td>
+                        <td>Chat list shows titles</td>
+                        <td>Thread titles</td>
+                        <td>Recent files/chats surfaced</td>
+                        <td>Projects/artifacts visible</td>
+                        <td>Thread titles in Spaces</td>
+                        <td>Thread titles in sidebar</td>
+                    </tr>
+
+                    <tr>
+                        <td class="td-feature">
+                            <div class="feature-label"><span class="feature-emoji">&#127908;</span>Direct Dictation / Voice</div>
+                        </td>
+                        <td>Voice Mode (limited rollout; free access to some voice features)</td>
+                        <td>Microphone / Gemini Live (voice input)</td>
+                        <td>Voice support (free voice announced)</td>
+                        <td>Voice input and voice search improvements on free tier</td>
+                        <td>Voice / dictation modes available</td>
+                        <td>Ctrl+D keyboard dictation; no dedicated Voice Mode</td>
+                    </tr>
+
+                    <tr>
+                        <td class="td-feature">
+                            <div class="feature-label"><span class="feature-emoji">&#128193;</span>Projects / Spaces / Gems / GPTs</div>
+                        </td>
+                        <td>Projects, GPTs discovery; GPT creator paid</td>
+                        <td>Gems (custom experts; some features paid)</td>
+                        <td>Agents / Studio (agents, integrations; some paid)</td>
+                        <td>Projects / Skills (projects, reusable Skills on free tier)</td>
+                        <td>Spaces (organize research)</td>
+                        <td>Companions (3D animated characters); no project workspace</td>
+                    </tr>
+
+                    <tr>
+                        <td class="td-feature">
+                            <div class="feature-label"><span class="feature-emoji">&#9889;</span>One-click Chat Types / Templates</div>
+                        </td>
+                        <td>Quick prompts, templates, GPTs store (some creator features paid)</td>
+                        <td>Built-in templates and Live modes</td>
+                        <td>Ready agents and templates in Copilot Chat</td>
+                        <td>Reusable Skills and templates</td>
+                        <td>Pinned tasks, Spaces templates</td>
+                        <td>Think, DeepSearch, DeeperSearch modes; no templates or store</td>
+                    </tr>
+
+                    <tr>
+                        <td class="td-feature">
+                            <div class="feature-label"><span class="feature-emoji">&#128206;</span>File Upload / Image / Data Analysis</div>
+                        </td>
+                        <td>File & image uploads; data analysis tools (rate-limited)</td>
+                        <td>File & image uploads; multimodal</td>
+                        <td>Integrations with files and apps (varies by platform)</td>
+                        <td>File uploads, file Q&A on free tier</td>
+                        <td>File Q&A (limited), export options</td>
+                        <td>Image understanding, PDF support, image editing, multimodal</td>
+                    </tr>
+
+                    <tr>
+                        <td class="td-feature">
+                            <div class="feature-label"><span class="feature-emoji">&#9000;</span>Desktop App / Keyboard Shortcut</div>
+                        </td>
+                        <td>Desktop app + shortcut (Option+Space on macOS)</td>
+                        <td>Web + mobile; Chrome integration coming</td>
+                        <td>Desktop apps and OS integration (Copilot on Windows/Mac)</td>
+                        <td>Desktop app / web console</td>
+                        <td>Web app; Comet browser for paid tiers</td>
+                        <td>Web app, iOS, Android; Ctrl+D to dictate; Tesla integration</td>
+                    </tr>
+
+                    <tr>
+                        <td class="td-feature">
+                            <div class="feature-label"><span class="feature-emoji">&#128228;</span>Export / Share Chats</div>
+                        </td>
+                        <td>Shareable links, export options</td>
+                        <td>Export to Docs/Gmail, share links</td>
+                        <td>Shareable outputs; integrations with 365 apps</td>
+                        <td>Export files/artifacts</td>
+                        <td>Export/search results; Spaces export</td>
+                        <td>Session sharing available; limited export options</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="page-footer">
+            <p>Data reflects publicly available free-tier features as of early 2025. Grok data sourced from Wikipedia, grok.com, and tech press coverage. Features may have changed since publication.</p>
+        </footer>
+
+    </div>
+</body>
+</html>
