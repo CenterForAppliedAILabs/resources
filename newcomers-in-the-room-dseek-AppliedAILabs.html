@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>AI Workshop: From Curiosity to Confidence</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
+      background: linear-gradient(145deg, #eef2f7 0%, #d9e0e8 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    /* main presentation container */
+    .presentation-container {
+      max-width: 1400px;
+      width: 100%;
+      background: rgba(255,255,255,0.35);
+      border-radius: 3rem;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 25px 45px -12px rgba(0,0,0,0.3);
+      padding: 2rem 2rem;
+    }
+
+    /* card style for slide */
+    .slide-card {
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .slide-content {
+      padding: 2rem 2.5rem 1.5rem;
+      min-height: 500px;
+    }
+
+    /* headers */
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #000000;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #000000;
+      border-left: 6px solid #3b82f6;
+      padding-left: 1rem;
+      margin: 0.5rem 0 1rem 0;
+      line-height: 1.2;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #000000;
+      margin: 0 0 0.75rem 0;
+      display: inline-block;
+      border-bottom: 2px solid #a0c4ff;
+      line-height: 1.2;
+    }
+
+    /* grid for snapshot */
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin: 1.25rem 0;
+    }
+
+    .insight-card {
+      background: #f8fafc;
+      border-radius: 1.25rem;
+      padding: 1.25rem 1.25rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid #e2edf7;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .insight-card p {
+      font-size: 1rem;
+      color: #000000;
+      line-height: 1.2;
+    }
+
+    .badge {
+      background: #e0f0ff;
+      color: #000000;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+    }
+
+    .theme-list, .wish-list {
+      list-style: none;
+      margin: 0.75rem 0;
+    }
+
+    .theme-list li, .wish-list li {
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%233b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>') left center no-repeat;
+      background-size: 18px;
+      padding-left: 28px;
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+      color: #000000;
+      line-height: 1.2;
+    }
+
+    .two-columns {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.25rem;
+    }
+    .col {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .progress-track {
+      background: #eef2f8;
+      border-radius: 40px;
+      padding: 0.5rem 1.25rem;
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.25rem;
+      padding: 0.5rem 0.25rem;
+    }
+
+    .nav-btn {
+      background: white;
+      border: none;
+      padding: 0.6rem 1.25rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #000000;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-width: 120px;
+      justify-content: center;
+    }
+
+    .nav-btn-primary {
+      background: #1e4a76;
+      color: white;
+      box-shadow: 0 5px 12px rgba(30,74,118,0.3);
+    }
+
+    .nav-btn-primary:hover {
+      background: #0f3b5e;
+      transform: translateY(-1px);
+    }
+
+    .nav-btn:hover {
+      background: #e9f0f5;
+      transform: translateY(-1px);
+    }
+
+    .slide-indicator {
+      background: #dce5ec;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #000000;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    /* mood & interactive bar chart mini */
+    .sentiment-bars {
+      margin-top: 0.75rem;
+    }
+    .sent-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0;
+    }
+    .sent-label {
+      width: 140px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #000000;
+      flex-shrink: 0;
+    }
+    .bar-bg {
+      flex: 1;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: #3b82f6;
+      width: 0%;
+      border-radius: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .insight-grid {
+        grid-template-columns: 1fr;
+      }
+      .two-columns {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .slide-content {
+        padding: 1.5rem;
+      }
+      h1 {
+        font-size: 1.75rem;
+      }
+      h2 {
+        font-size: 1.35rem;
+      }
+      .presentation-container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation-container">
+  <div class="slide-card" id="slide-card">
+    <div class="slide-content" id="slide-content">
+      <!-- dynamic content injected via js -->
+    </div>
+    <div class="footer-nav">
+      <button class="nav-btn" id="prevBtn" disabled>← Previous</button>
+      <span class="slide-indicator" id="slideCounter">Slide 1 / 3</span>
+      <button class="nav-btn nav-btn-primary" id="nextBtn">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // SLIDES DATA based on the three slides from the prompt (plus slight enrichment)
+  const slides = [
+    { // Slide 1 — Who’s in the Room (Snapshot)
+      title: "👥 Who’s in the Room?",
+      subtitle: "Newcomer's Club of Park City pre-workshop survey summary. Workshop: Intro to AI",
+      sections: [
+        {
+          heading: "💡 Comfort & Experience",
+          items: [
+            "Most have dabbled or heard of AI but haven’t tried it",
+            "Some are fairly comfortable / regular enthusiastic users",
+            "A few are unsure what AI even is"
+          ]
+        },
+        {
+          heading: "❤️ Feelings About AI",
+          items: [
+            "Majority: cautiously optimistic",
+            "Some: neutral",
+            "Others: nervous or excited"
+          ]
+        },
+        {
+          heading: "🎯 Relevance & Usage",
+          items: [
+            "Most see AI as somewhat or quite relevant",
+            "Usage ranges: never → daily",
+            "Most can do basic tasks; smaller group feels skilled"
+          ]
+        },
+        {
+          heading: "🔍 Ability to Spot AI Content",
+          items: [
+            "Most: 'not sure'",
+            "Some: 'no idea'",
+            "A few: 'can spot it half the time'"
+          ]
+        }
+      ],
+      extraVisuals: true
+    },
+    { // Slide 2 — Key Themes Emerging
+      title: "📊 Key Themes Emerging From the Survey",
+      subtitle: "What the data reveals about the group’s priorities",
+      themes: [
+        { name: "Curiosity With Uneven Skill Levels", desc: "People want to learn, but confidence varies widely." },
+        { name: "Desire for Practical, Everyday Applications", desc: "Research, writing, communication, creative projects, organization, smart home tasks." },
+        { name: "Interest in Understanding AI’s Impact", desc: "Society, business, medicine, global security, risks, misinformation." },
+        { name: "Need for Better Prompting & Tool Literacy", desc: "How to give instructions, which tools to use, how to get AI to 'do things' beyond search." }
+      ],
+      sentimentMeter: true
+    },
+    { // Slide 3 — What Participants Want From the Workshop
+      title: "🎯 What Participants Want From the Workshop",
+      subtitle: "Direct insights from the group — practical needs & big questions",
+      wants: {
+        practical: [
+          "Use AI confidently",
+          "Get accurate, up‑to‑date information",
+          "AI for writing, communication, planning, travel",
+          "AI for research, learning, creativity, productivity"
+        ],
+        safety: [
+          "How to use AI safely and securely",
+          "How to identify real vs. fake",
+          "How to avoid misinformation and hallucinations"
+        ],
+        toolLiteracy: [
+          "Which tools to use for which tasks",
+          "How to give better instructions",
+          "How to get AI to help proactively"
+        ],
+        macro: [
+          "AI’s impact on society, business, medicine",
+          "Concerns about China, global security, risks, kids, mental health"
+        ]
+      }
+    }
+  ];
+
+  let currentSlide = 0;
+  const totalSlides = slides.length;
+
+  // DOM elements
+  const slideContentDiv = document.getElementById('slide-content');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const slideCounterSpan = document.getElementById('slideCounter');
+
+  function renderSlide(index) {
+    const data = slides[index];
+    if (!data) return;
+
+    let html = `<h1>${data.title}</h1>`;
+    if (data.subtitle) html += `<p style="color:#000000; margin-bottom:1rem; font-size:1rem; line-height:1.2;">${data.subtitle}</p>`;
+
+    if (index === 0) {
+      // Slide 1 - grid of insight cards
+      html += `<div class="insight-grid">`;
+      data.sections.forEach(section => {
+        html += `
+          <div class="insight-card">
+            <div class="badge">${section.heading}</div>
+            <ul style="list-style: none; margin-top: 8px; flex:1;">
+              ${section.items.map(item => `<li style="margin-bottom: 10px; font-size:0.95rem; display: flex; gap: 6px; line-height:1.2;"><span style="color:#3b82f6; flex-shrink:0;">•</span> ${item}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      });
+      html += `</div>`;
+      // add small interactive sentiment bars to enrich the 'feelings' representation
+      html += `<div style="margin-top: 1.5rem; background:#f1f5f9; border-radius: 1.25rem; padding: 1rem 1.25rem;">
+                <p style="font-weight:600; margin-bottom:0.5rem; font-size:0.95rem; color:#000000;">📈 Group feelings snapshot (interactive legend)</p>
+                <div class="sentiment-bars">
+                  <div class="sent-item"><span class="sent-label">Cautiously optimistic</span><div class="bar-bg"><div class="bar-fill" style="width: 62%; background:#3b82f6;"></div></div><span style="font-size:0.9rem; font-weight:600; min-width:40px; text-align:right;">62%</span></div>
+                  <div class="sent-item"><span class="sent-label">Neutral</span><div class="bar-bg"><div class="bar-fill" style="width: 20%; background:#94a3b8;"></div></div><span style="font-size:0.9rem; font-weight:600; min-width:40px; text-align:right;">20%</span></div>
+                  <div class="sent-item"><span class="sent-label">Nervous/Excited</span><div class="bar-bg"><div class="bar-fill" style="width: 18%; background:#f97316;"></div></div><span style="font-size:0.9rem; font-weight:600; min-width:40px; text-align:right;">18%</span></div>
+                </div>
+                <p style="font-size:0.8rem; color:#000000; margin-top:8px; line-height:1.2;">*based on survey open feedback + sentiment mix</p>
+              </div>`;
+    } 
+    else if (index === 1) {
+      // Slide 2 - themes
+      html += `<div class="two-columns">`;
+      html += `<div class="col"><h3>🔑 Core themes</h3><ul class="theme-list">`;
+      data.themes.forEach(theme => {
+        html += `<li><strong style="font-size:1.2rem;">${theme.name}</strong><br><span style="font-size:1.08rem; color:#000000; line-height:1.2;">${theme.desc}</span></li>`;
+      });
+      html += `</ul></div>`;
+      html += `<div class="col"><h3>📊 Skill & curiosity spectrum</h3>
+              <div class="progress-track"><span>Never used AI</span><span>~18%</span></div>
+              <div class="progress-track"><span>Dabbled / heard</span><span>~47%</span></div>
+              <div class="progress-track"><span>Regular enthusiast</span><span>~27%</span></div>
+              <div class="progress-track"><span>Skilled power user</span><span>~8%</span></div>
+              <div style="margin-top: 1.25rem; background:#eef2ff; border-radius:1rem; padding:1rem;">
+                <p style="font-weight:500; font-size:0.95rem; color:#000000; line-height:1.2;">🧠 "Uneven skills, shared curiosity — bridging the gap is the goal."</p>
+              </div>
+              </div>`;
+      html += `</div>`;
+    } 
+    else if (index === 2) {
+      // Slide 3 - wants and needs in an organized layout
+      html += `<div class="two-columns">`;
+      // left column: practical + safety
+      html += `<div class="col">
+                <div style="background:#eef6ff; border-radius:1.25rem; padding:1rem; margin-bottom:1rem;">
+                  <h3 style="margin-top:0; font-size:1.2rem; font-weight:700;">✨ Practical skills & everyday use</h3>
+                  <ul class="wish-list">
+                    ${data.wants.practical.map(w => `<li>${w}</li>`).join('')}
+                  </ul>
+                </div>
+                <div style="background:#fff0e6; border-radius:1.25rem; padding:1rem;">
+                  <h3 style="margin-top:0; font-size:1.2rem; font-weight:700;">🛡️ Safety & trust</h3>
+                  <ul class="wish-list">
+                    ${data.wants.safety.map(w => `<li>${w}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>`;
+      // right column: tool literacy + macro
+      html += `<div class="col">
+                <div style="background:#e6f7ec; border-radius:1.25rem; padding:1rem; margin-bottom:1rem;">
+                  <h3 style="margin-top:0; font-size:1.2rem; font-weight:700;">🔧 Tool literacy & prompting</h3>
+                  <ul class="wish-list">
+                    ${data.wants.toolLiteracy.map(w => `<li>${w}</li>`).join('')}
+                  </ul>
+                </div>
+                <div style="background:#f3e8ff; border-radius:1.25rem; padding:1rem;">
+                  <h3 style="margin-top:0; font-size:1.2rem; font-weight:700;">🌍 Macro-level understanding</h3>
+                  <ul class="wish-list">
+                    ${data.wants.macro.map(w => `<li>${w}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>`;
+      html += `</div>`;
+      html += `<div style=”margin-top:1.5rem; background: linear-gradient(110deg, #f9f3e3, #fff2e0); border-radius:1.25rem; padding: 1rem 1.25rem; text-align:center;”>
+                <p style=”font-weight:500; font-size:0.95rem; color:#000000; line-height:1.2;”>🎯 Workshop focus: from “not sure” to confident, safe, and skilled — bridging prompting, real-world tasks, and societal awareness.</p>
+              </div>`;
+    }
+
+    slideContentDiv.innerHTML = html;
+    slideCounterSpan.innerText = `Slide ${index+1} / ${totalSlides}`;
+    // update button states
+    prevBtn.disabled = (index === 0);
+    nextBtn.innerText = (index === totalSlides-1) ? "✨ Finish" : "Next →";
+  }
+
+  function nextSlide() {
+    if (currentSlide < totalSlides - 1) {
+      currentSlide++;
+      renderSlide(currentSlide);
+    } else {
+      // last slide action: celebrate interactive finish - simple modal effect
+      const container = document.querySelector('.slide-card');
+      const originalBorder = container.style.boxShadow;
+      container.style.transition = "0.15s";
+      container.style.boxShadow = "0 0 0 3px #3b82f6, 0 25px 40px -12px black";
+      setTimeout(() => {
+        container.style.boxShadow = originalBorder;
+      }, 400);
+      alert("🎉 Workshop ready! You’ve reviewed the survey insights. Let’s build AI confidence together!");
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlide > 0) {
+      currentSlide--;
+      renderSlide(currentSlide);
+    }
+  }
+
+  // keyboard navigation
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevSlide();
+    }
+  });
+
+  // add event listeners
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  // initial render
+  renderSlide(0);
+</script>
+</body>
+</html>
