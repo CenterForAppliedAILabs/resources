@@ -118,6 +118,19 @@
             flex-shrink: 0;
         }
 
+        thead th a {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        thead th a:hover {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
         .dot-chatgpt    { background: #10A37F; }
         .dot-gemini     { background: #4285F4; }
         .dot-copilot    { background: #0078D4; }
@@ -237,22 +250,22 @@
                     <tr>
                         <th>Feature</th>
                         <th>
-                            <div class="th-inner"><span class="th-dot dot-chatgpt"></span>ChatGPT</div>
+                            <a href="https://chat.openai.com" target="_blank" rel="noopener"><span class="th-dot dot-chatgpt"></span>ChatGPT</a>
                         </th>
                         <th>
-                            <div class="th-inner"><span class="th-dot dot-gemini"></span>Gemini</div>
+                            <a href="https://gemini.google.com" target="_blank" rel="noopener"><span class="th-dot dot-gemini"></span>Gemini</a>
                         </th>
                         <th>
-                            <div class="th-inner"><span class="th-dot dot-copilot"></span>Copilot</div>
+                            <a href="https://copilot.microsoft.com" target="_blank" rel="noopener"><span class="th-dot dot-copilot"></span>Copilot</a>
                         </th>
                         <th>
-                            <div class="th-inner"><span class="th-dot dot-claude"></span>Claude</div>
+                            <a href="https://claude.ai" target="_blank" rel="noopener"><span class="th-dot dot-claude"></span>Claude</a>
                         </th>
                         <th>
-                            <div class="th-inner"><span class="th-dot dot-perplexity"></span>Perplexity</div>
+                            <a href="https://perplexity.ai" target="_blank" rel="noopener"><span class="th-dot dot-perplexity"></span>Perplexity</a>
                         </th>
                         <th>
-                            <div class="th-inner"><span class="th-dot dot-grok"></span>Grok</div>
+                            <a href="https://grok.com" target="_blank" rel="noopener"><span class="th-dot dot-grok"></span>Grok</a>
                         </th>
                     </tr>
                 </thead>
