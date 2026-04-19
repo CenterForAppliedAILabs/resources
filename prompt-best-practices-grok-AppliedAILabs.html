@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptForge • 2026 Best Practices</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500&amp;display=swap');
+        
+        :root {
+            --tw-color-primary: #14b8a6;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .title-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(90deg, #0f172a 0%, #134e4a 100%);
+        }
+        
+        .practice-badge {
+            animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        .card .example-section { display: none; }
+        .card.expanded .example-section { display: block; }
+        .card.expanded { grid-column: 1 / -1; }
+        .example-section {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background: #0f172a;
+            border-radius: 1rem;
+            border: 1px solid #1e293b;
+        }
+        .example-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #14b8a6;
+            margin-bottom: 0.75rem;
+        }
+        .example-text {
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .copy-btn {
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: #14b8a6;
+            color: #0f172a;
+            border: none;
+            border-radius: 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: #2dd4bf; }
+        .copy-btn.copied { background: #22c55e; }
+
+        /* Light mode overrides */
+        html.light body { background: #f1f5f9; color: #1e293b; }
+        html.light .hero-bg { background: linear-gradient(90deg, #e0f2fe 0%, #ccfbf1 100%); }
+        html.light nav { background: #fff; border-color: #e2e8f0; }
+        html.light .title-font { color: #0f172a; }
+        html.light nav h1 { color: #0f172a; }
+        html.light nav a { color: #334155; }
+        html.light nav .bg-white { background: #0f172a; color: #fff; }
+        html.light nav .bg-white:hover { background: #14b8a6; color: #fff; }
+        html.light header h1 { color: #0f172a; }
+        html.light header p { color: #475569; }
+        html.light .text-teal-200 { color: #0d9488; }
+        html.light .text-slate-300 { color: #475569; }
+        html.light .card { background: #fff; border-color: #e2e8f0; }
+        html.light .card h3 { color: #0f172a; }
+        html.light .card p { color: #475569; }
+        html.light .card:hover { box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1); }
+        html.light .example-section { background: #f8fafc; border-color: #e2e8f0; }
+        html.light .example-text { color: #334155; }
+        html.light .text-slate-400 { color: #64748b; }
+        html.light .bg-slate-700 { background: #e2e8f0; }
+        html.light .bg-slate-900 { background: #f8fafc; border-color: #e2e8f0; }
+        html.light .bg-black { background: #f1f5f9; }
+        html.light .text-slate-400, html.light footer p { color: #64748b; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <!-- Navbar -->
+    <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner">🤖</div>
+                <h1 class="title-font text-3xl tracking-tighter font-semibold">PromptForge</h1>
+                <span class="px-3 py-1 text-xs font-medium bg-teal-500/10 text-teal-400 rounded-3xl border border-teal-400/30">Park City Newcomers Edition</span>
+            </div>
+            
+            <div class="flex items-center gap-x-8">
+                <a href="#practices" 
+                   class="text-slate-300 hover:text-white transition-colors flex items-center gap-x-1 text-sm font-medium">
+                    <span>BEST PRACTICES</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </a>
+                
+                <!-- Link to this chat -->
+                <a href="https://grok.x.ai" 
+                   target="_blank"
+                   class="flex items-center gap-x-2 bg-white text-slate-900 hover:bg-teal-400 hover:text-white px-6 py-2.5 rounded-3xl font-semibold text-sm transition-all active:scale-95">
+                    <span class="text-lg">🔗</span>
+                    <span>BACK TO THIS GROK CHAT</span>
+                </a>
+                
+                <button onclick="toggleDarkMode()" 
+                        class="w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-800 hover:bg-slate-700 transition-colors">
+                    <span id="theme-icon" class="text-xl">☀️</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero-bg py-16">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+                <div class="max-w-2xl">
+                    <div class="inline-flex items-center gap-x-2 bg-white/10 text-white text-sm font-medium px-5 py-2 rounded-3xl mb-6 backdrop-blur-md">
+                        <div class="w-2 h-2 bg-teal-400 rounded-full practice-badge"></div>
+                        LIVE FROM APRIL 2026
+                    </div>
+                    <h1 class="title-font text-6xl md:text-7xl font-semibold leading-none tracking-tighter text-white">
+                        Best Practices for<br>Modern Prompting
+                    </h1>
+                    <p class="mt-6 text-2xl text-teal-200">
+                        Refreshed for frontier models — GPT-5.2, Grok 4.1, Claude Opus 4.5, DeepSeek-V3.2 and beyond
+                    </p>
+                    <p class="mt-4 text-slate-300 text-lg max-w-md">
+                        Professional techniques. Occasional humor. Zero hallucinations guaranteed* (*results may vary after your third espresso).
+                    </p>
+                    
+                    <div class="mt-10 flex items-center gap-x-4">
+                        <button onclick="copyAllPractices()" 
+                                class="flex-1 md:flex-none bg-white text-slate-900 hover:bg-teal-300 px-8 py-4 rounded-3xl font-semibold flex items-center justify-center gap-x-3 transition-all">
+                            📋 COPY ALL TO CLIPBOARD
+                            <span class="text-xl">📋</span>
+                        </button>
+                        <a href="#practices" 
+                           class="flex-1 md:flex-none border border-white/40 hover:border-white px-8 py-4 rounded-3xl font-medium flex items-center justify-center gap-x-2 transition-all">
+                            SCROLL TO PRACTICES
+                            <span class="text-2xl">↓</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Visual badge -->
+                <div class="hidden md:flex flex-col items-center bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+                    <div class="text-7xl mb-4">🚀</div>
+                    <div class="text-center">
+                        <p class="font-semibold text-3xl text-white">12 Practices</p>
+                        <p class="text-teal-300">Built for agentic, multimodal, long-context frontier models</p>
+                    </div>
+                    <div class="mt-8 grid grid-cols-4 gap-4 text-4xl">
+                        <div>🧠</div>
+                        <div>🛠️</div>
+                        <div>🔄</div>
+                        <div>👥</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Practices Section -->
+    <main id="practices" class="max-w-screen-2xl mx-auto px-8 py-16">
+        <div class="flex justify-between items-baseline mb-8">
+            <h2 class="title-font text-4xl font-semibold tracking-tighter">The 2026 Playbook</h2>
+            <p class="text-slate-400 text-sm flex items-center gap-x-2">
+                <span class="px-3 py-1 bg-teal-400 text-slate-900 text-xs rounded-3xl font-bold">INTERACTIVE</span>
+                Hover cards / Click any card for a prompt example / Copy to clipboard
+            </p>
+        </div>
+        
+        <div id="practices-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Populated via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Summary & References -->
+    <div class="bg-slate-900 py-16 border-t border-slate-700">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="prose prose-invert max-w-none">
+                <p class="text-lg text-slate-300">
+                    These refreshed best practices incorporate the latest advancements in frontier models as of April 2026, such as Mixture-of-Experts (MoE) for efficiency in DeepSeek-V3.2, built-in agentic workflows in GPT-5.2 and Claude Opus 4.5, and reduced hallucinations in Grok 4.1.
+                </p>
+                <div class="mt-8 flex flex-wrap gap-8 text-sm">
+                    <div>
+                        <strong class="block text-teal-300 mb-1">Official Documentation</strong>
+                        <a href="https://model-spec.openai.com" target="_blank" class="block hover:text-teal-400 transition-colors">OpenAI Model Spec →</a>
+                        <a href="https://anthropic.com/transparency/model-report" target="_blank" class="block hover:text-teal-400 transition-colors">Anthropic Model Report →</a>
+                        <a href="https://data.x.ai" target="_blank" class="block hover:text-teal-400 transition-colors">xAI Grok Model Card →</a>
+                        <a href="https://api-docs.deepseek.com" target="_blank" class="block hover:text-teal-400 transition-colors">DeepSeek API Docs →</a>
+                    </div>
+                    <div class="text-xs text-slate-400 max-w-xs">
+                        * This entire page is a single self-contained HTML file (no external dependencies except Tailwind CDN). 
+                        Save it locally, open in any browser, and share freely. 
+                        Link back to this exact Grok conversation is included above.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black py-8 text-center text-slate-400 text-xs">
+        <div class="max-w-screen-2xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-y-4">
+            <p>Made with occasional humor by Grok • Single-file web representation of the latest prompting best practices</p>
+            <p class="flex items-center gap-x-5">
+                <span>© 2026 <a href="https://centerforappliedai.com" target="_blank" class="hover:text-white">Applied AI Labs</a></span>
+                <a href="https://grok.x.ai" target="_blank" class="hover:text-white flex items-center gap-x-1">
+                    🔗 This conversation lives here
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Tailwind CDN initialization
+        function initializeTailwind() {
+            return {
+                config(userConfig = {}) {
+                    return {
+                        configUser: userConfig,
+                        theme: {
+                            extend: {
+                                colors: {
+                                    primary: '#14b8a6'
+                                }
+                            }
+                        }
+                    }
+                },
+                theme(userConfig = {}) {
+                    return {
+                        configUser: userConfig,
+                        theme: {
+                            extend: {
+                                colors: {
+                                    primary: '#14b8a6'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // The 12 current best practices (exactly as refreshed)
+        const practices = [
+            {
+                emoji: "📝",
+                title: "Provide clear and specific instructions",
+                desc: "Craft prompts with precise, unambiguous language to guide models toward accurate outputs, a technique that's even more critical with advanced architectures like OpenAI's GPT-5.2, which incorporates built-in thinking for professional workflows—think of it as giving your AI a coffee-fueled roadmap to avoid wandering off into hallucination territory.",
+                example: `Write a project status update email for stakeholders.\n\nRequirements:\n- Maximum 150 words\n- Use bullet points for progress items\n- Include a "Risks" section with one current risk\n- Tone: professional but approachable\n- End with next steps and a deadline`
+            },
+            {
+                emoji: "🧠",
+                title: "Incorporate chain-of-thought reasoning",
+                desc: "Prompt models to reason step-by-step for enhanced problem-solving, now often augmented by native 'thinking' modes in models such as GPT-5.2 and DeepSeek-V3.2, where integrated reflection reduces the need for explicit user guidance—because who has time to babysit an AI's thought process?",
+                example: `A company has 500 employees. 60% work remotely, 30% hybrid, and 10% on-site.\nIf each remote employee saves the company $11,000/year in overhead,\nand each hybrid employee saves $5,500/year:\n\nThink step by step:\n1. Calculate how many employees are in each category\n2. Calculate annual savings per category\n3. Calculate total annual savings\n4. If the company invests 20% of savings into a wellness program,\n   what is the wellness budget?`
+            },
+            {
+                emoji: "🧱",
+                title: "Decompose complex tasks into subtasks",
+                desc: "Break down queries into sequential steps, leveraging improvements in agentic handling from xAI's Grok 4.1 and Anthropic's Claude Opus 4.5, which excel in multi-step reasoning and tool integration for reliable execution.",
+                example: `I need to plan a product launch. Break this into subtasks and address each one:\n\nStep 1: Define the target audience and positioning\nStep 2: Create a messaging framework (tagline, value props, FAQs)\nStep 3: Plan the launch timeline with milestones (T-30, T-14, T-7, Launch Day, T+7)\nStep 4: List the channels and assets needed for each milestone\nStep 5: Define success metrics and KPIs\n\nComplete each step before moving to the next.`
+            },
+            {
+                emoji: "👤",
+                title: "Assign roles via system prompts",
+                desc: "Set personas or contexts at the system level for aligned responses, refined in Claude Opus 4.5 and Grok 4.1 for ethical, domain-specific behaviors—perfect for when you want your AI to channel its inner expert without the drama.",
+                example: `You are a senior product manager at a SaaS company with 15 years of experience in B2B enterprise software. You communicate concisely, use data to back up decisions, and always consider trade-offs. When asked for recommendations, you present 2-3 options with pros/cons rather than a single answer.\n\nA customer is requesting a feature that would take 3 months to build but only 5% of users would use it. How do you handle this?`
+            },
+            {
+                emoji: "📚",
+                title: "Use examples and reference texts",
+                desc: "Include few-shot demonstrations to pattern-match outputs, boosted by expanded context windows in models like Claude Opus 4.5 and DeepSeek-V3.2-Speciale, enabling better recognition in long-form interactions.",
+                example: `Classify each customer feedback into one of these categories: Bug, Feature Request, Usability, Performance.\n\nFeedback: "The app crashes when I upload files over 50MB"\nCategory: Bug\n\nFeedback: "I wish there was a dark mode option"\nCategory: Feature Request\n\nFeedback: "The checkout button is too small on mobile"\nCategory: Usability\n\nFeedback: "Loading the dashboard takes over 10 seconds"\nCategory: Performance\n\nNow classify this: "It would be great if I could export to CSV directly from the reports page"`
+            },
+            {
+                emoji: "🏷️",
+                title: "Structure inputs with delimiters",
+                desc: "Use XML, Markdown, or tags for organized parsing, advanced in Grok 4.1's frameworks and Claude's prompt architecture to manage complex data—because even AI appreciates a well-organized filing system.",
+                example: `<context>\nOur company, TechStart Inc., is a 50-person startup building AI tools for healthcare.\nWe just raised a Series A of $12M.\n</context>\n\n<task>\nWrite a blog post announcing the funding round.\n</task>\n\n<constraints>\n- 500-700 words\n- Do not mention specific investor names\n- Include a quote from the CEO (make up a plausible one)\n- Mention our commitment to HIPAA compliance\n</constraints>\n\n<audience>\nHealthcare IT professionals and venture capital readers\n</audience>`
+            },
+            {
+                emoji: "🔄",
+                title: "Iterate and refine prompts",
+                desc: "Test and adjust based on outputs, supported by dynamic agent features in GPT-5.2 and Grok 4.1, fostering feedback loops for optimization—trial and error, but make it sound fancy.",
+                example: `I'm trying to write a cold email to prospects. Here's my first attempt:\n\n---\nSubject: Our AI tool saves time\nHi [Name],\nOur AI tool can help your team save time. Let's schedule a demo.\nThanks,\n[Me]\n---\n\nThat was too generic. Rewrite it with:\n1. A more specific subject line referencing their industry\n2. One concrete statistic (make up a plausible one)\n3. A softer CTA that doesn't feel pushy\n4. Under 75 words total`
+            },
+            {
+                emoji: "🛠️",
+                title: "Integrate external tools and agentic behaviors",
+                desc: "Design prompts for tool-calling and autonomous planning, driven by multimodal integrations in Claude Opus 4.5 and DeepSeek-V3.2, where thinking is baked into tool-use for extended capabilities.",
+                example: `You have access to these tools:\n- search_web(query): Search the internet\n- read_file(path): Read a local file\n- run_sql(query): Execute a SQL query\n- send_email(to, subject, body): Send an email\n\nTask: Find the top 3 competitors to "Notion" in the project management space.\nFor each competitor, find their pricing page and extract their cheapest plan.\nThen create a comparison table and email it to sales@company.com.\n\nPlan your steps first, then execute each one using the appropriate tool.`
+            },
+            {
+                emoji: "📤",
+                title: "Specify output formats",
+                desc: "Require structured responses like JSON for parseability, optimized in DeepSeek-V3.2 and GPT-5's iterations for analytical efficiency—ensuring your AI doesn't ramble like a bad date.",
+                example: `Extract the key information from this job posting and return it as JSON:\n\n"Senior Data Engineer - Remote - $150K-$200K - Must have Python, Spark, and AWS experience. 5+ years required. Benefits include equity, unlimited PTO, and health insurance. Apply by May 1st."\n\nReturn strictly valid JSON with these keys:\n{\n  "title": "",\n  "location": "",\n  "salary_range": {"min": 0, "max": 0},\n  "required_skills": [],\n  "experience_years": 0,\n  "benefits": [],\n  "deadline": ""\n}`
+            },
+            {
+                emoji: "📏",
+                title: "Optimize for long contexts",
+                desc: "Manage extensive inputs effectively, utilizing massive token limits in Grok 4.1 and Claude Opus 4.5 to preserve coherence—because in 2026, AI can finally handle your novel-length queries without forgetting the plot.",
+                example: `I'm pasting a 20-page product requirements document below. After reading it:\n\n1. Summarize the core product vision in 3 sentences\n2. List every feature mentioned, grouped by release phase (MVP, V2, V3)\n3. Identify any contradictions between sections\n4. Flag any requirements that are vague or untestable\n\nBe thorough — reference specific section numbers when flagging issues.\n\n---BEGIN DOCUMENT---\n[Your long document here]\n---END DOCUMENT---`
+            },
+            {
+                emoji: "🔄",
+                title: "Embrace co-thinking and reflection",
+                desc: "Encourage iterative dialogue where models summarize, reflect, or challenge assumptions, evolving from traditional prompting in GPT-5.2 and Claude Opus 4.5 for more robust reasoning.",
+                example: `I'm deciding whether to migrate our database from PostgreSQL to a NoSQL solution.\n\nBefore giving me your recommendation:\n1. Summarize what you understand about my situation (so I can correct any gaps)\n2. List the key assumptions you're making\n3. Play devil's advocate — what's the strongest case AGAINST your eventual recommendation?\n4. Then give your recommendation with confidence level (1-10)\n\nMy context: We have a 2TB PostgreSQL database, 50 concurrent users, primarily read-heavy workloads, and our schema changes frequently.`
+            },
+            {
+                emoji: "👥",
+                title: "Leverage multi-agent consensus",
+                desc: "Prompt for collaborative reasoning across agents, as in Grok 4.1's architecture, trading latency for accuracy in complex tasks—teamwork makes the dream work, even for silicon brains.",
+                example: `I need a well-rounded analysis of whether to adopt a 4-day workweek.\n\nSimulate three expert perspectives:\n\n**Agent A (HR Director):** Focus on employee retention, morale, and hiring advantages.\n**Agent B (CFO):** Focus on cost, productivity metrics, and competitive positioning.\n**Agent C (Operations Lead):** Focus on scheduling, client coverage, and workflow disruption.\n\nEach agent should:\n1. State their position\n2. Provide 2 supporting arguments\n3. Raise 1 concern about the opposing side\n\nThen synthesize a final recommendation that addresses all three perspectives.`
+            }
+        ]
+
+        // Render all practice cards
+        let activeCardIndex = null;
+
+        function renderPractices() {
+            const container = document.getElementById('practices-grid')
+            container.innerHTML = ''
+
+            practices.forEach((practice, index) => {
+                const cardHTML = `
+                    <div onclick="toggleCard(${index})" id="card-${index}"
+                         class="card bg-slate-800 border border-slate-700 rounded-3xl p-8 group cursor-pointer">
+                        <div class="flex justify-between items-start">
+                            <div class="text-5xl transition-transform group-active:scale-110">${practice.emoji}</div>
+                            <div class="text-xs font-mono bg-slate-700 text-teal-300 px-3 py-1 rounded-2xl">${(index + 1).toString().padStart(2, '0')}</div>
+                        </div>
+                        <h3 class="text-2xl font-semibold mt-8 mb-3 leading-tight">${practice.title}</h3>
+                        <p class="text-slate-300 text-[15px] leading-relaxed">${practice.desc}</p>
+                        <div class="example-section">
+                            <div class="example-label">Example Prompt</div>
+                            <div class="example-text">${escapeHtml(practice.example)}</div>
+                            <button onclick="event.stopPropagation(); copyExample(${index}, this)" class="copy-btn">
+                                <span>📋</span> <span class="copy-label">Copy Prompt</span>
+                            </button>
+                        </div>
+                    </div>
+                `
+                container.innerHTML += cardHTML
+            })
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleCard(index) {
+            const card = document.getElementById('card-' + index)
+
+            if (activeCardIndex !== null && activeCardIndex !== index) {
+                const prev = document.getElementById('card-' + activeCardIndex)
+                prev.classList.remove('expanded', 'ring-2', 'ring-teal-400')
+            }
+
+            if (activeCardIndex === index) {
+                card.classList.remove('expanded', 'ring-2', 'ring-teal-400')
+                activeCardIndex = null
+            } else {
+                card.classList.add('expanded', 'ring-2', 'ring-teal-400')
+                activeCardIndex = index
+                setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50)
+            }
+        }
+
+        function copyExample(index, btn) {
+            const text = practices[index].example
+            navigator.clipboard.writeText(text).then(() => {
+                const label = btn.querySelector('.copy-label')
+                const original = label.textContent
+                label.textContent = 'Copied!'
+                btn.classList.add('copied')
+                setTimeout(() => {
+                    label.textContent = original
+                    btn.classList.remove('copied')
+                }, 2000)
+            })
+        }
+
+        // Copy all practices to clipboard as clean markdown
+        function copyAllPractices() {
+            let markdown = '# Best Practices for Modern Prompting Techniques (2026)\n\n'
+            
+            practices.forEach((p, i) => {
+                markdown += `${i + 1}. **${p.title}**  \n${p.desc}\n\n`
+            })
+            
+            markdown += '\n---\nRefreshed April 2026 • Original conversation: https://grok.x.ai'
+            
+            navigator.clipboard.writeText(markdown).then(() => {
+                const originalText = event.target.innerHTML
+                event.target.innerHTML = `✅ COPIED!`
+                setTimeout(() => {
+                    event.target.innerHTML = originalText
+                }, 2200)
+            })
+        }
+
+        // Simple dark/light toggle (fun extra)
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('light')) {
+                document.documentElement.classList.remove('light')
+                document.getElementById('theme-icon').textContent = '☀️'
+                document.body.style.backgroundColor = ''
+            } else {
+                document.documentElement.classList.add('light')
+                document.getElementById('theme-icon').textContent = '🌙'
+                // Light mode colors handled by Tailwind + custom CSS if needed
+            }
+        }
+
+        // Initialize everything
+        window.onload = function() {
+            initializeTailwind()
+            renderPractices()
+            
+            console.log('%c✅ Single-file web representation loaded successfully. Link to this Grok chat is ready in the navbar.', 'color:#14b8a6; font-family:monospace')
+        }
+    </script>
+</body>
+</html>
