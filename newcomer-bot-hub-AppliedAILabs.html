@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newcomer Bot Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #FAF9F7;
+            --bg-card: #FFFFFF;
+            --text-primary: #1A1412;
+            --text-secondary: #6B5E54;
+            --text-tertiary: #9C8E82;
+            --accent: #D97757;
+            --accent-light: #FDF0EB;
+            --border: #E8E2DC;
+            --border-light: #F0EBE5;
+            --hover-row: #FAFAF8;
+            --header-bg: #F5F3F0;
+            --icon-bg: #F5F3F0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-page);
+            color: var(--text-primary);
+            font-size: 1.176rem;
+            line-height: 1.12;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 1.008rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 100px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 2.52rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.296rem;
+            margin-bottom: 20px;
+        }
+
+        .subtitle-small {
+            font-size: 0.972rem;
+        }
+
+        .table-wrap {
+            background: var(--bg-card);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(26,20,18,0.06), 0 1px 2px rgba(26,20,18,0.04);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: var(--header-bg);
+            padding: 7px 10px;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+            font-size: 1.032rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.15s ease;
+            min-height: 48px;
+        }
+
+        tbody tr:hover {
+            background: var(--hover-row);
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 7px 10px;
+            vertical-align: middle;
+        }
+
+        .td-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 192px;
+        }
+
+        .td-desc {
+            color: var(--text-secondary);
+            font-size: 1.06rem;
+            min-width: 260px;
+        }
+
+        .td-notes {
+            min-width: 520px;
+            width: 40%;
+        }
+
+        .name-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.15s ease;
+        }
+
+        .name-link:hover {
+            color: var(--accent);
+        }
+
+        .feature-emoji {
+            font-size: 0.9rem;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--icon-bg);
+            border-radius: 5px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .notes-area {
+            width: 100%;
+            min-height: 44px;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 1.06rem;
+            color: var(--text-secondary);
+            background: var(--bg-page);
+            resize: vertical;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .notes-area:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+
+        .notes-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .save-indicator {
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            float: right;
+            margin-top: 4px;
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding: 12px 16px;
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 1.08rem;
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+
+        .footer-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.15s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .page-wrapper {
+                padding: 24px 12px 36px;
+            }
+
+            h1 {
+                font-size: 2.04rem;
+            }
+
+            .feature-emoji {
+                display: none;
+            }
+
+            .td-name {
+                min-width: 132px;
+            }
+
+            .td-desc {
+                min-width: 160px;
+            }
+
+            .table-wrap {
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+
+            thead th,
+            td {
+                padding: 6px 8px;
+            }
+
+            .td-notes {
+                min-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <span class="badge">AI Chat Directory</span>
+        <h1>Newcomer Bot Hub</h1>
+        <p class="subtitle">Explore leading and emerging AI chatbot platforms. Add your personal notes to track features, pricing, and preferences.<br><span class="subtitle-small">Brought to you by your friends at <a href="https://www.centerforappliedai.com" target="_blank" rel="noopener noreferrer" class="footer-link">Applied AI Labs - Park City</a></span></p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Chatbot</th>
+                        <th>Description</th>
+                        <th>Your Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="bot-table-body">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            Notes are saved automatically to your browser's local storage.
+            <br><br>
+            Brought to you by <a href="https://www.centerforappliedai.com" target="_blank" rel="noopener noreferrer" class="footer-link">Applied AI Labs - Park City</a>
+        </div>
+    </div>
+
+    <script>
+        const chatbots = [
+            { name: "chat jimmy", url: "https://chatjimmy.ai", desc: "An incredibly fast experimental LLM. It will blow your mind.", emoji: "🎩" },
+            { name: "ChatGPT", url: "https://chatgpt.com", desc: "OpenAI's flagship chatbot with GPT-4o and multimodal capabilities.", emoji: "💬" },
+            { name: "Claude", url: "https://claude.ai/new", desc: "Anthropic's AI assistant — thoughtful, safe, and capable reasoning.", emoji: "🧠" },
+            { name: "Copilot", url: "https://copilot.microsoft.com", desc: "Microsoft's AI assistant with deep Office and Windows integration.", emoji: "🪟" },
+            { name: "DeepSeek", url: "https://chat.deepseek.com", desc: "Chinese AI lab's powerful reasoning and coding model.", emoji: "🔮" },
+            { name: "Google Gemini", url: "https://gemini.google.com/app", desc: "Google's AI with deep integration across Workspace services.", emoji: "✨" },
+            { name: "Grok", url: "https://grok.com", desc: "xAI's real-time AI with access to current information and X platform.", emoji: "🚀" },
+            { name: "Inception Chat", url: "https://chat.inceptionlabs.ai", desc: "Inception Labs' experimental AI interface.", emoji: "💡" },
+            { name: "Kimi AI (K2.5)", url: "https://www.kimi.com/?chat_enter_method=new_chat", desc: "Moonshot AI's assistant optimized for long context and Chinese.", emoji: "🌙" },
+            { name: "Le Chat", url: "https://chat.mistral.ai/chat", desc: "Mistral AI's European alternative with strong multilingual support.", emoji: "🇪🇺" },
+            { name: "Meta AI", url: "https://www.meta.ai", desc: "Meta's free AI assistant integrated across Facebook, Instagram, WhatsApp.", emoji: "👥" },
+            { name: "Perplexity", url: "https://www.perplexity.ai", desc: "AI-powered search with cited sources and web browsing.", emoji: "🔍" },
+            { name: "Qwen Studio", url: "https://chat.qwen.ai", desc: "Alibaba's Qwen — strong in Chinese and technical tasks.", emoji: "🐉" },
+            { name: "Together Chat", url: "https://chat.together.ai", desc: "Access to open-source models via Together AI's platform.", emoji: "🤝" },
+            { name: "Z.ai", url: "https://chat.z.ai", desc: "Emerging AI platform with focus on creative and generative tasks.", emoji: "⚡" },
+        ];
+
+        const STORAGE_KEY = 'newcomer_bot_hub_notes';
+        let saveTimeouts = {};
+
+        function loadNotes() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : {};
+        }
+
+        function saveNote(botName, note) {
+            const notes = loadNotes();
+            notes[botName] = note;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+            showSaveIndicator(botName);
+        }
+
+        function showSaveIndicator(botName) {
+            const indicator = document.querySelector(`[data-bot="${botName}"] .save-indicator`);
+            if (indicator) {
+                indicator.classList.add('show');
+                setTimeout(() => indicator.classList.remove('show'), 2000);
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('bot-table-body');
+            const savedNotes = loadNotes();
+
+            tbody.innerHTML = chatbots.map(bot => `
+                <tr data-bot="${bot.name}">
+                    <td class="td-name">
+                        <span class="feature-emoji">${bot.emoji}</span>
+                        <a href="${bot.url}" target="_blank" rel="noopener noreferrer" class="name-link">${bot.name}</a>
+                    </td>
+                    <td class="td-desc">${bot.desc}</td>
+                    <td class="td-notes">
+                        <textarea
+                            class="notes-area"
+                            placeholder="Notes..."
+                            data-bot-name="${bot.name}"
+                        >${savedNotes[bot.name] || ''}</textarea>
+                        <span class="save-indicator">Saved!</span>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Add event listeners for notes
+            document.querySelectorAll('.notes-area').forEach(textarea => {
+                textarea.addEventListener('input', (e) => {
+                    const botName = e.target.dataset.botName;
+
+                    // Clear existing timeout
+                    if (saveTimeouts[botName]) {
+                        clearTimeout(saveTimeouts[botName]);
+                    }
+
+                    // Save after 500ms of no typing
+                    saveTimeouts[botName] = setTimeout(() => {
+                        saveNote(botName, e.target.value);
+                    }, 500);
+                });
+            });
+        }
+
+        // Initialize on page load
+        renderTable();
+    </script>
+</body>
+</html>
