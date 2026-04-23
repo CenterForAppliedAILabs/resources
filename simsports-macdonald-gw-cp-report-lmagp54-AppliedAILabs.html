@@ -1,0 +1,1430 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>T. MacDonald Swing Report | SIM.SPORTS Arena</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121931;
+      --panel-2:#182244;
+      --text:#e9eefc;
+      --muted:#aab6d3;
+      --accent:#1190cb;
+      --accent-2:#5ab4e6;
+      --warn:#ffd166;
+      --danger:#ff7b7b;
+      --good:#7ee081;
+      --border:rgba(255,255,255,.12);
+      --shadow:0 10px 30px rgba(0,0,0,.25);
+      --radius:16px;
+      --radius-sm:12px;
+      --max:1280px;
+      --print-text:#111;
+      --print-muted:#444;
+      --print-border:#cfcfcf;
+      --note:#fff9c4;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#0a0a0f 0%, #111118 100%);
+      color:var(--text);
+      line-height:1.45;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input,textarea,select{font:inherit}
+
+    .app{
+      display:grid;
+      grid-template-columns:280px 1fr;
+      min-height:100vh;
+    }
+
+    .sidebar{
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow:auto;
+      padding:20px 16px 32px;
+      background:rgba(8,8,12,.85);
+      backdrop-filter:blur(10px);
+      border-right:1px solid var(--border);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:20px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+    }
+
+    .brand-badge{
+      width:40px;height:40px;border-radius:8px;
+      display:grid;place-items:center;
+      background:var(--accent);
+      color:#fff;font-weight:800;
+      font-size:.7rem;letter-spacing:.02em;
+    }
+
+    .brand h1{
+      margin:0;font-size:1rem;line-height:1.1;
+    }
+    .brand h1 a{
+      color:inherit;text-decoration:none;
+    }
+    .brand h1 a:hover{
+      color:var(--accent);
+    }
+
+    .brand small{color:var(--muted);display:block;line-height:1.5}
+
+    .nav-group{margin-top:20px}
+    .nav-title{
+      font-size:.78rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin:10px 12px;
+    }
+
+    .nav{
+      display:flex;flex-direction:column;gap:8px;
+    }
+
+    .nav a{
+      padding:10px 12px;
+      border-radius:12px;
+      color:var(--text);
+      border:1px solid transparent;
+    }
+
+    .nav a:hover,.nav a.active{
+      background:rgba(17,144,203,.1);
+      border-color:rgba(17,144,203,.22);
+    }
+
+    .sidebar-actions{
+      margin-top:24px;
+      display:grid;
+      gap:10px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:11px 14px;
+      cursor:pointer;
+      font-weight:600;
+      transition:.2s ease;
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      color:#fff;
+    }
+    .btn-primary:hover{transform:translateY(-1px)}
+
+    .btn-secondary{
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    .btn-secondary:hover{background:rgba(255,255,255,.1)}
+
+    .content{
+      padding:28px;
+    }
+
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+    }
+
+    .hero{
+      background:
+        radial-gradient(circle at top right, rgba(17,144,203,.18), transparent 28%),
+        radial-gradient(circle at top left, rgba(90,180,230,.14), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:22px;
+    }
+
+    .hero-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .eyebrow{
+      color:var(--accent-2);
+      font-size:.85rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:8px;
+      font-weight:700;
+    }
+
+    .hero h2{
+      margin:0 0 6px;
+      font-size:2rem;
+      line-height:1.1;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      max-width:850px;
+    }
+
+    .meta{
+      display:grid;
+      grid-template-columns:repeat(5,minmax(100px,1fr));
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .meta-card,.card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .meta-card h3{
+      margin:0 0 6px;
+      font-size:.8rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    .meta-card .value{
+      font-size:1.15rem;
+      font-weight:700;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:18px;
+    }
+
+    .col-12{grid-column:span 12}
+    .col-8{grid-column:span 8}
+    .col-6{grid-column:span 6}
+    .col-4{grid-column:span 4}
+    .col-3{grid-column:span 3}
+
+    .section-title{
+      margin:0 0 12px;
+      font-size:1.2rem;
+    }
+
+    .section-sub{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .chips{
+      display:flex;flex-wrap:wrap;gap:8px;
+    }
+
+    .chip{
+      background:rgba(17,144,203,.08);
+      color:var(--accent-2);
+      border:1px solid rgba(17,144,203,.2);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:.9rem;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:12px;
+    }
+
+    th,td{
+      text-align:left;
+      padding:12px 10px;
+      border-bottom:1px solid var(--border);
+      vertical-align:top;
+    }
+
+    th{
+      color:var(--muted);
+      font-size:.83rem;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      background:rgba(255,255,255,.03);
+    }
+
+    tr:last-child td{border-bottom:none}
+
+    .rating{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-weight:700;
+    }
+
+    .dot{
+      width:10px;height:10px;border-radius:999px;display:inline-block;
+    }
+    .good{background:var(--good)}
+    .warn{background:var(--warn)}
+    .danger{background:var(--danger)}
+
+    .accordion{
+      display:grid;
+      gap:12px;
+    }
+
+    .acc-item{
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+
+    .acc-head{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      text-align:left;
+      background:transparent;
+      color:var(--text);
+      padding:16px 18px;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .acc-head span:last-child{
+      color:var(--muted);
+      font-size:.9rem;
+      font-weight:600;
+    }
+
+    .acc-body{
+      padding:0 18px 18px;
+      display:none;
+    }
+
+    .acc-item.open .acc-body{display:block}
+
+    .acc-item.open{
+      border-color:rgba(17,144,203,.35);
+      background:#1c2848;
+    }
+    .acc-item.open .acc-head{
+      color:var(--accent);
+      background:rgba(17,144,203,.06);
+      border-bottom:1px solid rgba(17,144,203,.18);
+    }
+    .acc-item.open .acc-caret{
+      color:var(--accent);
+    }
+    .acc-item.open .acc-head span:last-child{
+      color:var(--accent-2);
+    }
+
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .kpi{
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .kpi .label{
+      color:var(--muted);
+      font-size:.84rem;
+      margin-bottom:6px;
+    }
+
+    .kpi .num{
+      font-size:1.25rem;
+      font-weight:800;
+    }
+
+    .priority-list, .drill-list{
+      display:grid;
+      gap:12px;
+    }
+
+    .priority, .drill{
+      border-left:4px solid var(--accent);
+      background:rgba(255,255,255,.03);
+      padding:14px 14px 14px 16px;
+      border-radius:12px;
+    }
+
+    .priority strong, .drill strong{display:block;margin-bottom:4px}
+
+    .copyright-footer{
+      margin-top:32px;
+      padding:20px 0;
+      border-top:1px solid var(--border);
+      text-align:center;
+      font-size:.82rem;
+      color:var(--muted);
+    }
+    .copyright-footer a{
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    /* ── LIGHT MODE ────────────────────── */
+    body.light{
+      background:#f5f5f5 !important;
+      --bg:#f5f5f5;
+      --panel:#ffffff;
+      --panel-2:#f0f2f5;
+      --text:#1a1d21;
+      --muted:#6b7280;
+      --border:rgba(0,0,0,.1);
+      --shadow:0 4px 16px rgba(0,0,0,.06);
+    }
+    body.light .sidebar{
+      background:rgba(255,255,255,.92);
+    }
+    body.light .topbar-mobile{
+      background:rgba(255,255,255,.92);
+    }
+    body.light .brand{
+      background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.01));
+    }
+    body.light .hero{
+      background:
+        radial-gradient(circle at top right, rgba(17,144,203,.1), transparent 28%),
+        radial-gradient(circle at top left, rgba(90,180,230,.08), transparent 28%),
+        linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01));
+    }
+    body.light .chip{
+      background:rgba(17,144,203,.06);
+      color:#0d6e99;
+      border-color:rgba(17,144,203,.15);
+    }
+    body.light th{
+      background:rgba(0,0,0,.03);
+    }
+    body.light .priority, body.light .drill{
+      background:rgba(0,0,0,.02);
+    }
+    body.light .acc-item.open{
+      background:var(--panel);
+    }
+
+    /* ── THEME TOGGLE (floating FAB) ──── */
+    .theme-toggle{
+      position:fixed;
+      top:16px;
+      right:16px;
+      z-index:120;
+      width:44px;
+      height:44px;
+      border-radius:50%;
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:var(--text);
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      box-shadow:var(--shadow);
+      transition:transform .2s ease, background .2s ease;
+      padding:0;
+    }
+    .theme-toggle:hover{
+      transform:scale(1.1);
+    }
+    .theme-toggle:active{
+      transform:scale(.95);
+    }
+    .theme-toggle svg{
+      width:22px;
+      height:22px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    body.light .theme-toggle{
+      background:#fff;
+      color:#1190cb;
+    }
+
+    /* ── ACCORDION CARET ───────────────── */
+    .acc-caret{
+      display:inline-block;
+      transition:transform .2s ease;
+      font-size:.9rem;
+      margin-right:6px;
+    }
+    .acc-item.open .acc-caret{
+      transform:rotate(90deg);
+    }
+
+    /* ── SECTION NOTE BUTTON ───────────── */
+    .section-note-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-top:14px;
+      padding:8px 14px;
+      border-radius:10px;
+      background:rgba(17,144,203,.08);
+      border:1px solid rgba(17,144,203,.2);
+      color:var(--accent);
+      cursor:pointer;
+      font-size:.85rem;
+      font-weight:600;
+      transition:.2s ease;
+    }
+    .section-note-btn:hover{
+      background:rgba(17,144,203,.15);
+    }
+
+    .notes-toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:220px;
+      resize:vertical;
+      background:var(--note);
+      color:#2b2b2b;
+      border:1px solid #e7dd8d;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:inset 0 1px 4px rgba(0,0,0,.06);
+    }
+
+    .small{
+      font-size:.88rem;
+      color:var(--muted);
+    }
+
+    .footer-note{
+      margin-top:16px;
+      color:var(--muted);
+      font-size:.88rem;
+    }
+
+    .topbar-mobile{
+      display:none;
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter:blur(8px);
+      background:rgba(8,8,12,.9);
+      border-bottom:1px solid var(--border);
+      padding:12px 16px;
+    }
+
+    .mobile-actions{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;
+    }
+
+    @media (max-width: 1100px){
+      .meta{grid-template-columns:repeat(3,1fr)}
+      .kpis{grid-template-columns:repeat(2,1fr)}
+      .col-8,.col-6,.col-4,.col-3{grid-column:span 12}
+    }
+
+    @media (max-width: 860px){
+      .app{grid-template-columns:1fr}
+      .sidebar{display:none}
+      .topbar-mobile{display:block}
+      .content{padding:18px}
+      .hero h2{font-size:1.65rem}
+      .meta{grid-template-columns:1fr}
+      .kpis{grid-template-columns:1fr}
+    }
+
+    @media print{
+      body{background:#fff !important;color:#111 !important}
+      body.light{
+        --bg:#fff;
+        --panel:#fff;
+        --panel-2:#fff;
+        --text:#111;
+        --muted:#444;
+        --border:#cfcfcf;
+      }
+      :root{
+        --bg:#fff;
+        --panel:#fff;
+        --panel-2:#fff;
+        --text:var(--print-text);
+        --muted:var(--print-muted);
+        --border:var(--print-border);
+      }
+      body{
+        background:#fff !important;
+        color:#111 !important;
+      }
+      .sidebar,.topbar-mobile,.notes-toolbar,.footer-note,.no-print,.section-note-btn,.theme-toggle{
+        display:none !important;
+      }
+      .copyright-footer{
+        margin-top:24px;
+        padding-top:14px;
+        font-size:8pt;
+        color:#777;
+        border-top:1px solid #ddd;
+      }
+      .copyright-footer a{
+        color:#1190cb;
+      }
+      .content{
+        padding:0;
+      }
+      .wrap{
+        max-width:100%;
+      }
+      .hero,.card,.acc-item,.meta-card,.kpi{
+        box-shadow:none !important;
+        background:#fff !important;
+        break-inside:avoid;
+      }
+      .accordion .acc-body{
+        display:block !important;
+      }
+      .accordion .acc-head{
+        cursor:default;
+        padding-bottom:10px;
+      }
+      a[href]:after{
+        content:"";
+      }
+      textarea{
+        border:1px solid #bbb;
+        background:#fffbe8 !important;
+        min-height:140px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle no-print" id="themeToggle" type="button" title="Toggle light/dark mode">
+    <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+  </button>
+
+  <div class="topbar-mobile no-print">
+    <strong>SIM.SPORTS Arena — T. MacDonald Swing Report</strong>
+    <div class="mobile-actions">
+      <button class="btn btn-primary" onclick="window.print()">Print Report</button>
+      <button class="btn btn-secondary" onclick="downloadNotes()">Download Notes</button>
+      <button class="btn btn-secondary" onclick="toggleAll(true)">Expand All</button>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar no-print">
+      <div class="brand">
+        <div class="brand-badge">SIM</div>
+        <div>
+          <h1><a href="https://www.simsportsarena.com" target="_blank" rel="noopener">SIM.SPORTS Arena</a></h1>
+          <small>Client: Todd MacDonald</small>
+          <small>Coach: Parker</small>
+          <small>Location: Park City</small>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">Navigate</div>
+        <nav class="nav" id="navLinks">
+          <a href="#overview">Overview</a>
+          <a href="#summary">Dataset Summary</a>
+          <a href="#timing">Rhythm & Timing</a>
+          <a href="#rotation">Rotation & Stretch</a>
+          <a href="#pressure">Pressure & Motion</a>
+          <a href="#sequence">Sequencing</a>
+          <a href="#release">Release & Speed</a>
+          <a href="#delivery">Club Delivery</a>
+          <a href="#coach">Coach Summary</a>
+          <a href="#drills">Prescribed Drills</a>
+          <a href="#nextsteps">Next Steps</a>
+          <a href="#notes">Personal Notes</a>
+        </nav>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="btn btn-secondary" onclick="toggleAll(true)">Expand All</button>
+        <button class="btn btn-secondary" onclick="toggleAll(false)">Collapse All</button>
+        <button class="btn btn-secondary" onclick="saveNotes()">Save Notes</button>
+        <button class="btn btn-secondary" onclick="downloadNotes()">Download Notes</button>
+        <button class="btn btn-secondary" onclick="clearNotes()">Clear Notes</button>
+        <button class="btn btn-primary" onclick="window.print()">Print Ready Version</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="wrap">
+
+        <section class="hero" id="overview">
+          <div class="hero-top">
+            <div>
+              <div class="eyebrow">SIM.SPORTS Arena — Interactive Swing Analysis</div>
+              <h2>T. MacDonald — Swing Report</h2>
+              <p>
+                Session aggregate for <strong>GW</strong>, including converted former 2h swings.
+                This report highlights strong sequencing, solid speed potential, and the main improvement areas:
+                shallower hand path, less leftward crash into impact, more consistent tempo, and cleaner vertical timing.
+              </p>
+            </div>
+          </div>
+
+          <div class="meta">
+            <div class="meta-card">
+              <h3>Player</h3>
+              <div class="value">T. MacDonald</div>
+            </div>
+            <div class="meta-card">
+              <h3>Facility</h3>
+              <div class="value">SIM.SPORTS Arena</div>
+            </div>
+            <div class="meta-card">
+              <h3>Coach</h3>
+              <div class="value">Parker</div>
+            </div>
+            <div class="meta-card">
+              <h3>Date</h3>
+              <div class="value">4/21/26</div>
+            </div>
+            <div class="meta-card">
+              <h3>Club Focus</h3>
+              <div class="value">GW</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="grid">
+          <section class="card col-12" id="summary">
+            <h3 class="section-title">Dataset Summary</h3>
+            <p class="section-sub">Quick snapshot of the session data and overall patterns.</p>
+
+            <div class="kpis">
+              <div class="kpi">
+                <div class="label">Swings Logged</div>
+                <div class="num">19</div>
+              </div>
+              <div class="kpi">
+                <div class="label">Avg Club Head Speed</div>
+                <div class="num">~70.6 mph</div>
+              </div>
+              <div class="kpi">
+                <div class="label">Avg Hand Speed</div>
+                <div class="num">~16.8 mph</div>
+              </div>
+              <div class="kpi">
+                <div class="label">Speed Ceiling</div>
+                <div class="num">88.6 mph</div>
+              </div>
+            </div>
+
+            <br />
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Club</th>
+                  <th>Swings</th>
+                  <th>Avg CHS</th>
+                  <th>CHS Range</th>
+                  <th>Avg Hand Speed</th>
+                  <th>Hand Speed Range</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>GW</td>
+                  <td>19</td>
+                  <td>~70.6 mph</td>
+                  <td>56.3–88.6 mph</td>
+                  <td>~16.8 mph</td>
+                  <td>13.9–18.3 mph</td>
+                  <td>Wide range; top end shows real speed ceiling. Includes converted former 2h.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:16px" class="chips">
+              <div class="chip">Fastest swing: ~88.6 mph CHS</div>
+              <div class="chip">Slowest swing: ~56.3 mph CHS</div>
+              <div class="chip">Primary variance: tempo + pelvis lift timing</div>
+              <div class="chip">Pattern: leftward pressure at impact</div>
+              <div class="chip">X-Factor Stretch: modest ~2–4°</div>
+            </div>
+          </section>
+
+          <section class="col-12">
+            <div class="accordion">
+
+              <div class="acc-item" id="timing">
+                <button class="acc-head" type="button">
+                  <span><span class="acc-caret">&rsaquo;</span>1. Rhythm & Timing</span>
+                  <span>Good rhythm, but outlier “jab” swings create inconsistency</span>
+                </button>
+                <div class="acc-body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Metric</th>
+                        <th>Typical</th>
+                        <th>Ideal</th>
+                        <th>Implication</th>
+                        <th>Suggested Change</th>
+                        <th>Club Commentary</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Tempo</td>
+                        <td>~3.3–3.7 (some at 2.5)</td>
+                        <td>3.0–3.5</td>
+                        <td><span class="rating"><span class="dot warn"></span>Some swings get too quick / punchy</span></td>
+                        <td>Standardize around 3.3</td>
+                        <td>Wedges like your 3.3–3.5 tempo; avoid 2.5 “stabs”</td>
+                      </tr>
+                      <tr>
+                        <td>Backswing Time</td>
+                        <td>~0.80–0.95 sec</td>
+                        <td>0.8–1.0 sec</td>
+                        <td><span class="rating"><span class="dot good"></span>Generally in range</span></td>
+                        <td>Keep turn continuous, no pause</td>
+                        <td>Good for wedges; don’t drift over 1.0 sec</td>
+                      </tr>
+                      <tr>
+                        <td>Downswing Time</td>
+                        <td>~0.23–0.26 sec</td>
+                        <td>0.20–0.25 sec</td>
+                        <td><span class="rating"><span class="dot warn"></span>Slightly long at times</span></td>
+                        <td>Feel crisp first move, not rushed</td>
+                        <td>Longer clubs will exaggerate this</td>
+                      </tr>
+                      <tr>
+                        <td>Pelvis Lift Time into IMP</td>
+                        <td>~75–100 ms (range 50–250 ms)</td>
+                        <td>40–55 ms</td>
+                        <td><span class="rating"><span class="dot danger"></span>Vertical push often late and variable</span></td>
+                        <td>Train earlier, more consistent push</td>
+                        <td>Short irons punish late, jumpy verticals</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p class="footer-note"><strong>Big picture:</strong> Rhythm is good but not standardized. The outliers are where contact and flight wobble.</p>
+                  <button class="section-note-btn" onclick="addSectionNote('Rhythm & Timing')">+ Add Note</button>
+                </div>
+              </div>
+
+              <div class="acc-item" id="rotation">
+                <button class="acc-head" type="button">
+                  <span><span class="acc-caret">&rsaquo;</span>2. Rotation & Stretch</span>
+                  <span>Enough backswing turn, but not enough separation retained into impact</span>
+                </button>
+                <div class="acc-body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Metric</th>
+                        <th>Typical</th>
+                        <th>Ideal</th>
+                        <th>Implication</th>
+                        <th>Suggested Change</th>
+                        <th>Club Commentary</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Downswing X-Factor Stretch</td>
+                        <td>~2–4°</td>
+                        <td>5–15°</td>
+                        <td><span class="rating"><span class="dot warn"></span>Under-utilized stretch = leaving speed</span></td>
+                        <td>Add more chest rotation in downswing</td>
+                        <td>Longer clubs benefit even more</td>
+                      </tr>
+                      <tr>
+                        <td>X-Factor Backswing Max</td>
+                        <td>≈ –35° to –40°</td>
+                        <td>–20° to –40°</td>
+                        <td><span class="rating"><span class="dot good"></span>Generally solid</span></td>
+                        <td>Maintain; avoid arms-only backswing</td>
+                        <td>Good base; don’t let wedges get too short</td>
+                      </tr>
+                      <tr>
+                        <td>X-Factor IMP</td>
+                        <td>≈ –6° to –10°</td>
+                        <td>–40° to –55°</td>
+                        <td><span class="rating"><span class="dot warn"></span>Low separation at impact</span></td>
+                        <td>Rotate through, don’t stall</td>
+                        <td>Wedges don’t need tour numbers, but more helps</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p class="footer-note"><strong>Big picture:</strong> Power is more handsy than rotational right now.</p>
+                  <button class="section-note-btn" onclick="addSectionNote('Rotation & Stretch')">+ Add Note</button>
+                </div>
+              </div>
+
+              <div class="acc-item" id="pressure">
+                <button class="acc-head" type="button">
+                  <span><span class="acc-caret">&rsaquo;</span>3. Pressure & Motion Pattern</span>
+                  <span>Strong move left, but often too much, too steep, and too vertical</span>
+                </button>
+                <div class="acc-body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Metric</th>
+                        <th>Typical</th>
+                        <th>Ideal</th>
+                        <th>Implication</th>
+                        <th>Suggested Change</th>
+                        <th>Club Commentary</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Sway Gap ADR</td>
+                        <td>≈ –1.0"</td>
+                        <td>–0.5" to +0.5"</td>
+                        <td><span class="rating"><span class="dot warn"></span>Slightly left-biased at setup</span></td>
+                        <td>Re-center pressure under mid-stance</td>
+                        <td>Wedges prefer more neutral start</td>
+                      </tr>
+                      <tr>
+                        <td>Sway Gap TOP</td>
+                        <td>≈ –0.5" to +0.5"</td>
+                        <td>–0.5" to +0.5"</td>
+                        <td><span class="rating"><span class="dot good"></span>Generally centered coil</span></td>
+                        <td>Maintain</td>
+                        <td>Good for control</td>
+                      </tr>
+                      <tr>
+                        <td>Sway Gap IMP</td>
+                        <td>≈ –2.5" to –3.5"</td>
+                        <td>–0.5" to –1.0"</td>
+                        <td><span class="rating"><span class="dot danger"></span>Very left-loaded, can drive steepness</span></td>
+                        <td>Soften lateral drive; improve hand path</td>
+                        <td>Wedges may get steep/diggy</td>
+                      </tr>
+                      <tr>
+                        <td>Hand Sway BAH</td>
+                        <td>≈ –0.5" to –1.0"</td>
+                        <td>0–0.5"</td>
+                        <td><span class="rating"><span class="dot warn"></span>Hands move left early</span></td>
+                        <td>Keep hands more in and up</td>
+                        <td>Helps wedge low-point and face control</td>
+                      </tr>
+                      <tr>
+                        <td>Hand Sway DAH</td>
+                        <td>≈ –1.0" to –1.5"</td>
+                        <td>0–0.5"</td>
+                        <td><span class="rating"><span class="dot danger"></span>Hands continue left = steep path</span></td>
+                        <td>Train shallower, more from inside</td>
+                        <td>Long clubs punish this more</td>
+                      </tr>
+                      <tr>
+                        <td>Chest Lift TOP</td>
+                        <td>≈ 1.0–1.5"</td>
+                        <td>0–1"</td>
+                        <td><span class="rating"><span class="dot warn"></span>Slight early extension at top</span></td>
+                        <td>Feel more chest down at top</td>
+                        <td>Wedges are less forgiving here</td>
+                      </tr>
+                      <tr>
+                        <td>Chest Lift into IMP</td>
+                        <td>≈ 1.0–1.5"</td>
+                        <td>0–1"</td>
+                        <td><span class="rating"><span class="dot warn"></span>Rising into impact = thin/fat risk</span></td>
+                        <td>Maintain height, chest over ball</td>
+                        <td>Short clubs need stable chest height</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p class="footer-note"><strong>Big picture:</strong> Getting left is a strength, but overdoing it creates steep, leftward, vertical delivery.</p>
+                  <button class="section-note-btn" onclick="addSectionNote('Pressure & Motion')">+ Add Note</button>
+                </div>
+              </div>
+
+              <div class="acc-item" id="sequence">
+                <button class="acc-head" type="button">
+                  <span><span class="acc-caret">&rsaquo;</span>4. Sequencing</span>
+                  <span>A major strength: kinematic chain is consistently ordered well</span>
+                </button>
+                <div class="acc-body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Ideal</th>
+                        <th>Implication</th>
+                        <th>Suggested Change</th>
+                        <th>Club Commentary</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Pelvis Transition Order</td><td>1</td><td>1</td><td><span class="rating"><span class="dot good"></span>Correct start of chain</span></td><td>Maintain</td><td>Works for all clubs</td></tr>
+                      <tr><td>Chest Transition Order</td><td>2</td><td>2</td><td><span class="rating"><span class="dot good"></span>Good mid-sequence</span></td><td>Maintain</td><td>Longer clubs exaggerate timing drift</td></tr>
+                      <tr><td>Arm Transition Order</td><td>3</td><td>3</td><td><span class="rating"><span class="dot good"></span>Good arm slotting</span></td><td>Maintain</td><td>Wedges benefit from clean ordering</td></tr>
+                      <tr><td>Club Transition Order</td><td>4</td><td>4</td><td><span class="rating"><span class="dot good"></span>Proper late release</span></td><td>Maintain</td><td>Helps avoid early release/steepness</td></tr>
+                    </tbody>
+                  </table>
+                  <p class="footer-note"><strong>Big picture:</strong> Sequencing is not the problem. Path, pressure, and vertical timing are.</p>
+                  <button class="section-note-btn" onclick="addSectionNote('Sequencing')">+ Add Note</button>
+                </div>
+              </div>
+
+              <div class="acc-item" id="release">
+                <button class="acc-head" type="button">
+                  <span><span class="acc-caret">&rsaquo;</span>5. Release & Speed Production</span>
+                  <span>Real speed exists, but delivery pattern determines whether it shows up cleanly</span>
+                </button>
+                <div class="acc-body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Metric</th>
+                        <th>Typical</th>
+                        <th>Ideal</th>
+                        <th>Implication</th>
+                        <th>Suggested Change</th>
+                        <th>Club Commentary</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Wrist Release Percent</td>
+                        <td>~20–60% (wide)</td>
+                        <td>55–65%</td>
+                        <td><span class="rating"><span class="dot warn"></span>Too early or too late on some swings</span></td>
+                        <td>Standardize around mid-50s</td>
+                        <td>Wedges tolerate slightly earlier release</td>
+                      </tr>
+                      <tr>
+                        <td>Hand Pull Down</td>
+                        <td>≈ –0.5" to –1.5"</td>
+                        <td>–0.5" to –1.0"</td>
+                        <td><span class="rating"><span class="dot warn"></span>Tends toward steep pull</span></td>
+                        <td>Feel hands more around, less down</td>
+                        <td>Long clubs need this even more</td>
+                      </tr>
+                      <tr>
+                        <td>Hand Speed Max</td>
+                        <td>~16.8 mph</td>
+                        <td>17–20 mph</td>
+                        <td><span class="rating"><span class="dot warn"></span>Solid, not maxed out</span></td>
+                        <td>Improve stretch + ground use</td>
+                        <td>Enough for wedges, scalable to longer clubs</td>
+                      </tr>
+                      <tr>
+                        <td>Club Head Speed Max</td>
+                        <td>~70.6 mph avg / 88.6 mph peak</td>
+                        <td>Club dependent</td>
+                        <td><span class="rating"><span class="dot good"></span>Good ceiling, wide range</span></td>
+                        <td>Make speed more repeatable</td>
+                        <td>Use as GW baseline</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p class="footer-note"><strong>Big picture:</strong> The speed is there. Repeatable delivery is the next step.</p>
+                  <button class="section-note-btn" onclick="addSectionNote('Release & Speed')">+ Add Note</button>
+                </div>
+              </div>
+
+              <div class="acc-item" id="delivery">
+                <button class="acc-head" type="button">
+                  <span><span class="acc-caret">&rsaquo;</span>6. Club Delivery</span>
+                  <span>Mostly stable structure, but steepness and path need attention</span>
+                </button>
+                <div class="acc-body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Metric</th>
+                        <th>Typical</th>
+                        <th>Ideal</th>
+                        <th>Implication</th>
+                        <th>Suggested Change</th>
+                        <th>Club Commentary</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Shaft FaceOn Angle TOP</td>
+                        <td>≈ –195° to –205°</td>
+                        <td>Pattern consistency</td>
+                        <td><span class="rating"><span class="dot good"></span>Generally consistent</span></td>
+                        <td>Maintain pattern; focus more on DTL plane</td>
+                        <td>Longer clubs may want flatter feel</td>
+                      </tr>
+                      <tr>
+                        <td>Shaft FaceOn Angle DAH</td>
+                        <td>≈ –175° to –185°</td>
+                        <td>–5° to –15° proxy</td>
+                        <td><span class="rating"><span class="dot warn"></span>Strong forward lean tendency</span></td>
+                        <td>Slightly soften handle forward</td>
+                        <td>Wedges need enough loft to hold greens</td>
+                      </tr>
+                      <tr>
+                        <td>Shaft FaceOn Angle IMP</td>
+                        <td>≈ –15° to –30°</td>
+                        <td>–40° to –55° proxy</td>
+                        <td><span class="rating"><span class="dot warn"></span>Forward lean, but not extreme</span></td>
+                        <td>Choose between more lean or preserving loft</td>
+                        <td>Don’t over de-loft wedges</td>
+                      </tr>
+                      <tr>
+                        <td>Shaft DTL Angle ADR</td>
+                        <td>≈ 50–60°</td>
+                        <td>Neutral</td>
+                        <td><span class="rating"><span class="dot good"></span>Setup generally okay</span></td>
+                        <td>Adjust via posture only</td>
+                        <td>Long clubs need more tilt, not more reach</td>
+                      </tr>
+                      <tr>
+                        <td>Shaft DTL Angle IMP</td>
+                        <td>≈ 50–60°</td>
+                        <td>Neutral</td>
+                        <td><span class="rating"><span class="dot good"></span>Matches address fairly well</span></td>
+                        <td>Focus on path, not just angle</td>
+                        <td>Wedges exaggerate steepness</td>
+                      </tr>
+                      <tr>
+                        <td>Vertical Shaft Angle DTL Downswing</td>
+                        <td>≈ –2° to +2°</td>
+                        <td>Neutral</td>
+                        <td><span class="rating"><span class="dot warn"></span>Some swings trend steep</span></td>
+                        <td>Train shallower, more from inside</td>
+                        <td>Longer clubs magnify it</td>
+                      </tr>
+                      <tr>
+                        <td>Vertical Shaft Angle DTL Backswing</td>
+                        <td>≈ –2° to +3°</td>
+                        <td>Neutral</td>
+                        <td><span class="rating"><span class="dot warn"></span>Slightly steep backswing at times</span></td>
+                        <td>Wider, deeper turn with more depth</td>
+                        <td>Especially helpful for driver/long irons</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p class="footer-note"><strong>Note:</strong> Face-on shaft values are treated as Sportsbox pattern indicators, not absolute degrees.</p>
+                  <button class="section-note-btn" onclick="addSectionNote('Club Delivery')">+ Add Note</button>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <section class="card col-6" id="coach">
+            <h3 class="section-title">Coach Summary</h3>
+            <p class="section-sub">Primary pattern and highest-value opportunities.</p>
+
+            <div class="priority-list">
+              <div class="priority">
+                <strong>Primary Pattern Identified</strong>
+                Good sequencing and decent speed, but a pattern of left-biased pressure, steep hand path, and variable vertical timing.
+              </div>
+              <div class="priority">
+                <strong>Power Profile</strong>
+                Speed is currently more hands-driven than rotation-driven, with modest X-Factor Stretch.
+              </div>
+            </div>
+
+            <h4 style="margin:18px 0 10px;">Recommended Priorities</h4>
+            <div class="priority-list">
+              <div class="priority"><strong>1. Shallow hand path + reduce leftward crash</strong> Improve path and pressure first.</div>
+              <div class="priority"><strong>2. Tempo standardization</strong> Live in the 3.3–3.5 range.</div>
+              <div class="priority"><strong>3. Vertical timing</strong> Earlier, more consistent push with better posture retention.</div>
+              <div class="priority"><strong>4. Add rotational stretch</strong> Small increase in downswing separation for more efficient speed.</div>
+            </div>
+          </section>
+
+          <section class="card col-6" id="drills">
+            <h3 class="section-title">Prescribed Drills</h3>
+            <p class="section-sub">Keep practice focused and constraint-based.</p>
+
+            <div class="drill-list">
+              <div class="drill">
+                <strong>Drill 1: Feet-Together Shallow Path</strong>
+                Hit half-wedges with feet together, feeling the club swing more around you, not down and left.
+              </div>
+              <div class="drill">
+                <strong>Drill 2: Tempo 3-Count</strong>
+                Count “1-2-3” to the top, “4” to impact; record swings and match your best-contact tempos.
+              </div>
+              <div class="drill">
+                <strong>Drill 3: Vertical Timing Pump</strong>
+                Rehearse 3 pumps where you stay in posture, then push up late (near impact), not early.
+              </div>
+            </div>
+          </section>
+
+          <section class="card col-12" id="nextsteps">
+            <h3 class="section-title">Next Steps</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <th style="width:220px;">Re-test In</th>
+                  <td>10–14 days</td>
+                </tr>
+                <tr>
+                  <th>Focus Club</th>
+                  <td>GW first, then map to 8i and a hybrid/long iron in a later session</td>
+                </tr>
+                <tr>
+                  <th>Practice Session Length</th>
+                  <td>Short sessions: 20–30 balls</td>
+                </tr>
+                <tr>
+                  <th>Practice Constraints</th>
+                  <td>Use 2–3 focused drills per session</td>
+                </tr>
+                <tr>
+                  <th>Finish Each Session</th>
+                  <td>5 gamified target shots using the “new pattern”</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="card col-12" id="notes">
+            <h3 class="section-title">Personal Notes</h3>
+            <p class="section-sub">Add your own notes, feels, checkpoints, ball-flight feedback, or practice plan. Notes are saved in your browser.</p>
+
+            <div class="notes-toolbar no-print">
+              <button class="btn btn-primary" onclick="saveNotes()">Save Notes</button>
+              <button class="btn btn-secondary" onclick="downloadNotes()">Download Notes</button>
+              <button class="btn btn-secondary" onclick="insertTemplate()">Insert Practice Template</button>
+              <button class="btn btn-secondary" onclick="clearNotes()">Clear Notes</button>
+            </div>
+
+            <textarea id="notesArea" placeholder="Example:
+- Best feel today:
+- Contact pattern:
+- Miss tendency:
+- Drill that worked best:
+- What to test next session:"></textarea>
+
+            <div class="footer-note">
+              Saved locally on this device using browser storage. Print the page any time for a print-ready version.
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="copyright-footer">
+        &copy; <a href="https://www.appliedailabs.com" target="_blank" rel="noopener">Applied AI Labs</a> 2026
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Accordion behavior
+    document.querySelectorAll('.acc-head').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.parentElement.classList.toggle('open');
+      });
+    });
+
+    function toggleAll(open){
+      document.querySelectorAll('.acc-item').forEach(item => {
+        item.classList.toggle('open', open);
+      });
+    }
+
+    // ── Theme toggle ──────────────────────
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const THEME_KEY = 'simsports_theme';
+
+    const sunPath = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    const moonPath = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+
+    function setTheme(light){
+      document.body.classList.toggle('light', light);
+      themeIcon.innerHTML = light ? moonPath : sunPath;
+      localStorage.setItem(THEME_KEY, light ? 'light' : 'dark');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      setTheme(!document.body.classList.contains('light'));
+    });
+
+    // Restore saved theme (always render icon)
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    setTheme(savedTheme === 'light');
+
+    // ── Section note buttons ──────────────
+    function addSectionNote(sectionName){
+      const timestamp = new Date().toLocaleString();
+      const entry = '\n--- ' + sectionName + ' (' + timestamp + ') ---\n';
+      if(notesArea.value.trim()){
+        notesArea.value += '\n' + entry;
+      } else {
+        notesArea.value = entry;
+      }
+      localStorage.setItem(NOTES_KEY, notesArea.value);
+      notesArea.focus();
+      notesArea.scrollTop = notesArea.scrollHeight;
+      document.getElementById('notes').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    // Notes persistence
+    const NOTES_KEY = 'swing_report_notes_t_macdonald_2026_04_21';
+    const notesArea = document.getElementById('notesArea');
+
+    function loadNotes(){
+      const saved = localStorage.getItem(NOTES_KEY);
+      if(saved) notesArea.value = saved;
+    }
+
+    function saveNotes(){
+      localStorage.setItem(NOTES_KEY, notesArea.value);
+      alert('Notes saved locally.');
+    }
+
+    function clearNotes(){
+      if(confirm('Clear your saved notes?')){
+        notesArea.value = '';
+        localStorage.removeItem(NOTES_KEY);
+      }
+    }
+
+    function insertTemplate(){
+      const template = `Session Notes
+Date:
+Location:
+
+Ball Flight
+- Start line:
+- Curve:
+- Trajectory:
+- Strike quality:
+
+Feels / Cues
+- Tempo feel:
+- Shallowing feel:
+- Pressure/rotation feel:
+
+What Worked Best
+1.
+2.
+3.
+
+Miss Pattern
+- Miss:
+- Likely cause:
+- Fix cue:
+
+Next Practice Goal
+- `;
+      if(notesArea.value.trim()){
+        notesArea.value += "\n\n" + template;
+      } else {
+        notesArea.value = template;
+      }
+    }
+
+    function downloadNotes(){
+      const content = `SIM.SPORTS Arena — T. MacDonald Swing Report Notes
+Coach: Parker
+Report Date: 4/21/26
+
+${notesArea.value}`;
+      const blob = new Blob([content], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'T_MacDonald_Swing_Report_Notes.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    notesArea.addEventListener('input', () => {
+      localStorage.setItem(NOTES_KEY, notesArea.value);
+    });
+
+    loadNotes();
+
+    // Active nav link on scroll
+    const sections = [...document.querySelectorAll('section[id], .acc-item[id]')];
+    const navLinks = [...document.querySelectorAll('#navLinks a')];
+
+    function updateActiveNav() {
+      const trigger = window.scrollY + window.innerHeight * 0.4;
+      let activeId = null;
+      let bestTop = -Infinity;
+      sections.forEach(sec => {
+        const rect = sec.getBoundingClientRect();
+        const top = rect.top + window.scrollY;
+        if (rect.height > 0 && top <= trigger && top > bestTop) {
+          bestTop = top;
+          activeId = sec.id;
+        }
+      });
+      navLinks.forEach(link => {
+        link.classList.toggle('active', activeId !== null && link.getAttribute('href') === '#' + activeId);
+      });
+    }
+
+    // Nav link click — expand accordion if collapsed, collapse all for top-level sections
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = link.getAttribute('href').substring(1);
+        const target = document.getElementById(id);
+        if (!target) return;
+        // For non-accordion sections (overview, summary, etc.), collapse all accordion items
+        if (!target.classList.contains('acc-item')) {
+          document.querySelectorAll('.acc-item.open').forEach(item => item.classList.remove('open'));
+        } else if (!target.classList.contains('open')) {
+          target.classList.add('open');
+        }
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    updateActiveNav();
+  </script>
+</body>
+</html>

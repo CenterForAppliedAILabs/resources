@@ -1,0 +1,1934 @@
+This is an interactive HTML report viewer that transforms your golf swing data into a clean, navigable coaching dashboard with built-in note-taking and print-ready export.
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swing Report – T. MacDonald | SIM.SPORTS Arena | 4/21/26</title>
+    <style>
+        :root {
+            --bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --panel-2: #f0f2f5;
+            --header-bg: #111111;
+            --header-text: #ffffff;
+            --accent: #1190CB;
+            --accent-2: #5AB4E6;
+            --accent-light: rgba(17,144,203,.08);
+            --text: #1a1d21;
+            --text-secondary: #4a5058;
+            --muted: #6b7280;
+            --border: rgba(0,0,0,.1);
+            --table-stripe: #f8f9fa;
+            --table-header: #e9ecef;
+            --sidebar-width: 260px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+            --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --transition: 0.2s ease;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── HEADER ─────────────────────────── */
+        .header {
+            background: var(--header-bg);
+            color: var(--header-text);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-md);
+            min-height: 64px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+        .header-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 8px;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+            letter-spacing: 0.02em;
+            line-height: 1;
+            text-align: center;
+        }
+        .header-info h1 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            line-height: 1.2;
+        }
+        .header-info span {
+            font-size: 0.8rem;
+            opacity: 0.75;
+            font-weight: 400;
+        }
+        .header-tagline {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.5;
+            font-weight: 600;
+            margin-top: 1px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+            align-items: center;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all var(--transition);
+            white-space: nowrap;
+            font-family: var(--font);
+            text-decoration: none;
+        }
+        .btn-print {
+            background: #fff;
+            color: #1a1d21;
+            border-color: #ccc;
+        }
+        .btn-print:hover {
+            background: #e9ecef;
+            border-color: #aaa;
+        }
+        .btn-notes-global {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .btn-notes-global:hover {
+            background: #0d7aa8;
+            border-color: #0d7aa8;
+        }
+        .btn-notes-global.has-notes {
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(17,144,203, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(17,144,203, 0);
+            }
+        }
+
+        /* ── THEME TOGGLE ───────────────────── */
+        .theme-toggle {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(255,255,255,.12); color: #fff;
+            border: 1px solid rgba(255,255,255,.2);
+            cursor: pointer; display: inline-flex;
+            align-items: center; justify-content: center;
+            padding: 0; transition: all var(--transition); flex-shrink: 0;
+        }
+        .theme-toggle:hover { background: var(--accent); border-color: var(--accent); }
+        .theme-toggle svg {
+            width: 20px; height: 20px; stroke: currentColor;
+            fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* ── HEADER LINK ────────────────────── */
+        .header-info span a { color: inherit; text-decoration: none; }
+        .header-info span a:hover { color: var(--accent); }
+
+        /* ── LAYOUT ─────────────────────────── */
+        .app-container {
+            display: flex;
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            padding: 20px 12px 40px 20px;
+            background: #fafbfc;
+            border-right: 1px solid var(--border);
+            z-index: 50;
+        }
+        .sidebar-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .sidebar-nav li a {
+            display: block;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all var(--transition);
+            border-left: 3px solid transparent;
+            line-height: 1.3;
+        }
+        .sidebar-nav li a:hover {
+            background: #eef1f5;
+            color: var(--text);
+        }
+        .sidebar-nav li a.active {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 600;
+            border-left-color: var(--accent);
+        }
+        .sidebar-nav .nav-section-header {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #888;
+            padding: 14px 12px 6px;
+            font-weight: 600;
+        }
+        .sidebar-nav .nav-section-header:first-child {
+            padding-top: 0;
+        }
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 24px 28px 60px;
+            max-width: 820px;
+        }
+
+        /* ── MOBILE NAV ─────────────────────── */
+        .mobile-nav {
+            display: none;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 16px;
+            gap: 6px;
+            position: sticky;
+            top: 64px;
+            z-index: 60;
+            -webkit-overflow-scrolling: touch;
+        }
+        .mobile-nav a {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            background: #f5f6f8;
+            flex-shrink: 0;
+            transition: all var(--transition);
+            border: 1px solid transparent;
+        }
+        .mobile-nav a:hover,
+        .mobile-nav a.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* ── SECTION CARDS ──────────────────── */
+        .section {
+            margin-bottom: 28px;
+            scroll-margin-top: 90px;
+        }
+        .section-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: box-shadow var(--transition);
+        }
+        .section-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .section-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: #fdfdfd;
+            flex-wrap: wrap;
+        }
+        .section-header h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .section-body {
+            padding: 20px;
+        }
+        .section-body p {
+            margin-bottom: 14px;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+        .section-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ── COLLAPSIBLE SECTIONS ──────────── */
+        .section-header { cursor: pointer; user-select: none; }
+        .collapse-caret {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 22px; height: 22px; font-size: 1rem;
+            color: var(--muted); transition: transform .25s ease;
+            transform: rotate(0deg); flex-shrink: 0;
+        }
+        .section:not(.collapsed) .collapse-caret { transform: rotate(90deg); }
+        .section.collapsed .section-body { display: none; }
+
+        /* ── SECTION ACTIONS ───────────────── */
+        .section-actions {
+            margin-top: 12px; padding-top: 10px;
+            border-top: 1px solid var(--border);
+            display: flex; gap: 8px;
+        }
+        .btn-create-note {
+            padding: 5px 12px; font-size: .78rem;
+            background: var(--accent-light); color: var(--accent);
+            border: 1px solid rgba(17,144,203,.2); border-radius: 20px;
+            cursor: pointer; font-family: var(--font);
+            transition: all var(--transition);
+        }
+        .btn-create-note:hover { background: var(--accent); color: #fff; }
+        .btn-add-to-plan {
+            padding: 5px 12px; font-size: .72rem;
+            background: #f5f6f8; color: var(--text-secondary);
+            border: 1px solid var(--border); border-radius: 20px;
+            cursor: pointer; font-family: var(--font);
+            transition: all var(--transition);
+        }
+        .btn-add-to-plan:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+        .btn-add-to-plan.in-plan { background: var(--accent-light); color: var(--accent); border-color: rgba(17,144,203,.2); opacity: .7; pointer-events: none; }
+
+        /* ── COLLAPSE CONTROLS ─────────────── */
+        .sidebar-collapse-controls { display: flex; gap: 6px; margin-top: 16px; padding: 0 12px; }
+        .btn-collapse {
+            flex: 1; padding: 6px 10px; font-size: .72rem;
+            background: #f0f2f5; border: 1px solid var(--border);
+            border-radius: var(--radius-sm); cursor: pointer;
+            font-family: var(--font); color: var(--text-secondary);
+            transition: all var(--transition);
+        }
+        .btn-collapse:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+        .mobile-collapse-controls { display: flex; gap: 4px; flex-shrink: 0; }
+        .btn-collapse-sm {
+            padding: 5px 8px; font-size: .68rem;
+            background: #f5f6f8; border: 1px solid var(--border);
+            border-radius: 16px; cursor: pointer; font-family: var(--font);
+            color: var(--text-secondary); white-space: nowrap;
+            transition: all var(--transition);
+        }
+        .btn-collapse-sm:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        /* ── TABLES ─────────────────────────── */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 16px 0;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            min-width: 600px;
+        }
+        table th {
+            background: var(--table-header);
+            font-weight: 600;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #555;
+            white-space: nowrap;
+            border-bottom: 2px solid #d5d9de;
+            position: sticky;
+            top: 0;
+        }
+        table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+            line-height: 1.4;
+        }
+        table tbody tr:nth-child(even) {
+            background: var(--table-stripe);
+        }
+        table tbody tr:hover {
+            background: rgba(17,144,203,.05);
+        }
+        table .col-narrow {
+            white-space: nowrap;
+            width: 1%;
+        }
+        table .col-medium {
+            min-width: 100px;
+        }
+        table .col-wide {
+            min-width: 140px;
+        }
+
+        /* ── CALLOUT BOXES ──────────────────── */
+        .callout {
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            margin: 16px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-left: 4px solid var(--accent);
+            background: var(--accent-light);
+            color: #0d4a6b;
+        }
+        .callout strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .callout-gold {
+            border-left-color: var(--accent-2);
+            background: rgba(90,180,230,.08);
+            color: #0d4a6b;
+        }
+
+        /* ── NOTES WITHIN SECTIONS ──────────── */
+        .notes-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.78rem;
+            color: var(--accent);
+            cursor: pointer;
+            background: none;
+            border: 1px solid var(--accent);
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: all var(--transition);
+            font-family: var(--font);
+            white-space: nowrap;
+        }
+        .notes-toggle:hover {
+            background: var(--accent-light);
+        }
+        .notes-toggle.has-content {
+            background: rgba(17,144,203,.08);
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .notes-area {
+            display: none;
+            margin-top: 12px;
+        }
+        .notes-area.open {
+            display: block;
+        }
+        .notes-area textarea {
+            width: 100%;
+            min-height: 70px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+            font-size: 0.85rem;
+            resize: vertical;
+            background: #fafbfc;
+            transition: border-color var(--transition);
+            line-height: 1.5;
+        }
+        .notes-area textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(17,144,203,.1);
+        }
+        .notes-saved-indicator {
+            font-size: 0.72rem;
+            color: #888;
+            margin-top: 4px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .notes-saved-indicator.visible {
+            opacity: 1;
+        }
+
+        /* ── RANGE PLAN ───────────────────── */
+        .btn-print-plan {
+            padding: 5px 12px; font-size: .78rem;
+            background: #f5f6f8; border: 1px solid var(--border);
+            border-radius: var(--radius-sm); cursor: pointer;
+            font-family: var(--font); color: var(--text-secondary);
+            transition: all var(--transition);
+        }
+        .btn-print-plan:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+        #rangePlanItems { margin-bottom: 16px; }
+        .plan-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 12px; background: #f8f9fa;
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--accent);
+            margin-bottom: 8px; font-size: .88rem;
+        }
+        .plan-item.custom-item { border-left-color: var(--accent-2); }
+        .plan-item-section { font-size: .78rem; font-weight: 600; color: var(--accent); margin-bottom: 2px; }
+        .plan-item-content { flex: 1; color: var(--text-secondary); white-space: pre-wrap; line-height: 1.4; }
+        .plan-item-date { font-size: .7rem; color: var(--muted); }
+        .plan-item-remove {
+            background: none; border: none; color: #ccc;
+            cursor: pointer; font-size: 1.1rem; padding: 0 4px;
+            line-height: 1; transition: color var(--transition); flex-shrink: 0;
+        }
+        .plan-item-remove:hover { color: #e74c3c; }
+        .range-plan-custom {
+            margin-top: 16px; padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+        .range-plan-custom textarea {
+            width: 100%; min-height: 60px; padding: 10px 12px;
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            font-family: var(--font); font-size: .85rem; resize: vertical;
+            background: #fafbfc; transition: border-color var(--transition);
+            line-height: 1.5; margin-bottom: 8px;
+        }
+        .range-plan-custom textarea:focus {
+            outline: none; border-color: var(--accent);
+            background: #fff; box-shadow: 0 0 0 3px rgba(17,144,203,.1);
+        }
+        .btn-add-custom {
+            padding: 6px 14px; font-size: .8rem;
+            background: var(--accent); color: #fff; border: none;
+            border-radius: var(--radius-sm); cursor: pointer;
+            font-family: var(--font); transition: background var(--transition);
+        }
+        .btn-add-custom:hover { background: #0d7aa8; }
+        .range-plan-empty { text-align: center; color: var(--muted); font-size: .85rem; padding: 20px 0; }
+
+        /* ── MODAL ACTIONS ─────────────────── */
+        .modal-actions { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .btn-modal-action {
+            padding: 6px 14px; font-size: .78rem;
+            background: #f5f6f8; color: var(--text);
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            cursor: pointer; font-family: var(--font);
+            transition: all var(--transition);
+        }
+        .btn-modal-action:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+        /* ── BACK TO TOP ────────────────────── */
+        .back-to-top {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--header-bg);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            z-index: 90;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .back-to-top:hover {
+            background: var(--accent);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ── ALL NOTES MODAL ────────────────── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition);
+            padding: 20px;
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal {
+            background: #fff;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            padding: 24px;
+        }
+        .modal h2 {
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        .modal .note-block {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #fafbfc;
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--accent);
+        }
+        .modal .note-block h4 {
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            color: #555;
+        }
+        .modal .note-block p {
+            font-size: 0.88rem;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+        .modal .note-block.empty {
+            border-left-color: #ddd;
+            color: #999;
+            font-style: italic;
+        }
+        .modal-close {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #888;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .modal-close:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        /* ── DARK MODE ─────────────────────── */
+        body.dark {
+            background: #0b1020 !important;
+            --bg: #0b1020;
+            --card-bg: #121931;
+            --panel-2: #182244;
+            --header-bg: #0b1020;
+            --text: #e9eefc;
+            --text-secondary: #aab6d3;
+            --muted: #6b7280;
+            --border: rgba(255,255,255,.12);
+            --table-stripe: #151d38;
+            --table-header: #1a2744;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,.2);
+            --shadow-md: 0 6px 20px rgba(0,0,0,.25);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,.3);
+        }
+        body.dark .sidebar { background: #0e1528; border-right-color: rgba(255,255,255,.1); }
+        body.dark .sidebar-nav .nav-section-header { color: #7788aa; }
+        body.dark .sidebar-nav li a:hover { background: rgba(17,144,203,.1); color: var(--text); }
+        body.dark .section-header { background: #151d38; }
+        body.dark .mobile-nav { background: #0e1528; border-bottom-color: rgba(255,255,255,.1); }
+        body.dark .mobile-nav a { background: #182244; color: #aab6d3; }
+        body.dark table tbody tr:hover { background: rgba(17,144,203,.06); }
+        body.dark .notes-area textarea { background: #0e1528; border-color: rgba(255,255,255,.15); color: var(--text); }
+        body.dark .notes-area textarea:focus { background: #121931; box-shadow: 0 0 0 3px rgba(17,144,203,.15); }
+        body.dark .callout { background: rgba(17,144,203,.1); color: #8abdd9; }
+        body.dark .callout-gold { background: rgba(90,180,230,.12); color: #8abdd9; }
+        body.dark .modal { background: #121931; color: var(--text); }
+        body.dark .modal .note-block { background: #0e1528; }
+        body.dark .modal .note-block h4 { color: var(--text-secondary); }
+        body.dark .modal-close:hover { background: #182244; color: var(--text); }
+        body.dark .btn-print { background: #182244; color: var(--text); border-color: rgba(255,255,255,.15); }
+        body.dark .btn-print:hover { background: #1a2744; border-color: rgba(255,255,255,.2); }
+        body.dark .btn-create-note { background: rgba(17,144,203,.12); }
+        body.dark .btn-add-to-plan { background: #182244; color: var(--text-secondary); border-color: rgba(255,255,255,.1); }
+        body.dark .btn-add-to-plan:hover { background: rgba(17,144,203,.15); color: var(--accent); }
+        body.dark .btn-add-to-plan.in-plan { background: rgba(17,144,203,.1); }
+        body.dark .btn-collapse { background: #182244; color: var(--text-secondary); border-color: rgba(255,255,255,.1); }
+        body.dark .btn-collapse:hover { background: rgba(17,144,203,.15); color: var(--accent); }
+        body.dark .btn-collapse-sm { background: #182244; color: var(--text-secondary); border-color: rgba(255,255,255,.1); }
+        body.dark .btn-collapse-sm:hover { background: var(--accent); color: #fff; }
+        body.dark .plan-item { background: #0e1528; }
+        body.dark .range-plan-custom textarea { background: #0e1528; border-color: rgba(255,255,255,.15); color: var(--text); }
+        body.dark .range-plan-custom textarea:focus { background: #121931; box-shadow: 0 0 0 3px rgba(17,144,203,.15); }
+        body.dark .btn-print-plan { background: #182244; color: var(--text-secondary); border-color: rgba(255,255,255,.12); }
+        body.dark .btn-print-plan:hover { background: rgba(17,144,203,.15); color: var(--accent); }
+        body.dark .btn-modal-action { background: #182244; color: var(--text-secondary); border-color: rgba(255,255,255,.12); }
+        body.dark .btn-modal-action:hover { background: rgba(17,144,203,.15); color: var(--accent); border-color: var(--accent); }
+
+        /* ── PRINT STYLES ───────────────────── */
+        @media print {
+            :root {
+                --bg: #fff;
+                --card-bg: #fff;
+                --text: #000;
+                --text-secondary: #333;
+                --border: #ccc;
+                --table-stripe: #f9f9f9;
+                --table-header: #e8e8e8;
+            }
+            body {
+                font-size: 11pt;
+                line-height: 1.45;
+                background: #fff;
+                color: #000;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .header,
+            .sidebar,
+            .mobile-nav,
+            .back-to-top,
+            .notes-toggle,
+            .notes-area,
+            .btn,
+            .header-actions,
+            .modal-overlay {
+                display: none !important;
+            }
+            .app-container {
+                display: block;
+                max-width: 100%;
+            }
+            .main-content {
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            .section {
+                scroll-margin-top: 0;
+                page-break-inside: avoid;
+                margin-bottom: 16px;
+            }
+            .section-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                break-inside: avoid;
+            }
+            .section-header {
+                background: #f5f5f5;
+                padding: 10px 14px;
+            }
+            .section-body {
+                padding: 12px 14px;
+            }
+            .section-body p {
+                font-size: 10pt;
+            }
+            .callout {
+                background: #f9f9f9;
+                border-left: 3px solid #999;
+                font-size: 10pt;
+                padding: 10px 14px;
+            }
+            .callout-gold {
+                border-left-color: #999;
+                background: #fafafa;
+            }
+            table {
+                font-size: 9pt;
+                min-width: auto;
+            }
+            table th {
+                font-size: 8pt;
+                padding: 6px 8px;
+            }
+            table td {
+                padding: 6px 8px;
+            }
+            .table-wrapper {
+                border: 1px solid #ddd;
+                overflow-x: visible;
+            }
+            @page {
+                margin: 1.2cm;
+                size: letter;
+            }
+            h2 {
+                font-size: 13pt;
+            }
+            .section-number {
+                background: #1190CB !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .notes-content-print {
+                display: block !important;
+                margin-top: 8px;
+                font-size: 9pt;
+                color: #555;
+                border-top: 1px dotted #ccc;
+                padding-top: 6px;
+            }
+            .notes-content-print strong {
+                font-size: 9pt;
+            }
+            .copyright-footer {
+                margin-top: 24px;
+                padding-top: 14px;
+                font-size: 8pt;
+                color: #777;
+                border-top: 1px solid #ddd;
+            }
+            .copyright-footer a {
+                color: #555;
+            }
+            .section.collapsed .section-body { display: block !important; }
+            .collapse-caret, .section-actions, .sidebar-collapse-controls,
+            .mobile-collapse-controls, .modal-actions, .btn-print-plan,
+            .range-plan-custom, .plan-item-remove, .range-plan-empty,
+            .btn-collapse, .btn-collapse-sm { display: none !important; }
+            .plan-item { break-inside: avoid; }
+        }
+        .notes-content-print {
+            display: none;
+        }
+
+        /* ── COPYRIGHT FOOTER ───────────────── */
+        .copyright-footer {
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+        .copyright-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition);
+        }
+        .copyright-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── RESPONSIVE ─────────────────────── */
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+            .mobile-nav {
+                display: flex;
+            }
+            .main-content {
+                padding: 16px 12px 40px;
+            }
+            .section-header h2 {
+                font-size: 0.95rem;
+            }
+            .header {
+                padding: 12px 14px;
+                gap: 8px;
+            }
+            .header-info h1 {
+                font-size: 1rem;
+            }
+            .btn {
+                padding: 7px 11px;
+                font-size: 0.78rem;
+                gap: 4px;
+            }
+            .header-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 0.6rem;
+            }
+            table {
+                font-size: 0.76rem;
+                min-width: 480px;
+            }
+            .back-to-top {
+                bottom: 16px;
+                right: 12px;
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .mobile-nav {
+                top: 100px;
+            }
+            .section-body {
+                padding: 14px;
+            }
+            table {
+                font-size: 0.72rem;
+                min-width: 400px;
+            }
+            .btn {
+                font-size: 0.72rem;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════ HEADER ═══════════════ -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon" aria-hidden="true">SIM</div>
+            <div class="header-info">
+                <h1>Swing Report – T. MacDonald</h1>
+                <span><a href="https://www.simsportsarena.com" target="_blank" rel="noopener">SIM.SPORTS Arena</a> &nbsp;|&nbsp; Coach: Parker &nbsp;|&nbsp; April 21, 2026 &nbsp;|&nbsp; Club: GW</span>
+                <div class="header-tagline">PARK CITY, UTAH</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="theme-toggle" id="themeToggle" type="button" title="Toggle dark mode">
+                <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+            </button>
+            <button class="btn btn-notes-global" id="btnAllNotes" title="View Notes">
+                Notes
+            </button>
+            <button class="btn btn-print" id="btnPrint" title="Print Report">
+                Print Report
+            </button>
+        </div>
+    </header>
+
+    <!-- ═══════════════ MOBILE NAV ═══════════════ -->
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile section navigation">
+        <a href="#section-summary">Summary</a>
+        <a href="#section-1">Rhythm</a>
+        <a href="#section-2">Rotation</a>
+        <a href="#section-3">Pressure</a>
+        <a href="#section-4">Sequence</a>
+        <a href="#section-5">Release</a>
+        <a href="#section-6">Delivery</a>
+        <a href="#section-7">Coach</a>
+        <a href="#section-8">Drills</a>
+        <a href="#section-range-plan">Range Plan</a>
+        <div class="mobile-collapse-controls">
+            <button class="btn btn-collapse-sm" id="btnCollapseAllMobile">Collapse</button>
+            <button class="btn btn-collapse-sm" id="btnExpandAllMobile">Expand</button>
+        </div>
+    </nav>
+
+    <!-- ═══════════════ APP CONTAINER ═══════════════ -->
+    <div class="app-container">
+
+        <!-- ── SIDEBAR ───────────────────────── -->
+        <aside class="sidebar" id="sidebar" aria-label="Desktop sidebar navigation">
+            <ul class="sidebar-nav">
+                <li class="nav-section-header">SIM.SPORTS Arena</li>
+                <li><a href="#section-summary">Data‑Set Summary</a></li>
+                <li class="nav-section-header">Detailed Analysis</li>
+                <li><a href="#section-1">1. Rhythm &amp; Timing</a></li>
+                <li><a href="#section-2">2. Rotation &amp; Stretch</a></li>
+                <li><a href="#section-3">3. Pressure &amp; Motion</a></li>
+                <li><a href="#section-4">4. Sequencing</a></li>
+                <li><a href="#section-5">5. Release &amp; Speed</a></li>
+                <li><a href="#section-6">6. Club Delivery</a></li>
+                <li class="nav-section-header">Conclusions</li>
+                <li><a href="#section-7">7. Coach Summary</a></li>
+                <li><a href="#section-8">8. Drills &amp; Next Steps</a></li>
+                <li class="nav-section-header">Planning</li>
+                <li><a href="#section-range-plan">My Range Plan</a></li>
+            </ul>
+            <div class="sidebar-collapse-controls">
+                <button class="btn btn-collapse" id="btnCollapseAll">Collapse All</button>
+                <button class="btn btn-collapse" id="btnExpandAll">Expand All</button>
+            </div>
+        </aside>
+
+        <!-- ── MAIN CONTENT ──────────────────── -->
+        <main class="main-content" id="mainContent">
+
+            <!-- ============ DATA-SET SUMMARY ============ -->
+            <section class="section" id="section-summary">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2>Data‑Set Summary</h2>
+                    </div>
+                    <div class="section-body">
+                        <p><strong>Player:</strong> T. MacDonald &nbsp;|&nbsp; <strong>Facility:</strong> SIM.SPORTS Arena &nbsp;|&nbsp; <strong>Coach:</strong> Parker &nbsp;|&nbsp;
+                            <strong>Date:</strong> 4/21/26</p>
+                        <p><strong>Clubs Included:</strong> GW (19 swings, includes converted former 2h)</p>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Club</th><th>Avg CHS</th><th>Range</th><th>Notes</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>GW</td><td>~70.6 mph</td><td>56.3–88.6 mph</td><td>Wide range; top end shows real speed ceiling</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Club</th><th>Avg Hand Speed</th><th>Range</th><th>Notes</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>GW</td><td>~16.8 mph</td><td>13.9–18.3 mph</td><td>Solid hand speed; room for efficiency gains</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p><strong>Fastest swing:</strong> ~88.6 mph CHS (GW, 10:20) &nbsp;|&nbsp;
+                            <strong>Slowest swing:</strong> ~56.3 mph CHS (GW, 10:20)</p>
+                        <p><strong>Most consistent club:</strong> GW (only club in this dataset)</p>
+                        <p><strong>Largest variance in delivery:</strong> Tempo and vertical timing (Pelvis Lift Time into IMP)</p>
+                        <p><strong>Primary pattern:</strong> Tempo generally 3.2–4.2 with a few short, punchy 2.4–2.8 swings; X‑Factor Stretch modest (~2–4°); Sway Gap IMP consistently leftward (~–2.5" to –3.5").</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ SECTION 1: Rhythm & Timing ============ -->
+            <section class="section" id="section-1">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2><span class="section-number">1</span> Rhythm &amp; Timing</h2>
+                    </div>
+                    <div class="section-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Metric</th><th>Value (Typical)</th><th>Ideal</th><th>Explanation</th><th>Implication</th><th>Suggested Change</th><th>Club Commentary</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="col-narrow">Tempo</td><td>~3.3–3.7 (some 2.5)</td><td>3.0–3.5</td>
+                                        <td>Ratio of backswing to downswing</td>
+                                        <td>A few swings too quick/punchy</td>
+                                        <td>Standardize around 3.3</td>
+                                        <td>Wedges like 3.3–3.5; avoid 2.5 "stabs"</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Backswing Time</td><td>~0.80–0.95 sec</td><td>0.8–1.0 sec</td>
+                                        <td>Duration of backswing</td>
+                                        <td>Generally in range; a few "floaty" ones</td>
+                                        <td>Keep turn continuous, no pause</td>
+                                        <td>Good for wedges; don't drift over 1.0 sec</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Downswing Time</td><td>~0.23–0.26 sec</td><td>0.20–0.25 sec</td>
+                                        <td>Duration of downswing</td>
+                                        <td>Slightly long at times</td>
+                                        <td>Feel crisp first move, not rushed</td>
+                                        <td>Longer clubs will exaggerate this</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pelvis Lift Time into IMP</td><td>~75–100 ms (spread: 50–250 ms)</td><td>40–55 ms</td>
+                                        <td>Timing of vertical force</td>
+                                        <td>Vertical push often late & variable</td>
+                                        <td>Train earlier, more consistent push</td>
+                                        <td>Short irons punish late, jumpy verticals</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout">
+                            <strong>Big Picture</strong>
+                            Rhythm is good but not yet standardized. The outliers (tempo &lt;3.0 or very long pelvis‑lift times) are where contact and flight will wobble.
+                        </div>
+                        <div class="section-actions">
+                            <button class="btn-create-note" data-create-section="1">+ Create Note</button>
+                            <button class="btn-add-to-plan" data-plan-section="1">+ Add to Plan</button>
+                            <button class="notes-toggle" data-section="1" aria-label="Toggle notes for Rhythm & Timing">Notes</button>
+                        </div>
+                        <div class="notes-area" data-section="1">
+                            <textarea placeholder="Add your personal notes for Rhythm & Timing..."></textarea>
+                            <span class="notes-saved-indicator">Saved</span>
+                        </div>
+                        <div class="notes-content-print" data-section-print="1"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ SECTION 2: Rotation & Stretch ============ -->
+            <section class="section" id="section-2">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2><span class="section-number">2</span> Rotation &amp; Stretch (Power Signatures)</h2>
+                    </div>
+                    <div class="section-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Metric</th><th>Value (Typical)</th><th>Ideal</th><th>Explanation</th><th>Implication</th><th>Suggested Change</th><th>Club Commentary</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Downswing X‑Factor Stretch</td><td>~2–4°</td><td>5–15°</td>
+                                        <td>Increase in separation from top</td>
+                                        <td>Under‑utilized stretch = leaving speed</td>
+                                        <td>Add more chest rotation in downswing</td>
+                                        <td>Longer clubs benefit even more</td>
+                                    </tr>
+                                    <tr>
+                                        <td>X‑Factor Backswing Max</td><td>≈ –35° to –40°</td><td>–20° to –40°</td>
+                                        <td>Chest–pelvis separation at top</td>
+                                        <td>Generally solid; not under‑rotated</td>
+                                        <td>Maintain; avoid "short, arms‑only" backswing</td>
+                                        <td>Good base; don't let wedges get too short</td>
+                                    </tr>
+                                    <tr>
+                                        <td>X‑Factor IMP</td><td>≈ –6° to –10°</td><td>–40° to –55°</td>
+                                        <td>Separation at impact</td>
+                                        <td>Much lower than "tour‑style" separation</td>
+                                        <td>Focus on rotating through, not stalling</td>
+                                        <td>Wedges don't need tour numbers, but more helps</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout">
+                            <strong>Big Picture</strong>
+                            You have enough backswing turn, but don't keep the separation into impact. Power is more "handsy" than rotational.
+                        </div>
+                        <div class="section-actions">
+                            <button class="btn-create-note" data-create-section="2">+ Create Note</button>
+                            <button class="btn-add-to-plan" data-plan-section="2">+ Add to Plan</button>
+                            <button class="notes-toggle" data-section="2" aria-label="Toggle notes for Rotation & Stretch">Notes</button>
+                        </div>
+                        <div class="notes-area" data-section="2">
+                            <textarea placeholder="Add your personal notes for Rotation & Stretch..."></textarea>
+                            <span class="notes-saved-indicator">Saved</span>
+                        </div>
+                        <div class="notes-content-print" data-section-print="2"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ SECTION 3: Pressure & Motion ============ -->
+            <section class="section" id="section-3">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2><span class="section-number">3</span> Pressure &amp; Motion Pattern</h2>
+                    </div>
+                    <div class="section-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Metric</th><th>Value (Typical)</th><th>Ideal</th><th>Explanation</th><th>Implication</th><th>Suggested Change</th><th>Club Commentary</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Sway Gap ADR</td><td>≈ –1.0"</td><td>–0.5" to +0.5"</td><td>Lateral chest–pelvis offset at address</td><td>Slightly left‑biased at setup</td><td>Re‑center pressure under mid‑stance</td><td>Wedges prefer more neutral starting pressure</td></tr>
+                                    <tr><td>Sway Gap TOP</td><td>≈ –0.5" to +0.5"</td><td>–0.5" to +0.5"</td><td>Offset at top</td><td>Generally centered coil</td><td>Maintain</td><td>Good for control; don't add extra sway</td></tr>
+                                    <tr><td>Sway Gap IMP</td><td>≈ –2.5" to –3.5"</td><td>–0.5" to –1.0"</td><td>Offset at impact</td><td>Very left‑loaded, can drive steepness</td><td>Soften lateral drive; improve hand path</td><td>Wedges show steep, diggy tendencies</td></tr>
+                                    <tr><td>Hand Sway BAH</td><td>≈ –0.5" to –1.0"</td><td>0–0.5"</td><td>Lateral hand movement early backswing</td><td>Hands move away/left early</td><td>Keep hands more in and up</td><td>Helps wedge low‑point and face control</td></tr>
+                                    <tr><td>Hand Sway DAH</td><td>≈ –1.0" to –1.5"</td><td>0–0.5"</td><td>Lateral hand movement downswing</td><td>Hands continue left = steep, leftward path</td><td>Train shallower, more from inside</td><td>Long clubs will over‑punish this</td></tr>
+                                    <tr><td>Chest Lift TOP</td><td>≈ 1.0–1.5"</td><td>0–1"</td><td>Vertical chest movement at top</td><td>Slight early extension at top</td><td>Feel more chest down at top</td><td>Wedges less forgiving of this</td></tr>
+                                    <tr><td>Chest Lift into IMP</td><td>≈ 1.0–1.5"</td><td>0–1"</td><td>Vertical chest movement into impact</td><td>Rising into impact → thin/fat risk</td><td>Maintain height, chest over ball</td><td>Short clubs require stable chest height</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout">
+                            <strong>Big Picture</strong>
+                            You're good at getting left, but often too much, too steep, and too vertical into impact.
+                        </div>
+                        <div class="section-actions">
+                            <button class="btn-create-note" data-create-section="3">+ Create Note</button>
+                            <button class="btn-add-to-plan" data-plan-section="3">+ Add to Plan</button>
+                            <button class="notes-toggle" data-section="3" aria-label="Toggle notes for Pressure & Motion">Notes</button>
+                        </div>
+                        <div class="notes-area" data-section="3">
+                            <textarea placeholder="Add your personal notes for Pressure & Motion..."></textarea>
+                            <span class="notes-saved-indicator">Saved</span>
+                        </div>
+                        <div class="notes-content-print" data-section-print="3"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ SECTION 4: Sequencing ============ -->
+            <section class="section" id="section-4">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2><span class="section-number">4</span> Sequencing (Kinematic Chain)</h2>
+                    </div>
+                    <div class="section-body">
+                        <p style="margin-bottom:10px;">Your dataset is <strong>beautifully consistent</strong> here:</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Metric</th><th>Value</th><th>Ideal</th><th>Explanation</th><th>Implication</th><th>Suggested Change</th><th>Club Commentary</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Pelvis Transition Order</td><td>1</td><td>1</td><td>First segment to reverse</td><td>Correct start of chain</td><td>Maintain</td><td>Works for all clubs</td></tr>
+                                    <tr><td>Chest Transition Order</td><td>2</td><td>2</td><td>Chest follows pelvis</td><td>Good mid‑sequence</td><td>Maintain</td><td>Longer clubs exaggerate timing drift</td></tr>
+                                    <tr><td>Arm Transition Order</td><td>3</td><td>3</td><td>Arms follow chest</td><td>Good arm slotting</td><td>Maintain</td><td>Wedges benefit from clean ordering</td></tr>
+                                    <tr><td>Club Transition Order</td><td>4</td><td>4</td><td>Club releases last</td><td>Proper late release</td><td>Maintain</td><td>Early release would steepen; you avoid that</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout">
+                            <strong>Big Picture</strong>
+                            Sequencing is a strength. The issues are more path, pressure, and verticals than order.
+                        </div>
+                        <div class="section-actions">
+                            <button class="btn-create-note" data-create-section="4">+ Create Note</button>
+                            <button class="btn-add-to-plan" data-plan-section="4">+ Add to Plan</button>
+                            <button class="notes-toggle" data-section="4" aria-label="Toggle notes for Sequencing">Notes</button>
+                        </div>
+                        <div class="notes-area" data-section="4">
+                            <textarea placeholder="Add your personal notes for Sequencing..."></textarea>
+                            <span class="notes-saved-indicator">Saved</span>
+                        </div>
+                        <div class="notes-content-print" data-section-print="4"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ SECTION 5: Release & Speed ============ -->
+            <section class="section" id="section-5">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2><span class="section-number">5</span> Release &amp; Speed Production</h2>
+                    </div>
+                    <div class="section-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Metric</th><th>Value (Typical)</th><th>Ideal</th><th>Explanation</th><th>Implication</th><th>Suggested Change</th><th>Club Commentary</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Wrist Release Percent</td><td>~20–60% (wide)</td><td>55–65%</td><td>Timing of wrist unhinging</td><td>Some swings release too early or too late</td><td>Standardize around mid‑50s</td><td>Wedges tolerate slightly earlier release</td></tr>
+                                    <tr><td>Hand Pull Down</td><td>≈ –0.5" to –1.5"</td><td>–0.5" to –1.0"</td><td>Vertical hand path early downswing</td><td>Tends toward steep pull</td><td>Feel hands more around, less down</td><td>Long clubs need this even more</td></tr>
+                                    <tr><td>Hand Speed Max</td><td>~16.8 mph</td><td>17–20 mph</td><td>Peak hand speed</td><td>Solid but not maxed out</td><td>Improve stretch + ground use</td><td>Speed enough for wedges; scalable</td></tr>
+                                    <tr><td>Club Head Speed Max</td><td>~70.6 mph (GW)</td><td>Club‑dependent</td><td>Peak club speed</td><td>Good ceiling; wide range in session</td><td>Make speed more repeatable</td><td>Compare future sessions to this GW baseline</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="callout">
+                            <strong>Big Picture</strong>
+                            You have real speed, but the delivery pattern and timing decide whether it shows up as flush or chaotic.
+                        </div>
+                        <div class="section-actions">
+                            <button class="btn-create-note" data-create-section="5">+ Create Note</button>
+                            <button class="btn-add-to-plan" data-plan-section="5">+ Add to Plan</button>
+                            <button class="notes-toggle" data-section="5" aria-label="Toggle notes for Release & Speed">Notes</button>
+                        </div>
+                        <div class="notes-area" data-section="5">
+                            <textarea placeholder="Add your personal notes for Release & Speed..."></textarea>
+                            <span class="notes-saved-indicator">Saved</span>
+                        </div>
+                        <div class="notes-content-print" data-section-print="5"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ SECTION 6: Club Delivery ============ -->
+            <section class="section" id="section-6">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2><span class="section-number">6</span> Club Delivery (Angles &amp; Control)</h2>
+                    </div>
+                    <div class="section-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Metric</th><th>Value (Typical)</th><th>Ideal</th><th>Explanation</th><th>Implication</th><th>Suggested Change</th><th>Club Commentary</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Shaft FaceOn Angle TOP</td><td>≈ –195° to –205°</td><td>0–5° (neutral proxy)</td><td>FO shaft pitch at top (relative)</td><td>Generally consistent pattern</td><td>Maintain; focus more on DTL plane</td><td>Longer clubs may want slightly flatter feel</td></tr>
+                                    <tr><td>Shaft FaceOn Angle DAH</td><td>≈ –175° to –185°</td><td>–5° to –15°</td><td>FO shaft pitch mid‑downswing</td><td>Strong forward lean tendency</td><td>Slightly soften handle forward</td><td>Wedges need enough loft to hold greens</td></tr>
+                                    <tr><td>Shaft FaceOn Angle IMP</td><td>≈ –15° to –30°</td><td>–40° to –55°</td><td>FO shaft pitch at impact</td><td>Less lean than "tour" but still forward</td><td>Decide: chase more lean or prioritize loft</td><td>Wedges: don't over‑de‑loft</td></tr>
+                                    <tr><td>Shaft DTL Angle ADR</td><td>≈ 50–60°</td><td>Neutral</td><td>DTL shaft pitch at address</td><td>Setup generally okay</td><td>Small tweaks via posture only</td><td>Long clubs: more tilt, not more reach</td></tr>
+                                    <tr><td>Shaft DTL Angle IMP</td><td>≈ 50–60°</td><td>Neutral</td><td>DTL shaft pitch at impact</td><td>Matches address fairly well</td><td>Focus on path, not just angle</td><td>Wedges exaggerate any steepness</td></tr>
+                                    <tr><td>Vertical Shaft Angle DTL Downswing</td><td>≈ –2° to +2°</td><td>Neutral</td><td>Vertical shaft pitch downswing</td><td>Some swings trend steep</td><td>Train shallower, more from inside</td><td>Longer clubs magnify this</td></tr>
+                                    <tr><td>Vertical Shaft Angle DTL Backswing</td><td>≈ –2° to +3°</td><td>Neutral</td><td>Vertical shaft pitch backswing</td><td>Slightly steep backswing at times</td><td>Wider, deeper turn with more depth</td><td>Helps all clubs, especially driver/long irons</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p style="font-size:0.8rem;color:#888;">Note: FO angles are relative outputs from Sportsbox; read as pattern indicators, not absolute degrees.</p>
+                        <div class="section-actions">
+                            <button class="btn-create-note" data-create-section="6">+ Create Note</button>
+                            <button class="btn-add-to-plan" data-plan-section="6">+ Add to Plan</button>
+                            <button class="notes-toggle" data-section="6" aria-label="Toggle notes for Club Delivery">Notes</button>
+                        </div>
+                        <div class="notes-area" data-section="6">
+                            <textarea placeholder="Add your personal notes for Club Delivery..."></textarea>
+                            <span class="notes-saved-indicator">Saved</span>
+                        </div>
+                        <div class="notes-content-print" data-section-print="6"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ SECTION 7: Coach Summary ============ -->
+            <section class="section" id="section-7">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2><span class="section-number">7</span> Coach Summary</h2>
+                    </div>
+                    <div class="section-body">
+                        <div class="callout callout-gold" style="border-left-width:5px;">
+                            <strong>🎯 Primary Pattern Identified</strong>
+                            Good sequencing, decent speed, but a pattern of left‑biased pressure, steep hand path, and variable vertical timing. Power is more hands‑driven than rotation‑driven, with modest X‑Factor Stretch.
+                        </div>
+                        <p><strong>Key Opportunities:</strong></p>
+                        <ul style="margin:8px 0 16px 20px;color:var(--text-secondary);font-size:0.9rem;line-height:1.8;">
+                            <li>Standardize tempo around 3.3–3.5 (eliminate the 2.4–2.8 "jab" swings).</li>
+                            <li>Increase downswing X‑Factor Stretch slightly for more efficient speed.</li>
+                            <li>Reduce Sway Gap IMP magnitude (less "crash left").</li>
+                            <li>Shallow hand path (Hand Sway DAH and Hand Pull Down).</li>
+                            <li>Stabilize vertical timing (Pelvis Lift Time into IMP).</li>
+                        </ul>
+                        <p><strong>Recommended Priorities (Ranked):</strong></p>
+                        <ol style="margin:8px 0 16px 20px;color:var(--text-secondary);font-size:0.9rem;line-height:1.8;">
+                            <li>Shallower hand path + less leftward crash (path &amp; pressure).</li>
+                            <li>Tempo standardization (3.3–3.5) across all swings.</li>
+                            <li>Vertical timing drill for pelvis/chest (earlier, consistent push).</li>
+                            <li>Add a bit more rotational stretch in downswing.</li>
+                        </ol>
+                        <div class="section-actions">
+                            <button class="btn-create-note" data-create-section="7">+ Create Note</button>
+                            <button class="btn-add-to-plan" data-plan-section="7">+ Add to Plan</button>
+                            <button class="notes-toggle" data-section="7" aria-label="Toggle notes for Coach Summary">Notes</button>
+                        </div>
+                        <div class="notes-area" data-section="7">
+                            <textarea placeholder="Add your personal notes for Coach Summary..."></textarea>
+                            <span class="notes-saved-indicator">Saved</span>
+                        </div>
+                        <div class="notes-content-print" data-section-print="7"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ SECTION 8: Drills & Next Steps ============ -->
+            <section class="section" id="section-8">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2><span class="section-number">8</span> Prescribed Drills &amp; Next Steps</h2>
+                    </div>
+                    <div class="section-body">
+                        <div class="callout" style="margin-top:0;">
+                            <strong>🥇 Drill 1: "Feet‑Together Shallow Path"</strong>
+                            Hit half‑wedges with feet together, feeling the club swing more around you, not down and left.
+                        </div>
+                        <div class="callout">
+                            <strong>🥈 Drill 2: "Tempo 3‑Count"</strong>
+                            Count "1‑2‑3" to the top, "4" to impact; record swings and match your best‑contact tempos.
+                        </div>
+                        <div class="callout">
+                            <strong>🥉 Drill 3: "Vertical Timing Pump"</strong>
+                            Rehearse 3 pumps where you stay in posture, then push up late (near impact), not early.
+                        </div>
+                        <hr style="border:none;border-top:1px solid var(--border);margin:18px 0;">
+                        <p><strong>📅 Re‑test in:</strong> 10–14 days &nbsp;|&nbsp;
+                            <strong>Focus club:</strong> GW (then map to 8i and hybrid/long iron in later session)</p>
+                        <p><strong>Practice Constraints:</strong></p>
+                        <ul style="margin:8px 0 0 20px;color:var(--text-secondary);font-size:0.9rem;line-height:1.8;">
+                            <li>Short sessions (20–30 balls)</li>
+                            <li>2–3 focused drills per session</li>
+                            <li>Always finish with 5 "gamified" shots to a target using your "new pattern"</li>
+                        </ul>
+                        <div class="section-actions">
+                            <button class="btn-create-note" data-create-section="8">+ Create Note</button>
+                            <button class="btn-add-to-plan" data-plan-section="8">+ Add to Plan</button>
+                            <button class="notes-toggle" data-section="8" aria-label="Toggle notes for Drills & Next Steps">Notes</button>
+                        </div>
+                        <div class="notes-area" data-section="8">
+                            <textarea placeholder="Add your personal notes for Drills & Next Steps..."></textarea>
+                            <span class="notes-saved-indicator">Saved</span>
+                        </div>
+                        <div class="notes-content-print" data-section-print="8"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ MY RANGE PLAN ============ -->
+            <section class="section" id="section-range-plan">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="collapse-caret">&#8250;</span>
+                        <h2>My Range Plan</h2>
+                        <button class="btn-print-plan" id="btnPrintPlan">Print Plan</button>
+                    </div>
+                    <div class="section-body">
+                        <div id="rangePlanItems"></div>
+                        <p class="range-plan-empty" id="rangePlanEmpty">No items in your range plan. Click "+ Add to Plan" on any section, or add a custom note below.</p>
+                        <div class="range-plan-custom">
+                            <textarea id="rangePlanCustomInput" placeholder="Add a custom note to your range plan..." rows="3"></textarea>
+                            <button class="btn-add-custom" id="btnAddCustomNote">Add Custom Note</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════ COPYRIGHT FOOTER ═══════════════ -->
+            <footer class="copyright-footer">
+                &copy; <a href="https://www.appliedailabs.com" target="_blank" rel="noopener">Applied AI Labs</a> 2026
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- ═══════════════ BACK TO TOP ═══════════════ -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">↑</button>
+
+    <!-- ═══════════════ ALL NOTES MODAL ═══════════════ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="allNotesModal">
+            <button class="modal-close" id="modalClose" aria-label="Close modal">×</button>
+            <h2>My Notes</h2>
+            <div class="modal-actions">
+                <button class="btn btn-modal-action" id="btnPrintNotes">Print Notes</button>
+                <button class="btn btn-modal-action" id="btnCopyNotes">Copy</button>
+                <button class="btn btn-modal-action" id="btnDownloadNotes">Download</button>
+            </div>
+            <div id="allNotesContent"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ── Constants ────────────────────────
+            const STORAGE_PREFIX = 'swing-report-note-';
+            const NUM_SECTIONS = 8;
+            const COLLAPSED_KEY = 'swing-report-collapsed';
+            const RANGE_PLAN_KEY = 'swing-report-range-plan';
+            const sectionTitles = {
+                1: 'Rhythm & Timing', 2: 'Rotation & Stretch',
+                3: 'Pressure & Motion Pattern', 4: 'Sequencing',
+                5: 'Release & Speed Production', 6: 'Club Delivery',
+                7: 'Coach Summary', 8: 'Prescribed Drills & Next Steps'
+            };
+
+            // ── DOM refs ──────────────────────────
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+            const mobileLinks = document.querySelectorAll('.mobile-nav a');
+            const allSections = document.querySelectorAll('.section');
+            const backToTopBtn = document.getElementById('backToTop');
+            const btnPrint = document.getElementById('btnPrint');
+            const btnAllNotes = document.getElementById('btnAllNotes');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalClose = document.getElementById('modalClose');
+            const allNotesContent = document.getElementById('allNotesContent');
+            const notesToggles = document.querySelectorAll('.notes-toggle');
+            const mobileNav = document.getElementById('mobileNav');
+
+            // ── Theme Toggle ──────────────────────
+            const THEME_KEY = 'simsports_theme';
+            const themeIcon = document.getElementById('themeIcon');
+            const sunPath = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+            const moonPath = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+
+            function setTheme(dark) {
+                document.body.classList.toggle('dark', dark);
+                themeIcon.innerHTML = dark ? sunPath : moonPath;
+                localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+            }
+
+            document.getElementById('themeToggle').addEventListener('click', function() {
+                setTheme(!document.body.classList.contains('dark'));
+            });
+            setTheme(localStorage.getItem(THEME_KEY) === 'dark');
+
+            // ── Helpers ───────────────────────────
+            function getSectionIdFromHref(href) {
+                const match = href.match(/#section-(\d+|summary|range-plan)/);
+                if (!match) return null;
+                return match[0].substring(1);
+            }
+
+            function escapeHTML(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML.replace(/\n/g, '<br>');
+            }
+
+            // ── Collapsible Sections ──────────────
+            function loadCollapsedState() { try { return JSON.parse(localStorage.getItem(COLLAPSED_KEY)) || []; } catch { return []; } }
+            function saveCollapsedState(ids) { localStorage.setItem(COLLAPSED_KEY, JSON.stringify(ids)); }
+
+            function expandSection(el) {
+                if (!el.classList.contains('collapsed')) return;
+                el.classList.remove('collapsed');
+                const c = loadCollapsedState();
+                const i = c.indexOf(el.id);
+                if (i > -1) { c.splice(i, 1); saveCollapsedState(c); }
+            }
+
+            document.querySelectorAll('.section-header').forEach(header => {
+                header.addEventListener('click', (e) => {
+                    if (e.target.closest('.notes-toggle') || e.target.closest('.btn-print-plan')) return;
+                    const section = header.closest('.section');
+                    if (!section) return;
+                    section.classList.toggle('collapsed');
+                    const collapsed = loadCollapsedState();
+                    const idx = collapsed.indexOf(section.id);
+                    if (section.classList.contains('collapsed')) {
+                        if (idx === -1) collapsed.push(section.id);
+                    } else {
+                        if (idx > -1) collapsed.splice(idx, 1);
+                    }
+                    saveCollapsedState(collapsed);
+                });
+            });
+
+            function collapseAll() {
+                const c = [];
+                allSections.forEach(s => { s.classList.add('collapsed'); c.push(s.id); });
+                saveCollapsedState(c);
+            }
+            function expandAll() {
+                allSections.forEach(s => s.classList.remove('collapsed'));
+                saveCollapsedState([]);
+            }
+
+            document.getElementById('btnCollapseAll').addEventListener('click', collapseAll);
+            document.getElementById('btnExpandAll').addEventListener('click', expandAll);
+            document.getElementById('btnCollapseAllMobile').addEventListener('click', collapseAll);
+            document.getElementById('btnExpandAllMobile').addEventListener('click', expandAll);
+
+            // Restore collapsed state (default: all collapsed on first visit)
+            if (localStorage.getItem(COLLAPSED_KEY) === null) {
+                const allIds = [];
+                allSections.forEach(s => { s.classList.add('collapsed'); allIds.push(s.id); });
+                saveCollapsedState(allIds);
+            } else {
+                loadCollapsedState().forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('collapsed');
+                });
+            }
+
+            // ── Scroll Spy ───────────────────────
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        sidebarLinks.forEach(link => {
+                            link.classList.toggle('active', getSectionIdFromHref(link.getAttribute('href')) === id);
+                        });
+                        mobileLinks.forEach(link => {
+                            link.classList.toggle('active', getSectionIdFromHref(link.getAttribute('href')) === id);
+                        });
+                    }
+                });
+            }, { root: null, rootMargin: '-100px 0px -60% 0px', threshold: 0 });
+
+            allSections.forEach(section => observer.observe(section));
+
+            // ── Back to Top ──────────────────────
+            function updateBackToTop() {
+                backToTopBtn.classList.toggle('visible', window.scrollY > 500);
+            }
+            window.addEventListener('scroll', updateBackToTop, { passive: true });
+            backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+            updateBackToTop();
+
+            // ── Print ────────────────────────────
+            btnPrint.addEventListener('click', () => {
+                syncAllNotesToPrintElements();
+                window.print();
+            });
+
+            // ── Notes System ─────────────────────
+            function getNoteKey(n) { return STORAGE_PREFIX + n; }
+            function loadNote(n) { return localStorage.getItem(getNoteKey(n)) || ''; }
+
+            function saveNote(n, content) {
+                localStorage.setItem(getNoteKey(n), content);
+                updateNotesToggleState(n);
+                updateGlobalNotesButton();
+            }
+
+            function updateNotesToggleState(n) {
+                const toggle = document.querySelector('.notes-toggle[data-section="' + n + '"]');
+                if (!toggle) return;
+                const hasContent = loadNote(n).trim();
+                toggle.classList.toggle('has-content', !!hasContent);
+                toggle.textContent = hasContent ? 'Edit Note' : 'Notes';
+            }
+
+            function updateGlobalNotesButton() {
+                let hasAny = false;
+                for (let i = 1; i <= NUM_SECTIONS; i++) { if (loadNote(i).trim()) { hasAny = true; break; } }
+                btnAllNotes.classList.toggle('has-notes', hasAny);
+            }
+
+            function syncNoteToPrintElement(n) {
+                const el = document.querySelector('.notes-content-print[data-section-print="' + n + '"]');
+                if (!el) return;
+                const content = loadNote(n);
+                if (content.trim()) {
+                    el.innerHTML = '<strong>Personal Notes:</strong><br>' + content.replace(/\n/g, '<br>');
+                    el.style.display = 'block';
+                } else { el.innerHTML = ''; el.style.display = 'none'; }
+            }
+
+            function syncAllNotesToPrintElements() {
+                for (let i = 1; i <= NUM_SECTIONS; i++) syncNoteToPrintElement(i);
+            }
+
+            function initializeNotes() {
+                for (let i = 1; i <= NUM_SECTIONS; i++) {
+                    const ta = document.querySelector('.notes-area[data-section="' + i + '"] textarea');
+                    if (ta) ta.value = loadNote(i);
+                    updateNotesToggleState(i);
+                    syncNoteToPrintElement(i);
+                }
+                updateGlobalNotesButton();
+            }
+
+            notesToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const n = toggle.getAttribute('data-section');
+                    const area = document.querySelector('.notes-area[data-section="' + n + '"]');
+                    if (!area) return;
+                    if (area.classList.contains('open')) { area.classList.remove('open'); return; }
+                    document.querySelectorAll('.notes-area.open').forEach(a => a.classList.remove('open'));
+                    area.classList.add('open');
+                    const ta = area.querySelector('textarea');
+                    if (ta) { ta.value = loadNote(n); ta.focus(); }
+                });
+            });
+
+            const saveTimeouts = {};
+            document.querySelectorAll('.notes-area textarea').forEach(ta => {
+                const n = ta.closest('.notes-area').getAttribute('data-section');
+                ta.addEventListener('input', () => {
+                    const indicator = ta.closest('.notes-area').querySelector('.notes-saved-indicator');
+                    if (saveTimeouts[n]) clearTimeout(saveTimeouts[n]);
+                    saveTimeouts[n] = setTimeout(() => {
+                        saveNote(n, ta.value); syncNoteToPrintElement(n);
+                        if (indicator) { indicator.classList.add('visible'); setTimeout(() => indicator.classList.remove('visible'), 1800); }
+                    }, 500);
+                });
+                ta.addEventListener('blur', () => {
+                    if (saveTimeouts[n]) clearTimeout(saveTimeouts[n]);
+                    saveNote(n, ta.value); syncNoteToPrintElement(n);
+                });
+            });
+
+            // ── Create Note Buttons ───────────────
+            document.querySelectorAll('.btn-create-note').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const n = btn.getAttribute('data-create-section');
+                    const section = btn.closest('.section');
+                    if (section) expandSection(section);
+                    const area = document.querySelector('.notes-area[data-section="' + n + '"]');
+                    if (!area) return;
+                    area.classList.add('open');
+                    const ta = area.querySelector('textarea');
+                    if (ta) {
+                        const now = new Date();
+                        const ds = now.toLocaleDateString() + ', ' + now.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+                        let cur = loadNote(n);
+                        if (cur && !cur.endsWith('\n')) cur += '\n';
+                        ta.value = cur + '\n--- ' + sectionTitles[n] + ' (' + ds + ') ---\n';
+                        saveNote(n, ta.value); syncNoteToPrintElement(n);
+                        ta.focus(); ta.scrollTop = ta.scrollHeight;
+                    }
+                });
+            });
+
+            // ── Range Plan ────────────────────────
+            function loadRangePlan() { try { return JSON.parse(localStorage.getItem(RANGE_PLAN_KEY)) || []; } catch { return []; } }
+            function saveRangePlan(items) { localStorage.setItem(RANGE_PLAN_KEY, JSON.stringify(items)); }
+
+            function renderRangePlan() {
+                const items = loadRangePlan();
+                const container = document.getElementById('rangePlanItems');
+                const emptyMsg = document.getElementById('rangePlanEmpty');
+                if (!items.length) { container.innerHTML = ''; emptyMsg.style.display = 'block'; updateAddToPlanButtons(); return; }
+                emptyMsg.style.display = 'none';
+                let html = '';
+                items.forEach((item, idx) => {
+                    const isCustom = item.type === 'custom';
+                    const content = isCustom ? item.content : loadNote(item.sectionNum);
+                    const label = isCustom ? 'Custom Note' : 'Section ' + item.sectionNum + ': ' + item.sectionName;
+                    const dateStr = isCustom && item.date ? '<div class="plan-item-date">' + item.date + '</div>' : '';
+                    html += '<div class="plan-item' + (isCustom ? ' custom-item' : '') + '" data-plan-index="' + idx + '">' +
+                        '<div style="flex:1"><div class="plan-item-section">' + label + '</div>' +
+                        '<div class="plan-item-content">' + (content ? escapeHTML(content) : '(empty)') + '</div>' +
+                        dateStr + '</div>' +
+                        '<button class="plan-item-remove" data-remove-index="' + idx + '" title="Remove">&times;</button></div>';
+                });
+                container.innerHTML = html;
+                container.querySelectorAll('.plan-item-remove').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const items = loadRangePlan();
+                        items.splice(parseInt(btn.getAttribute('data-remove-index')), 1);
+                        saveRangePlan(items); renderRangePlan();
+                    });
+                });
+                updateAddToPlanButtons();
+            }
+
+            function updateAddToPlanButtons() {
+                const items = loadRangePlan();
+                document.querySelectorAll('.btn-add-to-plan').forEach(btn => {
+                    const n = parseInt(btn.getAttribute('data-plan-section'));
+                    const inPlan = items.some(i => i.type === 'section' && i.sectionNum === n);
+                    btn.classList.toggle('in-plan', inPlan);
+                    btn.textContent = inPlan ? 'In Plan' : '+ Add to Plan';
+                });
+            }
+
+            document.querySelectorAll('.btn-add-to-plan').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const n = parseInt(btn.getAttribute('data-plan-section'));
+                    const items = loadRangePlan();
+                    if (items.some(i => i.type === 'section' && i.sectionNum === n)) return;
+                    items.push({ type: 'section', sectionNum: n, sectionName: sectionTitles[n] });
+                    saveRangePlan(items); renderRangePlan();
+                });
+            });
+
+            document.getElementById('btnAddCustomNote').addEventListener('click', () => {
+                const ta = document.getElementById('rangePlanCustomInput');
+                const content = ta.value.trim();
+                if (!content) return;
+                const items = loadRangePlan();
+                const now = new Date();
+                items.push({ type: 'custom', content: content, date: now.toLocaleDateString() + ', ' + now.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) });
+                saveRangePlan(items); ta.value = ''; renderRangePlan();
+            });
+
+            document.getElementById('btnPrintPlan').addEventListener('click', () => {
+                const items = loadRangePlan();
+                let h = '<!DOCTYPE html><html><head><title>My Range Plan</title><style>' +
+                    'body{font-family:Segoe UI,system-ui,sans-serif;max-width:500px;margin:30px auto;padding:0 16px;color:#1a1d21;line-height:1.6;font-size:14px}' +
+                    'h1{font-size:1.1rem;text-align:center;border-bottom:2px solid #1190CB;padding-bottom:8px;margin-bottom:16px}' +
+                    '.item{margin:14px 0;padding:10px 12px;border-left:3px solid #1190CB;background:#f8f9fa;border-radius:4px;page-break-inside:avoid}' +
+                    '.item.custom{border-left-color:#5AB4E6}' +
+                    '.item-label{font-size:.8rem;font-weight:600;color:#1190CB;margin-bottom:3px}' +
+                    '.item-content{font-size:.85rem;white-space:pre-wrap;color:#333}' +
+                    '.item-date{font-size:.7rem;color:#999;margin-top:2px}' +
+                    '@media print{body{margin:0;max-width:100%}@page{margin:1cm}}</style></head><body>' +
+                    '<h1>My Range Plan<br><span style="font-size:.7rem;font-weight:400;color:#888">T. MacDonald | SIM.SPORTS Arena</span></h1>';
+                if (!items.length) { h += '<p style="text-align:center;color:#999;padding:30px 0">No items in range plan.</p>'; }
+                else { items.forEach(item => {
+                    const c = item.type === 'custom' ? item.content : loadNote(item.sectionNum);
+                    const l = item.type === 'custom' ? 'Custom Note' : 'Section ' + item.sectionNum + ': ' + item.sectionName;
+                    const d = item.type === 'custom' && item.date ? '<div class="item-date">' + item.date + '</div>' : '';
+                    h += '<div class="item' + (item.type === 'custom' ? ' custom' : '') + '"><div class="item-label">' + l + '</div>' +
+                        '<div class="item-content">' + (c ? escapeHTML(c) : '(no content)') + '</div>' + d + '</div>';
+                }); }
+                h += '</body></html>';
+                const w = window.open('', '_blank', 'width=450,height=700');
+                w.document.write(h); w.document.close(); w.focus();
+                setTimeout(() => w.print(), 300);
+            });
+
+            renderRangePlan();
+
+            // ── All Notes Modal ──────────────────
+            function buildAllNotesModal() {
+                let html = '', hasAny = false;
+                for (let i = 1; i <= NUM_SECTIONS; i++) {
+                    const content = loadNote(i);
+                    if (content.trim()) { hasAny = true; html += '<div class="note-block"><h4>Section ' + i + ': ' + sectionTitles[i] + '</h4><p>' + escapeHTML(content) + '</p></div>'; }
+                    else { html += '<div class="note-block empty"><h4>Section ' + i + ': ' + sectionTitles[i] + '</h4><p>No notes yet.</p></div>'; }
+                }
+                if (!hasAny) html = '<p style="text-align:center;color:#888;padding:20px;">No notes saved yet. Click the "Notes" button on any section to add notes.</p>';
+                allNotesContent.innerHTML = html;
+            }
+
+            btnAllNotes.addEventListener('click', () => {
+                buildAllNotesModal(); modalOverlay.classList.add('open'); document.body.style.overflow = 'hidden';
+            });
+
+            function closeModal() { modalOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal(); });
+
+            // Notes export helpers
+            function gatherAllNotesText() {
+                let t = 'Swing Report Notes - T. MacDonald | SIM.SPORTS Arena\n================================================\n\n';
+                for (let i = 1; i <= NUM_SECTIONS; i++) {
+                    t += 'Section ' + i + ': ' + sectionTitles[i] + '\n' + (loadNote(i).trim() || '(No notes)') + '\n\n---\n\n';
+                }
+                return t;
+            }
+
+            document.getElementById('btnPrintNotes').addEventListener('click', () => {
+                let h = '<!DOCTYPE html><html><head><title>Swing Notes</title><style>' +
+                    'body{font-family:Segoe UI,system-ui,sans-serif;max-width:600px;margin:40px auto;padding:0 20px;color:#1a1d21;line-height:1.6}' +
+                    'h1{font-size:1.2rem;border-bottom:2px solid #1190CB;padding-bottom:8px}' +
+                    '.ns{margin:20px 0;padding:12px;border-left:3px solid #1190CB;background:#f8f9fa;border-radius:4px}' +
+                    '.ns h3{font-size:.9rem;color:#555;margin:0 0 6px}.ns p{margin:0;white-space:pre-wrap;font-size:.88rem}' +
+                    '.empty{color:#aaa;font-style:italic}@media print{body{margin:0;padding:10px}}</style></head><body>' +
+                    '<h1>Swing Report Notes - T. MacDonald</h1>';
+                for (let i = 1; i <= NUM_SECTIONS; i++) {
+                    const c = loadNote(i);
+                    h += '<div class="ns"><h3>Section ' + i + ': ' + sectionTitles[i] + '</h3><p' + (c.trim() ? '>' + escapeHTML(c) : ' class="empty">No notes.') + '</p></div>';
+                }
+                h += '</body></html>';
+                const w = window.open('', '_blank', 'width=600,height=800');
+                w.document.write(h); w.document.close(); w.focus();
+                setTimeout(() => w.print(), 300);
+            });
+
+            document.getElementById('btnCopyNotes').addEventListener('click', () => {
+                const text = gatherAllNotesText();
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.getElementById('btnCopyNotes');
+                    const orig = btn.textContent;
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => { btn.textContent = orig; }, 2000);
+                }).catch(() => {
+                    const ta = document.createElement('textarea');
+                    ta.value = text; document.body.appendChild(ta); ta.select();
+                    document.execCommand('copy'); document.body.removeChild(ta);
+                    const btn = document.getElementById('btnCopyNotes');
+                    btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+                });
+            });
+
+            document.getElementById('btnDownloadNotes').addEventListener('click', () => {
+                const blob = new Blob([gatherAllNotesText()], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'swing-report-notes.txt';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+
+            // ── Smooth scroll for sidebar links ──
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(link.getAttribute('href'));
+                    if (target) {
+                        if (target.classList.contains('collapsed')) expandSection(target);
+                        const top = target.getBoundingClientRect().top + window.pageYOffset - 90;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(link.getAttribute('href'));
+                    if (target) {
+                        if (target.classList.contains('collapsed')) expandSection(target);
+                        const top = target.getBoundingClientRect().top + window.pageYOffset - 140;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // ── Initialize ───────────────────────
+            initializeNotes();
+            syncAllNotesToPrintElements();
+
+            if (allSections.length > 0 && sidebarLinks.length > 0) {
+                const firstId = allSections[0].id;
+                sidebarLinks.forEach(link => link.classList.toggle('active', getSectionIdFromHref(link.getAttribute('href')) === firstId));
+                mobileLinks.forEach(link => link.classList.toggle('active', getSectionIdFromHref(link.getAttribute('href')) === firstId));
+            }
+        })();
+    </script>
+</body>
+</html>

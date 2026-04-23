@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SimSports - Swing Report SOP Checklist</title>
+<style>
+  :root {
+    --primary: #1190CB;
+    --secondary: #0d6e99;
+    --accent: #1190CB;
+    --highlight: #5AB4E6;
+    --success: #00b894;
+    --warning: #fdcb6e;
+    --danger: #d63031;
+    --bg: #f5f5f5;
+    --card: #ffffff;
+    --text: #1a1d21;
+    --text-light: #6b7280;
+    --border: rgba(0,0,0,.1);
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .header {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    padding: 24px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .header .subtitle {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 2px;
+  }
+
+  .header-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .header-controls button {
+    padding: 8px 16px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .header-controls button:hover {
+    background: rgba(255,255,255,0.25);
+  }
+
+  .header-controls button.btn-save {
+    background: var(--success);
+    border-color: var(--success);
+  }
+
+  .header-controls button.btn-danger {
+    background: var(--danger);
+    border-color: var(--danger);
+  }
+
+  .header-controls button.btn-export {
+    background: var(--accent);
+    border-color: #5AB4E6;
+  }
+
+  .progress-bar-container {
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    height: 8px;
+    margin-top: 14px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success), #5AB4E6);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .progress-text {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    margin-top: 4px;
+    text-align: right;
+  }
+
+  .operator-banner {
+    background: var(--card);
+    margin: 20px 24px;
+    padding: 20px 24px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .operator-banner label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .operator-banner input,
+  .operator-banner select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: var(--bg);
+    transition: border 0.2s;
+  }
+
+  .operator-banner input:focus,
+  .operator-banner select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(17,144,203,0.1);
+  }
+
+  .main-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  .step-card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-left: 4px solid var(--accent);
+    transition: border-color 0.3s;
+  }
+
+  .step-card.completed {
+    border-left-color: var(--success);
+  }
+
+  .step-card.active {
+    border-left-color: var(--highlight);
+    box-shadow: 0 2px 20px rgba(233,69,96,0.12);
+  }
+
+  .step-header {
+    padding: 18px 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .step-header:hover {
+    background: rgba(0,0,0,0.02);
+  }
+
+  .step-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .step-card.completed .step-number {
+    background: var(--success);
+  }
+
+  .step-card.completed .step-number::after {
+    content: '✓';
+  }
+
+  .step-card.completed .step-number span {
+    display: none;
+  }
+
+  .step-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .step-goal {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-top: 1px;
+  }
+
+  .step-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .step-badge {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-pending {
+    background: #ffeaa7;
+    color: #6c5400;
+  }
+
+  .badge-done {
+    background: rgba(0,224,129,.12);
+    color: #1e6b1e;
+  }
+
+  .badge-blocked {
+    background: #fab1a0;
+    color: #6b1a1a;
+  }
+
+  .chevron {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    transition: transform 0.3s;
+  }
+
+  .step-card.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  .step-body {
+    display: none;
+    padding: 0 24px 20px;
+  }
+
+  .step-card.open .step-body {
+    display: block;
+  }
+
+  .checklist-group {
+    margin-top: 4px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .check-item:last-child {
+    border-bottom: none;
+  }
+
+  .check-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: var(--success);
+    cursor: pointer;
+  }
+
+  .check-item.sub-item {
+    padding-left: 32px;
+  }
+
+  .check-item.sub-item.sub-sub {
+    padding-left: 56px;
+  }
+
+  .check-label {
+    flex: 1;
+    font-size: 0.92rem;
+  }
+
+  .check-label strong {
+    color: var(--primary);
+  }
+
+  .check-timestamp {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    white-space: nowrap;
+    margin-top: 3px;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  .check-item.checked .check-label {
+    color: var(--text-light);
+    text-decoration: line-through;
+  }
+
+  .step-output {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(0,0,0,.04), #f5f5f5);
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+
+  .step-output strong {
+    color: var(--accent);
+  }
+
+  .step-notes {
+    margin-top: 14px;
+  }
+
+  .step-notes label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .step-notes textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    resize: vertical;
+    background: var(--bg);
+  }
+
+  .step-notes textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .file-naming {
+    font-family: 'Courier New', monospace;
+    background: var(--primary);
+    color: #5AB4E6;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    margin-top: 6px;
+    display: inline-block;
+  }
+
+  .decision-group {
+    margin-top: 10px;
+    padding: 12px 16px;
+    background: #fff3e0;
+    border-radius: 8px;
+    border: 1px solid #ffe0b2;
+  }
+
+  .decision-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .decision-group input[type="radio"] {
+    accent-color: var(--accent);
+  }
+
+  .audit-trail {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-top: 30px;
+    overflow: hidden;
+  }
+
+  .audit-trail-header {
+    background: var(--secondary);
+    color: white;
+    padding: 16px 24px;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .audit-trail-body {
+    padding: 16px 24px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .audit-entry {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+    display: flex;
+    gap: 12px;
+  }
+
+  .audit-entry:last-child {
+    border-bottom: none;
+  }
+
+  .audit-time {
+    color: var(--text-light);
+    font-family: monospace;
+    white-space: nowrap;
+    min-width: 140px;
+  }
+
+  .audit-action {
+    flex: 1;
+  }
+
+  .no-entries {
+    color: var(--text-light);
+    font-style: italic;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    .header { padding: 16px; }
+    .operator-banner { margin: 12px; grid-template-columns: 1fr; }
+    .main-content { padding: 0 12px 40px; }
+    .step-header { padding: 14px 16px; }
+    .step-body { padding: 0 16px 16px; }
+    .check-item.sub-item { padding-left: 16px; }
+    .check-item.sub-item.sub-sub { padding-left: 32px; }
+  }
+
+  @media print {
+    .header-controls { display: none; }
+    .step-card { break-inside: avoid; }
+    .step-body { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⛳ Swing Report SOP Checklist</h1>
+  <div class="subtitle">Swing Report Generation Pipeline — For Operators at SimSports</div>
+  <div class="header-controls">
+    <button class="btn-save" onclick="saveState()">💾 Save Progress</button>
+    <button onclick="loadState()">📂 Load Saved</button>
+    <button class="btn-export" onclick="exportJSON()">📤 Export JSON</button>
+    <button class="btn-export" onclick="importJSON()">📥 Import JSON</button>
+    <button class="btn-export" onclick="exportPrintable()">🖨️ Print</button>
+    <button class="btn-danger" onclick="resetAll()">🔄 Reset All</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText">0 / 0 items complete (0%)</div>
+</div>
+
+<div class="operator-banner" id="operatorBanner">
+  <div>
+    <label>Operator Name</label>
+    <input type="text" id="operatorName" placeholder="Enter operator name" oninput="autoSave()">
+  </div>
+  <div>
+    <label>Athlete Name</label>
+    <input type="text" id="athleteName" placeholder="Enter athlete name" oninput="autoSave()">
+  </div>
+  <div>
+    <label>Session Date</label>
+    <input type="date" id="sessionDate" oninput="autoSave()">
+  </div>
+  <div>
+    <label>Session Start Time</label>
+    <input type="time" id="sessionTime" oninput="autoSave()">
+  </div>
+</div>
+
+<div class="main-content" id="mainContent">
+  <!-- Steps will be rendered by JS -->
+</div>
+
+<script>
+// =======================================
+// SOP DATA MODEL
+// =======================================
+const SOP_STEPS = [
+  {
+    id: 'step1',
+    number: 1,
+    title: 'Data Extraction - Sportsbox',
+    goal: 'Capture raw swing rows cleanly.',
+    output: 'Raw Sportsbox swing rows',
+    items: [
+      { id: 's1_1', label: 'Open Sportsbox session' },
+      { id: 's1_2', label: 'Zoom out to ensure <strong>all rows</strong> are visible' },
+      { id: 's1_3', label: 'Drag-select the <strong>entire table</strong>' },
+      { id: 's1_4', label: 'Copy raw rows (no headers)' },
+      { id: 's1_5', label: 'Confirm row count matches expected swings' }
+    ]
+  },
+  {
+    id: 'step2',
+    number: 2,
+    title: 'Data Normalization - Excel Header Template',
+    goal: 'Produce a clean, labeled dataset.',
+    output: 'Structured swing dataset',
+    fileNaming: 'athlete_swingdata_YYYYMMDD.csv',
+    items: [
+      { id: 's2_1', label: 'Open the <strong>96-metric header Excel template</strong>' },
+      { id: 's2_2', label: 'Paste raw Sportsbox rows <strong>directly under the header row</strong>' },
+      { id: 's2_3', label: 'Confirm column alignment (spot-check 3-5 metrics)' },
+      { id: 's2_4', label: 'Save as <strong>CSV or TXT</strong>' },
+      { id: 's2_5', label: 'Name file using standard format' }
+    ]
+  },
+  {
+    id: 'step3',
+    number: 3,
+    title: 'Report Generation - LMC (Pass 1)',
+    goal: 'Generate the swing analysis reports.',
+    output: 'Swing Report (MD + PDF)',
+    fileNaming: 'athlete_swingreport_mmddyy_modelid.md/pdf',
+    items: [
+      { id: 's3_1', label: 'Load the structured dataset' },
+      { id: 's3_2', label: 'Load the <strong>report generation template</strong>' },
+      { id: 's3_3', label: 'Load the <strong>report generation prompt</strong>' },
+      { id: 's3_4', label: '<strong>Execute across 2 models</strong>' },
+      { id: 's3_5', label: 'Verify two outputs are created:' },
+      { id: 's3_5a', label: 'Markdown report', sub: true },
+      { id: 's3_5b', label: 'PDF report', sub: true },
+      { id: 's3_6', label: 'Save both using naming standard' }
+    ]
+  },
+  {
+    id: 'step4',
+    number: 4,
+    title: 'Confidence Evaluation - LMC (Pass 2)',
+    goal: 'Validate report quality and consistency.',
+    output: 'Confidence Report + Score',
+    fileNaming: 'athlete_confidence_YYYYMMDD.md',
+    items: [
+      { id: 's4_1', label: 'Upload Markdown report' },
+      { id: 's4_2', label: 'Upload PDF report' },
+      { id: 's4_3', label: 'Run LMC confidence evaluation' },
+      { id: 's4_4', label: 'Confirm confidence score is present' },
+      { id: 's4_5', label: 'Save confidence report using naming standard' }
+    ],
+    extraFields: [
+      { id: 'confidenceScore', label: 'Confidence Score (%)', type: 'number', placeholder: 'Enter score 0-100' }
+    ]
+  },
+  {
+    id: 'step5',
+    number: 5,
+    title: 'Confidence Gate',
+    goal: 'Determine next step based on score.',
+    output: 'Pass/Fail decision',
+    items: [
+      { id: 's5_1', label: 'Is confidence ≥ <strong>80%</strong>?' }
+    ],
+    decision: {
+      id: 'confidenceDecision',
+      options: [
+        { value: 'pass', label: '✅ Yes → Proceed to Coaching Review' },
+        { value: 'fail', label: '❌ No → Return to Step 3 (Regenerate reports)' }
+      ]
+    }
+  },
+  {
+    id: 'step6',
+    number: 6,
+    title: 'Coaching Review',
+    goal: 'Human validation of biomechanical accuracy.',
+    output: 'Coach approval decision',
+    items: [
+      { id: 's6_1', label: 'Provide coach with:' },
+      { id: 's6_1a', label: 'Swing Report (MD or PDF)', sub: true },
+      { id: 's6_1b', label: 'Confidence Report', sub: true },
+      { id: 's6_2', label: 'Coach reviews:' },
+      { id: 's6_2a', label: 'Metric interpretation', sub: true },
+      { id: 's6_2b', label: 'Recommendations', sub: true },
+      { id: 's6_2c', label: 'Narrative accuracy', sub: true },
+      { id: 's6_2d', label: 'Alignment with SimSports coaching philosophy', sub: true }
+    ],
+    decision: {
+      id: 'coachDecision',
+      options: [
+        { value: 'approved', label: '✅ Approved → Proceed to Vibe' },
+        { value: 'rejected', label: '❌ Rejected → Return to Step 3' }
+      ]
+    }
+  },
+  {
+    id: 'step7',
+    number: 7,
+    title: 'Web Conversion - Vibe Platform',
+    goal: 'Produce client-ready, branded web reports.',
+    output: 'SimSports-branded web report',
+    items: [
+      { id: 's7_1', label: 'Upload approved Swing Report' },
+      { id: 's7_2', label: 'Upload approved Confidence Report' },
+      { id: 's7_3', label: 'Apply <strong>SimSports branding</strong>' },
+      { id: 's7_4', label: 'Verify formatting:' },
+      { id: 's7_4a', label: 'Headers', sub: true },
+      { id: 's7_4b', label: 'Sections', sub: true },
+      { id: 's7_4c', label: 'Images/diagrams', sub: true },
+      { id: 's7_4d', label: 'Links', sub: true },
+      { id: 's7_5', label: 'Publish or export final web report' },
+      { id: 's7_6', label: 'Confirm final URL or asset is stored in athlete folder' }
+    ],
+    extraFields: [
+      { id: 'finalURL', label: 'Final Report URL', type: 'text', placeholder: 'https://...' }
+    ]
+  },
+  {
+    id: 'step8',
+    number: 8,
+    title: 'Failure Loop Handling',
+    goal: 'Ensure quality control.',
+    output: 'Clean audit trail + corrected reports',
+    items: [
+      { id: 's8_1', label: 'If confidence < 80% → regenerate (Step 3)' },
+      { id: 's8_2', label: 'If coach rejects → regenerate (Step 3)' },
+      { id: 's8_3', label: 'Document reason for failure in operator log' }
+    ]
+  },
+  {
+    id: 'step9',
+    number: 9,
+    title: 'Operator Log (Required)',
+    goal: 'Maintain traceability.',
+    output: 'Completed operator log entry',
+    items: [
+      { id: 's9_1', label: 'Athlete name' },
+      { id: 's9_2', label: 'Date/time' },
+      { id: 's9_3', label: 'Dataset version' },
+      { id: 's9_4', label: 'Confidence score' },
+      { id: 's9_5', label: 'Coach approval status' },
+      { id: 's9_6', label: 'Notes on any regeneration loops' },
+      { id: 's9_7', label: 'Final report URL' }
+    ],
+    extraFields: [
+      { id: 'datasetVersion', label: 'Dataset Version', type: 'text', placeholder: 'e.g., v1.0' },
+      { id: 'regenerationNotes', label: 'Regeneration Loop Notes', type: 'textarea', placeholder: 'Describe any regeneration loops...' }
+    ]
+  }
+];
+
+// =======================================
+// STATE MANAGEMENT
+// =======================================
+let state = {
+  operator: { name: '', athlete: '', date: '', time: '' },
+  checks: {},
+  timestamps: {},
+  decisions: {},
+  notes: {},
+  extraFields: {},
+  auditTrail: [],
+  openSteps: { step1: true },
+  sessionId: generateSessionId()
+};
+
+function generateSessionId() {
+  return 'SOP-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+}
+
+function now() {
+  return new Date().toLocaleString('en-US', {
+    month: '2-digit', day: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  });
+}
+
+function nowShort() {
+  return new Date().toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit', hour12: true
+  });
+}
+
+function addAudit(action) {
+  state.auditTrail.push({ time: now(), action: action });
+  renderAuditTrail();
+  autoSave();
+}
+
+// =======================================
+// RENDER ENGINE
+// =======================================
+function render() {
+  const container = document.getElementById('mainContent');
+  let html = '';
+
+  SOP_STEPS.forEach(step => {
+    const isOpen = state.openSteps[step.id];
+    const stepItems = step.items.map(i => i.id);
+    const checkedCount = stepItems.filter(id => state.checks[id]).length;
+    const allChecked = checkedCount === stepItems.length;
+    const hasDecision = step.decision ? !!state.decisions[step.decision.id] : true;
+    const isComplete = allChecked && hasDecision;
+
+    let statusClass = isComplete ? 'completed' : '';
+    let badgeClass = isComplete ? 'badge-done' : 'badge-pending';
+    let badgeText = isComplete ? 'DONE' : `${checkedCount}/${stepItems.length}`;
+
+    // Determine if this is the active step (first incomplete)
+    const allStepStatuses = SOP_STEPS.map(s => {
+      const sItems = s.items.map(i => i.id);
+      const sChecked = sItems.filter(id => state.checks[id]).length;
+      const sHasDecision = s.decision ? !!state.decisions[s.decision.id] : true;
+      return sChecked === sItems.length && sHasDecision;
+    });
+    const firstIncomplete = allStepStatuses.indexOf(false);
+    if (SOP_STEPS.indexOf(step) === firstIncomplete && !isComplete) {
+      statusClass = 'active';
+    }
+
+    html += `
+      <div class="step-card ${statusClass} ${isOpen ? 'open' : ''}" id="card_${step.id}">
+        <div class="step-header" onclick="toggleStep('${step.id}')">
+          <div class="step-header-left">
+            <div class="step-number"><span>${step.number}</span></div>
+            <div>
+              <div class="step-title">${step.title}</div>
+              <div class="step-goal">Goal: ${step.goal}</div>
+            </div>
+          </div>
+          <div class="step-header-right">
+            <span class="step-badge ${badgeClass}">${badgeText}</span>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="checklist-group">
+            ${step.items.map(item => {
+              const checked = state.checks[item.id] || false;
+              const ts = state.timestamps[item.id] || '';
+              const subClass = item.sub ? 'sub-item' : '';
+              const subSubClass = item.subSub ? 'sub-sub' : '';
+              return `
+                <div class="check-item ${subClass} ${subSubClass} ${checked ? 'checked' : ''}">
+                  <input type="checkbox" id="chk_${item.id}" 
+                    ${checked ? 'checked' : ''} 
+                    onchange="toggleCheck('${item.id}', '${step.id}', this.checked)">
+                  <span class="check-label"><label for="chk_${item.id}">${item.label}</label></span>
+                  <span class="check-timestamp">${ts}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          ${step.fileNaming ? `<div class="file-naming">${step.fileNaming}</div>` : ''}
+
+          ${step.decision ? `
+            <div class="decision-group">
+              <strong>Decision Required:</strong>
+              ${step.decision.options.map(opt => `
+                <label>
+                  <input type="radio" name="${step.decision.id}" value="${opt.value}"
+                    ${state.decisions[step.decision.id] === opt.value ? 'checked' : ''}
+                    onchange="setDecision('${step.decision.id}', '${opt.value}', '${step.id}')">
+                  ${opt.label}
+                </label>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          ${step.extraFields ? step.extraFields.map(field => `
+            <div class="step-notes" style="margin-top:10px;">
+              <label>${field.label}</label>
+              ${field.type === 'textarea' ? `
+                <textarea id="extra_${field.id}" placeholder="${field.placeholder}"
+                  oninput="setExtraField('${field.id}', this.value)">${state.extraFields[field.id] || ''}</textarea>
+              ` : `
+                <input type="${field.type}" id="extra_${field.id}" placeholder="${field.placeholder}"
+                  value="${state.extraFields[field.id] || ''}"
+                  oninput="setExtraField('${field.id}', this.value)">
+              `}
+            </div>
+          `).join('') : ''}
+
+          <div class="step-output">
+            <strong>Output:</strong> ${step.output}
+          </div>
+
+          <div class="step-notes">
+            <label>Operator Notes for Step ${step.number}</label>
+            <textarea id="notes_${step.id}" placeholder="Add any notes, observations, or issues..."
+              oninput="setNotes('${step.id}', this.value)">${state.notes[step.id] || ''}</textarea>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  // Audit trail
+  html += `
+    <div class="audit-trail">
+      <div class="audit-trail-header">📋 Audit Trail — Session ${state.sessionId}</div>
+      <div class="audit-trail-body" id="auditTrailBody">
+        ${state.auditTrail.length === 0 ? '<div class="no-entries">No actions recorded yet. Begin the checklist to start the audit trail.</div>' : ''}
+        ${state.auditTrail.map(e => `
+          <div class="audit-entry">
+            <span class="audit-time">${e.time}</span>
+            <span class="audit-action">${e.action}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+  updateProgress();
+  restoreOperatorFields();
+}
+
+function renderAuditTrail() {
+  const body = document.getElementById('auditTrailBody');
+  if (!body) return;
+  if (state.auditTrail.length === 0) {
+    body.innerHTML = '<div class="no-entries">No actions recorded yet.</div>';
+    return;
+  }
+  body.innerHTML = state.auditTrail.map(e => `
+    <div class="audit-entry">
+      <span class="audit-time">${e.time}</span>
+      <span class="audit-action">${e.action}</span>
+    </div>
+  `).join('');
+  body.scrollTop = body.scrollHeight;
+}
+
+// =======================================
+// INTERACTION HANDLERS
+// =======================================
+function toggleStep(stepId) {
+  state.openSteps[stepId] = !state.openSteps[stepId];
+  const card = document.getElementById('card_' + stepId);
+  if (card) card.classList.toggle('open');
+  const chevron = card.querySelector('.chevron');
+  // CSS handles the rotation
+}
+
+function toggleCheck(itemId, stepId, checked) {
+  state.checks[itemId] = checked;
+  if (checked) {
+    state.timestamps[itemId] = nowShort();
+    // Find the label text
+    const step = SOP_STEPS.find(s => s.id === stepId);
+    const item = step.items.find(i => i.id === itemId);
+    const cleanLabel = item.label.replace(/<[^>]*>/g, '');
+    addAudit(`✅ Checked: "${cleanLabel}" (Step ${step.number})`);
+  } else {
+    state.timestamps[itemId] = '';
+    const step = SOP_STEPS.find(s => s.id === stepId);
+    const item = step.items.find(i => i.id === itemId);
+    const cleanLabel = item.label.replace(/<[^>]*>/g, '');
+    addAudit(`⬜ Unchecked: "${cleanLabel}" (Step ${step.number})`);
+  }
+  render();
+}
+
+function setDecision(decisionId, value, stepId) {
+  state.decisions[decisionId] = value;
+  const step = SOP_STEPS.find(s => s.id === stepId);
+  const option = step.decision.options.find(o => o.value === value);
+  const cleanLabel = option.label.replace(/<[^>]*>/g, '');
+  addAudit(`🔀 Decision (Step ${step.number}): ${cleanLabel}`);
+  render();
+}
+
+function setNotes(stepId, value) {
+  state.notes[stepId] = value;
+  autoSave();
+}
+
+function setExtraField(fieldId, value) {
+  state.extraFields[fieldId] = value;
+  autoSave();
+}
+
+function updateProgress() {
+  const allItems = SOP_STEPS.flatMap(s => s.items.map(i => i.id));
+  const checked = allItems.filter(id => state.checks[id]).length;
+  const total = allItems.length;
+  const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+
+  const bar = document.getElementById('progressBar');
+  const text = document.getElementById('progressText');
+  if (bar) bar.style.width = pct + '%';
+  if (text) text.textContent = `${checked} / ${total} items complete (${pct}%)`;
+}
+
+function restoreOperatorFields() {
+  document.getElementById('operatorName').value = state.operator.name || '';
+  document.getElementById('athleteName').value = state.operator.athlete || '';
+  document.getElementById('sessionDate').value = state.operator.date || '';
+  document.getElementById('sessionTime').value = state.operator.time || '';
+}
+
+// =======================================
+// PERSISTENCE (localStorage)
+// =======================================
+const STORAGE_KEY = 'simsports_sop_state';
+let autoSaveTimer = null;
+
+function autoSave() {
+  // Capture operator fields
+  state.operator.name = document.getElementById('operatorName').value;
+  state.operator.athlete = document.getElementById('athleteName').value;
+  state.operator.date = document.getElementById('sessionDate').value;
+  state.operator.time = document.getElementById('sessionTime').value;
+
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, 500);
+}
+
+function saveState() {
+  state.operator.name = document.getElementById('operatorName').value;
+  state.operator.athlete = document.getElementById('athleteName').value;
+  state.operator.date = document.getElementById('sessionDate').value;
+  state.operator.time = document.getElementById('sessionTime').value;
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  addAudit('💾 Progress saved manually');
+  showNotification('Progress saved successfully!');
+}
+
+function loadState() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      state = JSON.parse(saved);
+      render();
+      addAudit('📂 Previous session loaded');
+      showNotification('Saved progress loaded!');
+    } catch (e) {
+      showNotification('Error loading saved data', true);
+    }
+  } else {
+    showNotification('No saved progress found', true);
+  }
+}
+
+function resetAll() {
+  if (!confirm('⚠️ Are you sure you want to reset ALL progress? This cannot be undone.')) return;
+  if (!confirm('This will clear all checkboxes, notes, and the audit trail. Continue?')) return;
+
+  localStorage.removeItem(STORAGE_KEY);
+  state = {
+    operator: { name: '', athlete: '', date: '', time: '' },
+    checks: {},
+    timestamps: {},
+    decisions: {},
+    notes: {},
+    extraFields: {},
+    auditTrail: [],
+    openSteps: { step1: true },
+    sessionId: generateSessionId()
+  };
+  render();
+  showNotification('All progress has been reset');
+}
+
+function exportJSON() {
+  state.operator.name = document.getElementById('operatorName').value;
+  state.operator.athlete = document.getElementById('athleteName').value;
+  state.operator.date = document.getElementById('sessionDate').value;
+  state.operator.time = document.getElementById('sessionTime').value;
+
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const athlete = state.operator.athlete || 'unknown';
+  const date = state.operator.date || new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = `SOP_${athlete.replace(/\s+/g, '_')}_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  addAudit('📤 Session exported as JSON');
+  showNotification('JSON exported and downloaded!');
+}
+
+function importJSON() {
+  document.getElementById('importFile').click();
+}
+
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      state = imported;
+      render();
+      addAudit(`📥 Session imported from file: ${file.name}`);
+      showNotification('Session imported successfully!');
+    } catch (err) {
+      showNotification('Invalid JSON file', true);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function exportPrintable() {
+  window.print();
+}
+
+// =======================================
+// NOTIFICATIONS
+// =======================================
+function showNotification(msg, isError) {
+  const div = document.createElement('div');
+  div.style.cssText = `
+    position: fixed; top: 20px; right: 20px; z-index: 9999;
+    padding: 14px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 600;
+    color: white; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    background: ${isError ? '#d63031' : '#00b894'};
+    animation: slideIn 0.3s ease;
+    max-width: 320px;
+  `;
+  div.textContent = msg;
+  document.body.appendChild(div);
+  setTimeout(() => {
+    div.style.opacity = '0';
+    div.style.transition = 'opacity 0.3s';
+    setTimeout(() => div.remove(), 300);
+  }, 2500);
+}
+
+// =======================================
+// INIT
+// =======================================
+(function init() {
+  // Try to load existing state
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      state = JSON.parse(saved);
+      // Ensure all expected keys exist
+      if (!state.extraFields) state.extraFields = {};
+      if (!state.openSteps) state.openSteps = { step1: true };
+      if (!state.sessionId) state.sessionId = generateSessionId();
+      if (!state.auditTrail) state.auditTrail = [];
+    } catch(e) {
+      // use default state
+    }
+  }
+
+  // Set today's date if empty
+  if (!state.operator.date) {
+    state.operator.date = new Date().toISOString().split('T')[0];
+  }
+  if (!state.operator.time) {
+    state.operator.time = new Date().toTimeString().slice(0, 5);
+  }
+
+  render();
+
+  if (saved) {
+    showNotification('Previous session restored automatically');
+  }
+})();
+
+// Add CSS animation
+const style = document.createElement('style');
+style.textContent = `@keyframes slideIn { from { transform: translateX(100px); opacity:0; } to { transform: translateX(0); opacity:1; } }`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>
+Opus 46
