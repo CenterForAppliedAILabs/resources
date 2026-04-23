@@ -57,7 +57,7 @@ def build_index_html(file_paths):
 
   <div class="muted" style="margin-top:15px;">
   <b>Links We Like:</b><br>
-  <a href="https://lmcouncil.ai">LMCouncil.ai - Multi&#8209;model collaboration made easy</a>
+  <a href="https://lmcouncil.ai" target="_blank" rel="noopener noreferrer">LMCouncil.ai - Multi&#8209;model collaboration made easy</a>
   </div>
 
   </main>
@@ -73,7 +73,7 @@ def build_index_html(file_paths):
         list_html = '      <ul>\n'
         for p in file_paths:
             esc = html.escape(p)
-            list_html += f'        <li><a href="{esc}">{esc}</a></li>\n'
+            list_html += f'        <li><a href="{esc}" target="_blank" rel="noopener noreferrer">{esc}</a></li>\n'
         list_html += '      </ul>\n'
     else:
         list_html = ''
@@ -97,7 +97,7 @@ def build_index_html(file_paths):
             list_html += '        <ul>\n'
             for p in section_files:
                 esc = html.escape(p)
-                list_html += f'          <li><a href="{esc}">{esc}</a></li>\n'
+                list_html += f'          <li><a href="{esc}" target="_blank" rel="noopener noreferrer">{esc}</a></li>\n'
             list_html += '        </ul>\n'
             list_html += '      </div>\n'
 
@@ -108,7 +108,7 @@ def build_index_html(file_paths):
             list_html += '        <ul>\n'
             for p in uncategorized:
                 esc = html.escape(p)
-                list_html += f'          <li><a href="{esc}">{esc}</a></li>\n'
+                list_html += f'          <li><a href="{esc}" target="_blank" rel="noopener noreferrer">{esc}</a></li>\n'
             list_html += '        </ul>\n'
             list_html += '      </div>\n'
 
