@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swing Report SOP Checklist - SimSports</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1190CB 0%, #5AB4E6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1190CB 0%, #5AB4E6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            margin: 20px 30px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #1190CB 0%, #5AB4E6 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+            color: #1a1d21;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .step {
+            background: #f0f2f5;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #1190CB;
+            transition: all 0.3s ease;
+        }
+
+        .step.completed {
+            border-left-color: #4caf50;
+            background: #f1f8f4;
+        }
+
+        .step.active {
+            box-shadow: 0 5px 20px rgba(17, 144, 203, 0.3);
+            transform: translateX(5px);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .step-number {
+            background: #1190CB;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step.completed .step-number {
+            background: #4caf50;
+        }
+
+        .step-title {
+            flex-grow: 1;
+        }
+
+        .step-title h2 {
+            font-size: 1.5em;
+            color: #1190CB;
+            margin-bottom: 5px;
+        }
+
+        .step-goal {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .toggle-icon {
+            font-size: 1.5em;
+            color: #1190CB;
+            transition: transform 0.3s ease;
+        }
+
+        .step.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .step-content {
+            padding-left: 55px;
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .step.collapsed .step-content {
+            max-height: 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .checklist-item:hover {
+            border-color: #1190CB;
+            transform: translateX(5px);
+        }
+
+        .checklist-item.checked {
+            background: #e8f5e9;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checklist-item label {
+            cursor: pointer;
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+
+        .output-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .output-box strong {
+            color: #856404;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #1190CB;
+        }
+
+        textarea.input-field {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1190CB 0%, #5AB4E6 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .timestamp {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 0.9em;
+            color: #1190CB;
+        }
+
+        .notes-section {
+            margin-top: 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #0d6e99;
+            color: #0d6e99;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #856404;
+            color: #856404;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #155724;
+            color: #155724;
+        }
+
+        .confidence-gate {
+            background: white;
+            border: 3px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .confidence-input {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .confidence-input input {
+            width: 100px;
+            padding: 8px;
+            font-size: 1.2em;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .gate-result {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .gate-pass {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .gate-fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .button-group {
+                display: none;
+            }
+            
+            .step {
+                break-inside: avoid;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .step-content {
+                padding-left: 0;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .summary-panel {
+            background: linear-gradient(135deg, #1190CB 0%, #5AB4E6 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .summary-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .summary-item strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .summary-item span {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏌️ Swing Report SOP Checklist</h1>
+            <p>SimSports Swing Report Generation Pipeline</p>
+            <div class="timestamp" id="sessionStart"></div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">0% Complete (0/9 steps)</div>
+
+        <div class="content">
+            <!-- Summary Panel -->
+            <div class="summary-panel">
+                <h3>Session Summary</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <strong>Athlete Name</strong>
+                        <span id="summaryAthlete">Not set</span>
+                    </div>
+                    <div class="summary-item">
+                        <strong>Current Step</strong>
+                        <span id="summaryStep">1 - Data Extraction</span>
+                    </div>
+                    <div class="summary-item">
+                        <strong>Confidence Score</strong>
+                        <span id="summaryConfidence">N/A</span>
+                    </div>
+                    <div class="summary-item">
+                        <strong>Status</strong>
+                        <span id="summaryStatus">In Progress</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="step active" data-step="1">
+                <div class="step-header" onclick="toggleStep(1)">
+                    <div class="step-number">1</div>
+                    <div class="step-title">
+                        <h2>Data Extraction - Sportsbox</h2>
+                        <div class="step-goal">Goal: Capture raw swing rows cleanly.</div>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s1-1" onchange="updateProgress()">
+                        <label for="s1-1">Open Sportsbox session</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s1-2" onchange="updateProgress()">
+                        <label for="s1-2">Zoom out to ensure <strong>all rows</strong> are visible</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s1-3" onchange="updateProgress()">
+                        <label for="s1-3">Drag-select the <strong>entire table</strong></label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s1-4" onchange="updateProgress()">
+                        <label for="s1-4">Copy raw rows (no headers)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s1-5" onchange="updateProgress()">
+                        <label for="s1-5">Confirm row count matches expected swings</label>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <label><strong>Expected Row Count:</strong></label>
+                        <input type="number" class="input-field" id="expectedRows" placeholder="Enter expected number of swings">
+                        
+                        <label><strong>Actual Row Count:</strong></label>
+                        <input type="number" class="input-field" id="actualRows" placeholder="Enter actual rows copied">
+                        
+                        <label><strong>Notes:</strong></label>
+                        <textarea class="input-field" id="step1Notes" placeholder="Any issues or observations..."></textarea>
+                    </div>
+                    
+                    <div class="output-box">
+                        <strong>Output:</strong> Raw Sportsbox swing rows
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step" data-step="2">
+                <div class="step-header" onclick="toggleStep(2)">
+                    <div class="step-number">2</div>
+                    <div class="step-title">
+                        <h2>Data Normalization - Excel Header Template</h2>
+                        <div class="step-goal">Goal: Produce a clean, labeled dataset.</div>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s2-1" onchange="updateProgress()">
+                        <label for="s2-1">Open the <strong>96-metric header Excel template</strong></label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s2-2" onchange="updateProgress()">
+                        <label for="s2-2">Paste raw Sportsbox rows <strong>directly under the header row</strong></label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s2-3" onchange="updateProgress()">
+                        <label for="s2-3">Confirm column alignment (spot-check 3-5 metrics)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s2-4" onchange="updateProgress()">
+                        <label for="s2-4">Save as <strong>CSV or TXT</strong></label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s2-5" onchange="updateProgress()">
+                        <label for="s2-5">Name file using standard format: <code>athlete_swingdata_YYYYMMDD.csv</code></label>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <label><strong>Athlete Name:</strong></label>
+                        <input type="text" class="input-field" id="athleteName" placeholder="Enter athlete name" onchange="updateSummary()">
+                        
+                        <label><strong>File Name:</strong></label>
+                        <input type="text" class="input-field" id="datasetFileName" placeholder="e.g., johndoe_swingdata_20240115.csv">
+                        
+                        <label><strong>Metrics Verified:</strong></label>
+                        <textarea class="input-field" id="step2Notes" placeholder="List the 3-5 metrics you spot-checked..."></textarea>
+                    </div>
+                    
+                    <div class="output-box">
+                        <strong>Output:</strong> Structured swing dataset
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step" data-step="3">
+                <div class="step-header" onclick="toggleStep(3)">
+                    <div class="step-number">3</div>
+                    <div class="step-title">
+                        <h2>Report Generation - LMC (Pass 1)</h2>
+                        <div class="step-goal">Goal: Generate the swing analysis reports.</div>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> If returning from Step 5 or 6, increment your generation attempt counter.
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s3-1" onchange="updateProgress()">
+                        <label for="s3-1">Load the structured dataset</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s3-2" onchange="updateProgress()">
+                        <label for="s3-2">Load the <strong>report generation template</strong></label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s3-3" onchange="updateProgress()">
+                        <label for="s3-3">Load the <strong>report generation prompt</strong></label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s3-4" onchange="updateProgress()">
+                        <label for="s3-4">Execute across <strong>2 models</strong></label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s3-5" onchange="updateProgress()">
+                        <label for="s3-5">Verify two outputs are created:</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s3-5a" onchange="updateProgress()">
+                        <label for="s3-5a">Markdown report</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s3-5b" onchange="updateProgress()">
+                        <label for="s3-5b">PDF report</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s3-6" onchange="updateProgress()">
+                        <label for="s3-6">Save both using naming standard: <code>athlete_swingreport_mmddyy_modelid.md/pdf</code></label>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <label><strong>Generation Attempt #:</strong></label>
+                        <input type="number" class="input-field" id="genAttempt" value="1" min="1">
+                        
+                        <label><strong>Model 1 ID:</strong></label>
+                        <input type="text" class="input-field" id="model1" placeholder="e.g., gpt-4">
+                        
+                        <label><strong>Model 2 ID:</strong></label>
+                        <input type="text" class="input-field" id="model2" placeholder="e.g., claude-3">
+                        
+                        <label><strong>Report File Names:</strong></label>
+                        <textarea class="input-field" id="step3Notes" placeholder="List the MD and PDF filenames generated..."></textarea>
+                    </div>
+                    
+                    <div class="output-box">
+                        <strong>Output:</strong> Swing Report (MD + PDF)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step" data-step="4">
+                <div class="step-header" onclick="toggleStep(4)">
+                    <div class="step-number">4</div>
+                    <div class="step-title">
+                        <h2>Confidence Evaluation - LMC (Pass 2)</h2>
+                        <div class="step-goal">Goal: Validate report quality and consistency.</div>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s4-1" onchange="updateProgress()">
+                        <label for="s4-1">Upload Markdown report</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s4-2" onchange="updateProgress()">
+                        <label for="s4-2">Upload PDF report</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s4-3" onchange="updateProgress()">
+                        <label for="s4-3">Run LMC confidence evaluation</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s4-4" onchange="updateProgress()">
+                        <label for="s4-4">Confirm confidence score is present</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s4-5" onchange="updateProgress()">
+                        <label for="s4-5">Save confidence report as: <code>athlete_confidence_YYYYMMDD.md</code></label>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <label><strong>Confidence Report File Name:</strong></label>
+                        <input type="text" class="input-field" id="confidenceFileName" placeholder="e.g., johndoe_confidence_20240115.md">
+                        
+                        <label><strong>Notes:</strong></label>
+                        <textarea class="input-field" id="step4Notes" placeholder="Any observations about the confidence evaluation..."></textarea>
+                    </div>
+                    
+                    <div class="output-box">
+                        <strong>Output:</strong> Confidence Report + Score
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step" data-step="5">
+                <div class="step-header" onclick="toggleStep(5)">
+                    <div class="step-number">5</div>
+                    <div class="step-title">
+                        <h2>Confidence Gate</h2>
+                        <div class="step-goal">Goal: Determine next step based on score.</div>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="confidence-gate">
+                        <div class="confidence-input">
+                            <label><strong>Enter Confidence Score (%):</strong></label>
+                            <input type="number" id="confidenceScore" min="0" max="100" placeholder="85" onchange="evaluateConfidence()">
+                            <button class="btn btn-primary" onclick="evaluateConfidence()">Evaluate</button>
+                        </div>
+                        <div id="gateResult"></div>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s5-1" onchange="updateProgress()">
+                        <label for="s5-1">Is confidence ≥ 80%?</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s5-1a">
+                        <label for="s5-1a"><strong>Yes</strong> → Proceed to Coaching Review (Step 6)</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s5-1b">
+                        <label for="s5-1b"><strong>No</strong> → Return to Step 3 (Regenerate reports)</label>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <label><strong>Decision Notes:</strong></label>
+                        <textarea class="input-field" id="step5Notes" placeholder="Document your decision and reasoning..."></textarea>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <strong>⚠️ Important:</strong> If confidence < 80%, return to Step 3 and regenerate the reports. Document the reason in Step 3 notes.
+                    </div>
+                    
+                    <div class="output-box">
+                        <strong>Output:</strong> Pass/Fail decision
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step" data-step="6">
+                <div class="step-header" onclick="toggleStep(6)">
+                    <div class="step-number">6</div>
+                    <div class="step-title">
+                        <h2>Coaching Review</h2>
+                        <div class="step-goal">Goal: Human validation of biomechanical accuracy.</div>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s6-1" onchange="updateProgress()">
+                        <label for="s6-1">Provide coach with:</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s6-1a" onchange="updateProgress()">
+                        <label for="s6-1a">Swing Report (MD or PDF)</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s6-1b" onchange="updateProgress()">
+                        <label for="s6-1b">Confidence Report</label>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s6-2" onchange="updateProgress()">
+                        <label for="s6-2">Coach reviews:</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s6-2a" onchange="updateProgress()">
+                        <label for="s6-2a">Metric interpretation</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s6-2b" onchange="updateProgress()">
+                        <label for="s6-2b">Recommendations</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s6-2c" onchange="updateProgress()">
+                        <label for="s6-2c">Narrative accuracy</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s6-2d" onchange="updateProgress()">
+                        <label for="s6-2d">Alignment with SimSports coaching philosophy</label>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s6-3" onchange="updateProgress()">
+                        <label for="s6-3">Coach decision:</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s6-3a">
+                        <label for="s6-3a"><strong>Approved</strong> → Proceed to Vibe (Step 7)</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s6-3b">
+                        <label for="s6-3b"><strong>Rejected</strong> → Return to Step 3</label>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <label><strong>Coach Name:</strong></label>
+                        <input type="text" class="input-field" id="coachName" placeholder="Enter reviewing coach name">
+                        
+                        <label><strong>Review Date/Time:</strong></label>
+                        <input type="datetime-local" class="input-field" id="coachReviewTime">
+                        
+                        <label><strong>Coach Feedback:</strong></label>
+                        <textarea class="input-field" id="step6Notes" placeholder="Document coach comments, approval/rejection reasons..."></textarea>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <strong>⚠️ If Rejected:</strong> Return to Step 3, document rejection reason, and regenerate reports.
+                    </div>
+                    
+                    <div class="output-box">
+                        <strong>Output:</strong> Coach approval decision
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step" data-step="7">
+                <div class="step-header" onclick="toggleStep(7)">
+                    <div class="step-number">7</div>
+                    <div class="step-title">
+                        <h2>Web Conversion - Vibe Platform</h2>
+                        <div class="step-goal">Goal: Produce client-ready, branded web reports.</div>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s7-1" onchange="updateProgress()">
+                        <label for="s7-1">Upload approved Swing Report</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s7-2" onchange="updateProgress()">
+                        <label for="s7-2">Upload approved Confidence Report</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s7-3" onchange="updateProgress()">
+                        <label for="s7-3">Apply <strong>SimSports branding</strong></label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s7-4" onchange="updateProgress()">
+                        <label for="s7-4">Verify formatting:</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s7-4a" onchange="updateProgress()">
+                        <label for="s7-4a">Headers</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s7-4b" onchange="updateProgress()">
+                        <label for="s7-4b">Sections</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s7-4c" onchange="updateProgress()">
+                        <label for="s7-4c">Images/diagrams</label>
+                    </div>
+                    <div class="checklist-item" style="margin-left: 30px;">
+                        <input type="checkbox" id="s7-4d" onchange="updateProgress()">
+                        <label for="s7-4d">Links</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s7-5" onchange="updateProgress()">
+                        <label for="s7-5">Publish or export final web report</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s7-6" onchange="updateProgress()">
+                        <label for="s7-6">Confirm final URL or asset is stored in athlete folder</label>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <label><strong>Final Report URL:</strong></label>
+                        <input type="url" class="input-field" id="finalReportURL" placeholder="https://...">
+                        
+                        <label><strong>Athlete Folder Location:</strong></label>
+                        <input type="text" class="input-field" id="athleteFolderPath" placeholder="Path or location where report is stored">
+                        
+                        <label><strong>Notes:</strong></label>
+                        <textarea class="input-field" id="step7Notes" placeholder="Any formatting issues or observations..."></textarea>
+                    </div>
+                    
+                    <div class="output-box">
+                        <strong>Output:</strong> SimSports-branded web report
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 8 -->
+            <div class="step" data-step="8">
+                <div class="step-header" onclick="toggleStep(8)">
+                    <div class="step-number">8</div>
+                    <div class="step-title">
+                        <h2>Failure Loop Handling</h2>
+                        <div class="step-goal">Goal: Ensure quality control.</div>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s8-1" onchange="updateProgress()">
+                        <label for="s8-1">If confidence < 80% → regenerate (Step 3)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s8-2" onchange="updateProgress()">
+                        <label for="s8-2">If coach rejects → regenerate (Step 3)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s8-3" onchange="updateProgress()">
+                        <label for="s8-3">Document reason for failure in operator log</label>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <label><strong>Failure Loop Log:</strong></label>
+                        <textarea class="input-field" id="step8Notes" placeholder="Document each regeneration attempt, reasons for failure, and corrective actions..."></textarea>
+                    </div>
+                    
+                    <div class="output-box">
+                        <strong>Output:</strong> Clean audit trail + corrected reports
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 9 -->
+            <div class="step" data-step="9">
+                <div class="step-header" onclick="toggleStep(9)">
+                    <div class="step-number">9</div>
+                    <div class="step-title">
+                        <h2>Operator Log (Required)</h2>
+                        <div class="step-goal">Goal: Maintain traceability.</div>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="alert alert-info">
+                        <strong>📝 Note:</strong> This section auto-populates from data entered throughout the process. Review and complete any missing fields.
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s9-1" onchange="updateProgress()">
+                        <label for="s9-1">Athlete name</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s9-2" onchange="updateProgress()">
+                        <label for="s9-2">Date/time</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s9-3" onchange="updateProgress()">
+                        <label for="s9-3">Dataset version</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s9-4" onchange="updateProgress()">
+                        <label for="s9-4">Confidence score</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s9-5" onchange="updateProgress()">
+                        <label for="s9-5">Coach approval status</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s9-6" onchange="updateProgress()">
+                        <label for="s9-6">Notes on any regeneration loops</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="s9-7" onchange="updateProgress()">
+                        <label for="s9-7">Final report URL</label>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <h3>Complete Operator Log Summary</h3>
+                        
+                        <label><strong>Operator Name:</strong></label>
+                        <input type="text" class="input-field" id="operatorName" placeholder="Your name">
+                        
+                        <label><strong>Athlete Name:</strong></label>
+                        <input type="text" class="input-field" id="logAthleteName" placeholder="Auto-filled from Step 2">
+                        
+                        <label><strong>Session Date/Time:</strong></label>
+                        <input type="datetime-local" class="input-field" id="logDateTime">
+                        
+                        <label><strong>Dataset Version/File:</strong></label>
+                        <input type="text" class="input-field" id="logDatasetVersion" placeholder="Auto-filled from Step 2">
+                        
+                        <label><strong>Final Confidence Score:</strong></label>
+                        <input type="number" class="input-field" id="logConfidence" placeholder="Auto-filled from Step 5">
+                        
+                        <label><strong>Coach Approval Status:</strong></label>
+                        <select class="input-field" id="logCoachApproval">
+                            <option value="">Select...</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                        
+                        <label><strong>Number of Regeneration Attempts:</strong></label>
+                        <input type="number" class="input-field" id="logRegenAttempts" placeholder="Auto-filled from Step 3" value="1">
+                        
+                        <label><strong>Final Report URL:</strong></label>
+                        <input type="url" class="input-field" id="logFinalURL" placeholder="Auto-filled from Step 7">
+                        
+                        <label><strong>Session Summary Notes:</strong></label>
+                        <textarea class="input-field" id="logSummaryNotes" placeholder="Overall session notes, issues encountered, resolutions..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="saveProgress()">
+                    💾 Save Progress
+                </button>
+                <button class="btn btn-success" onclick="exportComplete()">
+                    ✅ Export Complete Report
+                </button>
+                <button class="btn btn-secondary" onclick="loadProgress()">
+                    📂 Load Saved Progress
+                </button>
+                <button class="btn btn-danger" onclick="resetAll()">
+                    🔄 Reset All
+                </button>
+            </div>
+
+            <div class="alert alert-success" style="margin-top: 20px;">
+                <strong>✨ Auto-Save Enabled:</strong> Your progress is automatically saved to browser storage every 30 seconds.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize session start time
+        document.getElementById('sessionStart').textContent = 
+            'Session Started: ' + new Date().toLocaleString();
+
+        // Auto-populate log date/time
+        const now = new Date();
+        const dateTimeInput = document.getElementById('logDateTime');
+        dateTimeInput.value = now.toISOString().slice(0, 16);
+
+        // Toggle step collapse/expand
+        function toggleStep(stepNum) {
+            const step = document.querySelector(`[data-step="${stepNum}"]`);
+            step.classList.toggle('collapsed');
+        }
+
+        // Update progress bar and tracking
+        function updateProgress() {
+            const allCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="s"]');
+            const checkedBoxes = document.querySelectorAll('input[type="checkbox"][id^="s"]:checked');
+            
+            const totalSteps = 9;
+            const completedSteps = Array.from({length: totalSteps}, (_, i) => i + 1).filter(stepNum => {
+                const stepCheckboxes = document.querySelectorAll(`input[type="checkbox"][id^="s${stepNum}-"]:not([id*="a"]):not([id*="b"]):not([id*="c"]):not([id*="d"])`);
+                const stepChecked = Array.from(stepCheckboxes).filter(cb => cb.checked).length;
+                return stepChecked === stepCheckboxes.length && stepCheckboxes.length > 0;
+            }).length;
+
+            const percentage = Math.round((completedSteps / totalSteps) * 100);
+            
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = 
+                `${percentage}% Complete (${completedSteps}/${totalSteps} steps)`;
+
+            // Update step completion status
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepCheckboxes = document.querySelectorAll(`input[type="checkbox"][id^="s${i}-"]:not([id*="a"]):not([id*="b"]):not([id*="c"]):not([id*="d"])`);
+                const stepChecked = Array.from(stepCheckboxes).filter(cb => cb.checked).length;
+                const step = document.querySelector(`[data-step="${i}"]`);
+                
+                if (stepChecked === stepCheckboxes.length && stepCheckboxes.length > 0) {
+                    step.classList.add('completed');
+                } else {
+                    step.classList.remove('completed');
+                }
+            }
+
+            // Update summary
+            updateSummary();
+            
+            // Auto-save
+            autoSave();
+        }
+
+        // Update summary panel
+        function updateSummary() {
+            const athleteName = document.getElementById('athleteName').value || 'Not set';
+            document.getElementById('summaryAthlete').textContent = athleteName;
+            document.getElementById('logAthleteName').value = athleteName;
+            
+            // Find current active step
+            const steps = ['Data Extraction', 'Data Normalization', 'Report Generation', 
+                          'Confidence Evaluation', 'Confidence Gate', 'Coaching Review',
+                          'Web Conversion', 'Failure Loop', 'Operator Log'];
+            
+            for (let i = 1; i <= 9; i++) {
+                const stepCheckboxes = document.querySelectorAll(`input[type="checkbox"][id^="s${i}-"]:not([id*="a"]):not([id*="b"]):not([id*="c"]):not([id*="d"])`);
+                const stepChecked = Array.from(stepCheckboxes).filter(cb => cb.checked).length;
+                
+                if (stepChecked < stepCheckboxes.length) {
+                    document.getElementById('summaryStep').textContent = `${i} - ${steps[i-1]}`;
+                    break;
+                }
+            }
+
+            const confidence = document.getElementById('confidenceScore').value;
+            if (confidence) {
+                document.getElementById('summaryConfidence').textContent = confidence + '%';
+                document.getElementById('logConfidence').value = confidence;
+            }
+
+            // Auto-fill other log fields
+            const datasetFile = document.getElementById('datasetFileName').value;
+            if (datasetFile) {
+                document.getElementById('logDatasetVersion').value = datasetFile;
+            }
+
+            const finalURL = document.getElementById('finalReportURL').value;
+            if (finalURL) {
+                document.getElementById('logFinalURL').value = finalURL;
+            }
+
+            const genAttempt = document.getElementById('genAttempt').value;
+            if (genAttempt) {
+                document.getElementById('logRegenAttempts').value = genAttempt;
+            }
+        }
+
+        // Evaluate confidence gate
+        function evaluateConfidence() {
+            const score = parseFloat(document.getElementById('confidenceScore').value);
+            const resultDiv = document.getElementById('gateResult');
+            
+            if (isNaN(score)) {
+                resultDiv.innerHTML = '<div class="alert alert-warning">Please enter a valid confidence score.</div>';
+                return;
+            }
+
+            if (score >= 80) {
+                resultDiv.innerHTML = `
+                    <div class="gate-result gate-pass">
+                        ✅ PASS (${score}%) - Proceed to Step 6: Coaching Review
+                    </div>
+                `;
+                document.getElementById('s5-1').checked = true;
+                document.getElementById('s5-1a').checked = true;
+                document.getElementById('s5-1b').checked = false;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="gate-result gate-fail">
+                        ❌ FAIL (${score}%) - Return to Step 3: Regenerate Reports
+                    </div>
+                `;
+                document.getElementById('s5-1').checked = true;
+                document.getElementById('s5-1a').checked = false;
+                document.getElementById('s5-1b').checked = true;
+            }
+            
+            updateProgress();
+            updateSummary();
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                checkboxes: {},
+                fields: {}
+            };
+
+            // Save all checkbox states
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                data.checkboxes[cb.id] = cb.checked;
+            });
+
+            // Save all input fields
+            document.querySelectorAll('input[type="text"], input[type="number"], input[type="url"], input[type="datetime-local"], textarea, select').forEach(field => {
+                if (field.id) {
+                    data.fields[field.id] = field.value;
+                }
+            });
+
+            localStorage.setItem('swingReportSOP', JSON.stringify(data));
+            alert('✅ Progress saved successfully!');
+        }
+
+        // Auto-save function
+        function autoSave() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                checkboxes: {},
+                fields: {}
+            };
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                data.checkboxes[cb.id] = cb.checked;
+            });
+
+            document.querySelectorAll('input[type="text"], input[type="number"], input[type="url"], input[type="datetime-local"], textarea, select').forEach(field => {
+                if (field.id) {
+                    data.fields[field.id] = field.value;
+                }
+            });
+
+            localStorage.setItem('swingReportSOP_autosave', JSON.stringify(data));
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('swingReportSOP');
+            if (!saved) {
+                alert('No saved progress found.');
+                return;
+            }
+
+            if (!confirm('This will restore your saved progress. Continue?')) {
+                return;
+            }
+
+            const data = JSON.parse(saved);
+
+            // Restore checkboxes
+            Object.keys(data.checkboxes).forEach(id => {
+                const cb = document.getElementById(id);
+                if (cb) cb.checked = data.checkboxes[id];
+            });
+
+            // Restore fields
+            Object.keys(data.fields).forEach(id => {
+                const field = document.getElementById(id);
+                if (field) field.value = data.fields[id];
+            });
+
+            updateProgress();
+            alert('✅ Progress loaded successfully!');
+        }
+
+        // Export complete report
+        function exportComplete() {
+            const athleteName = document.getElementById('athleteName').value || 'Unknown_Athlete';
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            const filename = `${athleteName}_SOP_Checklist_${timestamp}.html`;
+
+            // Collect all data
+            const reportData = {
+                athlete: document.getElementById('athleteName').value,
+                operator: document.getElementById('operatorName').value,
+                sessionStart: document.getElementById('sessionStart').textContent,
+                completionTime: new Date().toLocaleString(),
+                
+                step1: {
+                    expectedRows: document.getElementById('expectedRows').value,
+                    actualRows: document.getElementById('actualRows').value,
+                    notes: document.getElementById('step1Notes').value
+                },
+                
+                step2: {
+                    fileName: document.getElementById('datasetFileName').value,
+                    metricsVerified: document.getElementById('step2Notes').value
+                },
+                
+                step3: {
+                    attempts: document.getElementById('genAttempt').value,
+                    model1: document.getElementById('model1').value,
+                    model2: document.getElementById('model2').value,
+                    reportFiles: document.getElementById('step3Notes').value
+                },
+                
+                step4: {
+                    confidenceFile: document.getElementById('confidenceFileName').value,
+                    notes: document.getElementById('step4Notes').value
+                },
+                
+                step5: {
+                    confidenceScore: document.getElementById('confidenceScore').value,
+                    decision: document.getElementById('step5Notes').value
+                },
+                
+                step6: {
+                    coachName: document.getElementById('coachName').value,
+                    reviewTime: document.getElementById('coachReviewTime').value,
+                    feedback: document.getElementById('step6Notes').value
+                },
+                
+                step7: {
+                    finalURL: document.getElementById('finalReportURL').value,
+                    folderPath: document.getElementById('athleteFolderPath').value,
+                    notes: document.getElementById('step7Notes').value
+                },
+                
+                step8: {
+                    failureLog: document.getElementById('step8Notes').value
+                },
+                
+                step9: {
+                    summaryNotes: document.getElementById('logSummaryNotes').value,
+                    coachApproval: document.getElementById('logCoachApproval').value
+                }
+            };
+
+            // Create HTML report
+            const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Swing Report SOP - ${reportData.athlete}</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        h1 { color: #1190CB; border-bottom: 3px solid #1190CB; padding-bottom: 10px; }
+        h2 { color: #5AB4E6; margin-top: 30px; }
+        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0; }
+        .info-item { background: #f0f2f5; padding: 15px; border-radius: 8px; }
+        .info-item strong { display: block; color: #1190CB; margin-bottom: 5px; }
+        .step-section { background: #f0f2f5; padding: 20px; margin: 20px 0; border-radius: 10px; border-left: 5px solid #1190CB; }
+        .notes { background: white; padding: 15px; border-radius: 5px; margin: 10px 0; white-space: pre-wrap; }
+        .summary { background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        @media print { body { padding: 0; } }
+    </style>
+</head>
+<body>
+    <h1>🏌️ Swing Report SOP Checklist - Completed</h1>
+    
+    <div class="summary">
+        <h2>Session Summary</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <strong>Athlete Name:</strong>
+                ${reportData.athlete || 'N/A'}
+            </div>
+            <div class="info-item">
+                <strong>Operator:</strong>
+                ${reportData.operator || 'N/A'}
+            </div>
+            <div class="info-item">
+                <strong>Session Started:</strong>
+                ${reportData.sessionStart}
+            </div>
+            <div class="info-item">
+                <strong>Completed:</strong>
+                ${reportData.completionTime}
+            </div>
+            <div class="info-item">
+                <strong>Confidence Score:</strong>
+                ${reportData.step5.confidenceScore || 'N/A'}%
+            </div>
+            <div class="info-item">
+                <strong>Coach Approval:</strong>
+                ${reportData.step9.coachApproval || 'N/A'}
+            </div>
+        </div>
+    </div>
+
+    <div class="step-section">
+        <h2>Step 1: Data Extraction - Sportsbox</h2>
+        <div class="info-item">
+            <strong>Expected Rows:</strong> ${reportData.step1.expectedRows || 'N/A'}
+        </div>
+        <div class="info-item">
+            <strong>Actual Rows:</strong> ${reportData.step1.actualRows || 'N/A'}
+        </div>
+        <div class="notes"><strong>Notes:</strong><br>${reportData.step1.notes || 'No notes'}</div>
+    </div>
+
+    <div class="step-section">
+        <h2>Step 2: Data Normalization</h2>
+        <div class="info-item">
+            <strong>Dataset File Name:</strong> ${reportData.step2.fileName || 'N/A'}
+        </div>
+        <div class="notes"><strong>Metrics Verified:</strong><br>${reportData.step2.metricsVerified || 'No notes'}</div>
+    </div>
+
+    <div class="step-section">
+        <h2>Step 3: Report Generation</h2>
+        <div class="info-item">
+            <strong>Generation Attempts:</strong> ${reportData.step3.attempts || '1'}
+        </div>
+        <div class="info-item">
+            <strong>Model 1:</strong> ${reportData.step3.model1 || 'N/A'}
+        </div>
+        <div class="info-item">
+            <strong>Model 2:</strong> ${reportData.step3.model2 || 'N/A'}
+        </div>
+        <div class="notes"><strong>Report Files:</strong><br>${reportData.step3.reportFiles || 'No notes'}</div>
+    </div>
+
+    <div class="step-section">
+        <h2>Step 4: Confidence Evaluation</h2>
+        <div class="info-item">
+            <strong>Confidence Report File:</strong> ${reportData.step4.confidenceFile || 'N/A'}
+        </div>
+        <div class="notes"><strong>Notes:</strong><br>${reportData.step4.notes || 'No notes'}</div>
+    </div>
+
+    <div class="step-section">
+        <h2>Step 5: Confidence Gate</h2>
+        <div class="info-item">
+            <strong>Confidence Score:</strong> ${reportData.step5.confidenceScore || 'N/A'}%
+        </div>
+        <div class="notes"><strong>Decision Notes:</strong><br>${reportData.step5.decision || 'No notes'}</div>
+    </div>
+
+    <div class="step-section">
+        <h2>Step 6: Coaching Review</h2>
+        <div class="info-item">
+            <strong>Reviewing Coach:</strong> ${reportData.step6.coachName || 'N/A'}
+        </div>
+        <div class="info-item">
+            <strong>Review Time:</strong> ${reportData.step6.reviewTime || 'N/A'}
+        </div>
+        <div class="notes"><strong>Coach Feedback:</strong><br>${reportData.step6.feedback || 'No notes'}</div>
+    </div>
+
+    <div class="step-section">
+        <h2>Step 7: Web Conversion</h2>
+        <div class="info-item">
+            <strong>Final Report URL:</strong> ${reportData.step7.finalURL || 'N/A'}
+        </div>
+        <div class="info-item">
+            <strong>Athlete Folder:</strong> ${reportData.step7.folderPath || 'N/A'}
+        </div>
+        <div class="notes"><strong>Notes:</strong><br>${reportData.step7.notes || 'No notes'}</div>
+    </div>
+
+    <div class="step-section">
+        <h2>Step 8: Failure Loop Handling</h2>
+        <div class="notes"><strong>Failure Log:</strong><br>${reportData.step8.failureLog || 'No failures recorded'}</div>
+    </div>
+
+    <div class="step-section">
+        <h2>Step 9: Operator Log</h2>
+        <div class="notes"><strong>Session Summary:</strong><br>${reportData.step9.summaryNotes || 'No summary notes'}</div>
+    </div>
+
+    <hr style="margin: 40px 0;">
+    <p style="text-align: center; color: #6b7280;">
+        Generated by SimSports Swing Report SOP Checklist System<br>
+        ${new Date().toLocaleString()}
+    </p>
+</body>
+</html>
+            `;
+
+            // Create and download file
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert(`✅ Complete report exported as: ${filename}`);
+        }
+
+        // Reset all progress
+        function resetAll() {
+            if (!confirm('⚠️ This will clear ALL progress. Are you sure?')) {
+                return;
+            }
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[type="text"], input[type="number"], input[type="url"], textarea').forEach(field => field.value = '');
+            document.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+            
+            localStorage.removeItem('swingReportSOP');
+            localStorage.removeItem('swingReportSOP_autosave');
+            
+            updateProgress();
+            alert('✅ All progress has been reset.');
+        }
+
+        // Auto-save every 30 seconds
+        setInterval(autoSave, 30000);
+
+        // Load auto-saved data on page load
+        window.addEventListener('load', () => {
+            const autosaved = localStorage.getItem('swingReportSOP_autosave');
+            if (autosaved) {
+                const data = JSON.parse(autosaved);
+                
+                Object.keys(data.checkboxes).forEach(id => {
+                    const cb = document.getElementById(id);
+                    if (cb) cb.checked = data.checkboxes[id];
+                });
+
+                Object.keys(data.fields).forEach(id => {
+                    const field = document.getElementById(id);
+                    if (field) field.value = data.fields[id];
+                });
+
+                updateProgress();
+            }
+        });
+
+        // Handle checkbox changes for visual feedback
+        document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', function() {
+                if (this.checked) {
+                    this.parentElement.classList.add('checked');
+                } else {
+                    this.parentElement.classList.remove('checked');
+                }
+            });
+        });
+
+        // Initial progress update
+        updateProgress();
+    </script>
+</body>
+</html>
+Sonnet via LMA

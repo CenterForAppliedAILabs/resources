@@ -37,5 +37,9 @@
   {
     "title": "7. Governance and Analysis",
     "patterns": ["synth-governance*-AppliedAILabs*", "Gemini Analysis*-AppliedAILabs*", "Emergent Properties*-AppliedAILabs*"]
+  },
+  {
+    "title": "8. SimSports",
+    "patterns": ["*SimSports*-AppliedAILabs*", "*simsports*-AppliedAILabs*"]
   }
 ]

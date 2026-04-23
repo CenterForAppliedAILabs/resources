@@ -1,0 +1,2346 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM.SPORTS Arena – Swing Analysis Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #f5f5f5;
+            --panel: #ffffff;
+            --panel-2: #f0f2f5;
+            --text: #1a1d21;
+            --muted: #6b7280;
+            --border: rgba(0,0,0,.1);
+            --shadow: 0 4px 16px rgba(0,0,0,.06);
+            --accent: #1190CB;
+            --accent-2: #5AB4E6;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0b1020;
+            --panel: #121931;
+            --panel-2: #182244;
+            --text: #e9eefc;
+            --muted: #aab6d3;
+            --border: rgba(255,255,255,.12);
+            --shadow: 0 10px 30px rgba(0,0,0,.25);
+        }
+
+        body {
+            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            color: var(--text);
+            background-color: var(--bg);
+            line-height: 1.6;
+        }
+
+        /* ===== Brand Header ===== */
+        .brand-header {
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-badge {
+            width: 40px; height: 40px; border-radius: 8px;
+            background: var(--accent);
+            color: #fff; font-weight: 800;
+            font-size: .7rem; letter-spacing: .02em;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .brand h1 { margin: 0; font-size: 1rem; line-height: 1.1; font-weight: 800; }
+        .brand h1 a { color: inherit; text-decoration: none; }
+        .brand h1 a:hover { color: var(--accent); }
+        .brand small { color: var(--muted); display: block; line-height: 1.5; font-size: .82rem; }
+
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            gap: .5rem;
+            flex-shrink: 0;
+        }
+
+        /* ===== Theme Toggle ===== */
+        .theme-toggle {
+            position: fixed; top: 16px; right: 16px; z-index: 120;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--panel); color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .2s, color .2s, border-color .2s;
+        }
+        .theme-toggle:hover { border-color: var(--accent); }
+        .theme-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ===== Main Container ===== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* ===== Report Info Card ===== */
+        .report-info {
+            background: var(--panel);
+            border-radius: .75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .report-info h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        /* ===== Navigation Tabs ===== */
+        .nav-tabs {
+            display: flex;
+            gap: .5rem;
+            margin-bottom: 2rem;
+            background: var(--panel);
+            padding: 1rem;
+            border-radius: .75rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: .6rem 1.25rem;
+            background: var(--panel-2);
+            border: 1px solid transparent;
+            border-radius: .5rem;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: .9rem;
+            transition: all .2s ease;
+            color: var(--text);
+        }
+
+        .nav-tab:hover {
+            background: rgba(17,144,203,.1);
+            border-color: rgba(17,144,203,.22);
+            color: var(--accent);
+        }
+
+        .nav-tab.active {
+            background: rgba(17,144,203,.1);
+            border-color: rgba(17,144,203,.22);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ===== Content Sections ===== */
+        .content-section { display: none; animation: fadeIn .3s ease; }
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Cards / Panels ===== */
+        .card {
+            background: var(--panel);
+            border-radius: .75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+        }
+
+        .card.success { border-left-color: #7ee081; }
+        .card.warning { border-left-color: #ffd166; }
+        .card.danger  { border-left-color: #ff7b7b; }
+
+        .card h2 {
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            margin-top: 1.5rem;
+            margin-bottom: .75rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .card h4 {
+            font-size: 1rem;
+            margin-top: 1.25rem;
+            margin-bottom: .5rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* ===== Score Display ===== */
+        .score-display {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: .35rem .85rem;
+            border-radius: .5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            margin: .35rem 0;
+        }
+
+        .score-display.good    { background: #7ee081; color: #1a1d21; }
+        .score-display.warning { background: #ffd166; color: #1a1d21; }
+        .score-display.bad     { background: #ff7b7b; color: #1a1d21; }
+
+        /* ===== Metrics Grid ===== */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-box {
+            background: var(--panel-2);
+            padding: 1.5rem;
+            border-radius: .75rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: .82rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: .03em;
+            margin-bottom: .5rem;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: .5rem;
+        }
+
+        .metric-range {
+            font-size: .85rem;
+            color: var(--muted);
+        }
+
+        /* ===== Tables ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--panel);
+            border-radius: .5rem;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--panel-2);
+            color: var(--text);
+            padding: .85rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        td {
+            padding: .75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: .92rem;
+        }
+
+        tr:hover { background: var(--panel-2); }
+
+        /* ===== Progress Bars ===== */
+        .progress-container { margin: 1rem 0; }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: .5rem;
+            font-size: .9rem;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background: var(--panel-2);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            transition: width .3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: .8rem;
+            font-weight: 700;
+        }
+
+        /* ===== Notes Section (inline) ===== */
+        .notes-section {
+            background: var(--panel);
+            border-radius: .75rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .notes-section h2 {
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: .5rem;
+            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-size: .95rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+            background: var(--panel-2);
+            color: var(--text);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(17,144,203,.15);
+        }
+
+        .notes-controls {
+            display: flex;
+            gap: .75rem;
+            flex-wrap: wrap;
+        }
+
+        /* ===== Buttons ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .5rem 1rem;
+            border-radius: .5rem;
+            font-size: .88rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all .2s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #fff;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 4px 16px rgba(17,144,203,.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--panel-2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-sm {
+            padding: .35rem .75rem;
+            font-size: .82rem;
+        }
+
+        /* ===== Section Note Buttons ===== */
+        .section-note-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            padding: .35rem .75rem;
+            border-radius: .4rem;
+            font-size: .8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid rgba(17,144,203,.2);
+            background: rgba(17,144,203,.08);
+            color: var(--accent);
+            transition: all .2s ease;
+            margin-top: .75rem;
+            font-family: inherit;
+        }
+        .section-note-btn:hover {
+            background: rgba(17,144,203,.15);
+            border-color: rgba(17,144,203,.35);
+        }
+
+        /* ===== Severity Badges ===== */
+        .badge {
+            display: inline-block;
+            padding: .25rem .75rem;
+            border-radius: 9999px;
+            font-size: .82rem;
+            font-weight: 600;
+            margin: .25rem;
+        }
+
+        .badge.good    { background: rgba(126,224,129,.2); color: #1a5c1e; }
+        .badge.warning { background: rgba(255,209,102,.2); color: #7a5401; }
+        .badge.danger  { background: rgba(255,123,123,.2); color: #8b1a1a; }
+
+        /* ===== Alerts ===== */
+        .alert {
+            padding: 1rem;
+            border-radius: .5rem;
+            margin: 1rem 0;
+            border-left: 4px solid;
+            font-size: .92rem;
+        }
+
+        .alert.info {
+            background: rgba(17,144,203,.08);
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        .alert.success {
+            background: rgba(126,224,129,.08);
+            border-color: #7ee081;
+            color: var(--text);
+        }
+
+        .alert.warning {
+            background: rgba(255,209,102,.08);
+            border-color: #ffd166;
+            color: var(--text);
+        }
+
+        .alert.danger {
+            background: rgba(255,123,123,.08);
+            border-color: #ff7b7b;
+            color: var(--text);
+        }
+
+        /* ===== Accordion (Collapsible Cards) ===== */
+        .acc-item { margin-bottom: 1.5rem; }
+
+        .acc-header {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            cursor: pointer;
+            user-select: none;
+            padding: 1.25rem 1.5rem;
+            background: var(--panel);
+            border-radius: .75rem;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            box-shadow: var(--shadow);
+            transition: background .15s, border-color .15s;
+        }
+        .acc-header:hover { background: var(--panel-2); }
+        .acc-header:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        .acc-item.danger .acc-header  { border-left-color: #ff7b7b; }
+        .acc-item.warning .acc-header { border-left-color: #ffd166; }
+        .acc-item.success .acc-header { border-left-color: #7ee081; }
+
+        .acc-header h2 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+            flex: 1;
+        }
+
+        .acc-caret {
+            display: inline-block;
+            transition: transform .2s ease;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-right: 4px;
+            color: var(--muted);
+        }
+        .acc-item.open .acc-caret { transform: rotate(90deg); color: var(--accent); }
+
+        .acc-body {
+            display: none;
+            padding: 1rem 1.5rem 1.5rem;
+            margin-top: -1px;
+            border-radius: 0 0 .75rem .75rem;
+            border: 1px solid var(--border);
+            border-top: none;
+            background: var(--panel);
+        }
+        [data-theme="dark"] .acc-item.open > .acc-body { background: #1c2848; }
+        .acc-item.open > .acc-body { display: block; }
+
+        /* ===== List Styles ===== */
+        ul { margin-left: 1.5rem; margin-top: .75rem; }
+        li { margin-bottom: .5rem; }
+        ol { margin-left: 1.5rem; margin-top: .75rem; }
+
+        /* ===== Copyright Footer ===== */
+        .copyright-footer {
+            margin-top: 32px; padding: 20px 0;
+            border-top: 1px solid var(--border);
+            text-align: center; font-size: .82rem;
+            color: var(--muted);
+        }
+        .copyright-footer a {
+            color: var(--accent); text-decoration: none; font-weight: 600;
+        }
+        .copyright-footer a:hover { text-decoration: underline; }
+
+        /* ===== Print Styles ===== */
+        @media print {
+            .theme-toggle,
+            .nav-tabs,
+            .notes-section,
+            .section-note-btn,
+            .header-actions,
+            .no-print { display: none !important; }
+
+            [data-theme="dark"] {
+                --bg: #fff;
+                --panel: #fff;
+                --panel-2: #f5f5f5;
+                --text: #1a1d21;
+                --muted: #6b7280;
+                --border: rgba(0,0,0,.1);
+                --shadow: none;
+            }
+
+            body { background: #fff; color: #1a1d21; }
+            .container { padding: 0; }
+            .content-section { display: block !important; page-break-inside: avoid; }
+            .card { page-break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+            .acc-body { display: block !important; background: #fff !important; border: 1px solid #ddd; border-top: none; }
+            .acc-header { box-shadow: none; }
+            .brand-header { box-shadow: none; position: static; background: #fff; }
+            .brand h1 a { color: #1190CB; }
+            .brand small { color: #6b7280; }
+            .brand-badge { background: #1190CB; }
+            th { border-bottom-color: #1190CB; }
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .brand { flex-direction: column; align-items: flex-start; gap: .5rem; }
+            .header-actions { margin-left: 0; width: 100%; justify-content: flex-start; }
+            .nav-tabs { flex-direction: column; }
+            .nav-tab { width: 100%; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .btn { padding: .45rem .85rem; font-size: .85rem; }
+        }
+
+        /* ===== CONFIRM MODAL ===== */
+        .confirm-overlay {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        .confirm-overlay.visible { display: flex; }
+        .confirm-dialog {
+            background: var(--panel); color: var(--text);
+            border: 1px solid var(--border); border-radius: 12px;
+            padding: 28px 32px; max-width: 380px; width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,.4);
+        }
+        .confirm-dialog p { margin: 0 0 20px; font-size: .95rem; line-height: 1.5; }
+        .confirm-actions { display: flex; gap: 10px; justify-content: flex-end; }
+        .confirm-actions .btn { min-width: 80px; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--panel); color: var(--text);
+            border: 1px solid var(--accent); border-radius: 8px;
+            padding: 12px 24px; font-size: .9rem; z-index: 300;
+            box-shadow: 0 8px 30px rgba(0,0,0,.3);
+            opacity: 0; transition: opacity .3s; pointer-events: none;
+        }
+        .toast.visible { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle no-print" id="themeToggle" type="button" title="Toggle light/dark mode">
+        <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+    </button>
+
+    <!-- Brand Header -->
+    <header class="brand-header">
+        <div class="brand">
+            <div class="brand-badge">SIM</div>
+            <div>
+                <h1><a href="https://www.simsportsarena.com" target="_blank" rel="noopener">SIM.SPORTS Arena</a></h1>
+                <small>Client: Todd MacDonald</small>
+                <small>Coach: Parker</small>
+                <small>Location: Park City</small>
+            </div>
+            <div class="header-actions no-print">
+                <button class="btn btn-secondary btn-sm" onclick="document.getElementById('notes').scrollIntoView({behavior:'smooth',block:'start'})" title="Go to Notes">Notes</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Report Info -->
+        <div class="report-info">
+            <h2>Swing Analysis Report</h2>
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <div class="metric-label">Golfer</div>
+                    <div class="metric-value">Todd MacDonald</div>
+                    <div class="metric-range">Age 62</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Data Set</div>
+                    <div class="metric-value">49 Swings</div>
+                    <div class="metric-range">5i, 8i, GW</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Overall Rating</div>
+                    <div class="metric-value score-display good">7.2/10</div>
+                    <div class="metric-range">Solid Amateur</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Primary Issue</div>
+                    <div class="metric-value score-display warning">Consistency</div>
+                    <div class="metric-range">15-20% Variance</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs no-print">
+            <div class="nav-tab active" onclick="switchTab(event, 'executive')">Executive Summary</div>
+            <div class="nav-tab" onclick="switchTab(event, 'analysis')">Detailed Analysis</div>
+            <div class="nav-tab" onclick="switchTab(event, 'performance')">Performance Impact</div>
+            <div class="nav-tab" onclick="switchTab(event, 'strengths')">Strengths</div>
+            <div class="nav-tab" onclick="switchTab(event, 'faults')">Faults</div>
+            <div class="nav-tab" onclick="switchTab(event, 'training')">Training Plan</div>
+        </div>
+
+        <!-- EXECUTIVE SUMMARY TAB -->
+        <div id="executive" class="content-section active">
+            <div class="card">
+                <h2>Executive Summary</h2>
+                <p><strong>Overall Swing Profile: <span class="score-display good">7.2/10</span> (Solid Amateur with Notable Inconsistency Issues)</strong></p>
+                <p style="margin-top: 1rem;">Todd demonstrates competent fundamentals with significant potential for improvement through mechanical refinement and consistency protocols.</p>
+
+                <h3>Key Strengths</h3>
+                <ul>
+                    <li><strong>Adequate clubhead speeds</strong> (avg 71.4 mph across clubs) for age/handicap</li>
+                    <li><strong>Sound kinetic sequencing</strong> (Pelvis→Chest→Arm→Club ordering mostly correct)</li>
+                    <li><strong>Acceptable tempo ratios</strong> in mid-range (3.0-4.0 ratio common in amateurs)</li>
+                    <li><strong>Good power generation</strong> (Pelvis speeds 279-362 d/s indicate active lower body)</li>
+                </ul>
+
+                <h3>Critical Issues</h3>
+                <ul>
+                    <li><span class="badge danger">HIGH INCONSISTENCY</span> (swing-to-swing variability 15-20% across key metrics)</li>
+                    <li><span class="badge danger">TIMING/SEQUENCING BREAKDOWNS</span> (transition order errors in 8 of 49 swings)</li>
+                    <li><span class="badge warning">EARLY EXTENSION PATTERNS</span> (Pelvis Thrust/Lift inconsistency suggests postural collapse)</li>
+                    <li><span class="badge warning">WRIST RELEASE VARIANCE</span> (8%-59% release timing creates dispersion in clubhead delivery)</li>
+                    <li><span class="badge warning">TEMPO INSTABILITY</span> (Tempo Ratio range: 2.05-5.00 is excessive; tour avg ~3.0)</li>
+                </ul>
+
+                <h3>Performance Impact</h3>
+                <div class="alert warning">
+                    <strong>Distance Loss:</strong> Inconsistent power transfer costs 8-12 yards per swing vs. potential<br>
+                    <strong>Accuracy Loss:</strong> Sequencing breakdown + early extension = 2-3 club dispersion<br>
+                    <strong>Confidence Loss:</strong> High variance prevents reliable shot-making under pressure
+                </div>
+
+                <button class="section-note-btn" onclick="addSectionNote('Executive Summary')">+ Add Note</button>
+            </div>
+        </div>
+
+        <!-- DETAILED ANALYSIS TAB -->
+        <div id="analysis" class="content-section">
+            <div class="acc-item danger">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>1. Kinetic Sequence &amp; Transition Quality</h2>
+                </div>
+                <div class="acc-body">
+                    <p style="margin-top: .5rem;"><strong>Finding: </strong><span class="badge warning">MODERATE CONCERN</span></p>
+
+                    <h3>What We're Looking At</h3>
+                    <p>The kinetic sequence measures how efficiently energy transfers from ground → pelvis → chest → arms → club. The ideal order is 1=Pelvis, 2=Chest, 3=Arms, 4=Club.</p>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Range</th>
+                                <th>Frequency</th>
+                                <th>Assessment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Correct Sequence (1-2-3-4)</td>
+                                <td>3-4 position swings</td>
+                                <td>35/49 (71%)</td>
+                                <td><span class="badge good">ACCEPTABLE</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sequence Errors</td>
+                                <td>1-2-4-3 or 1-3-3-2</td>
+                                <td>14/49 (29%)</td>
+                                <td><span class="badge danger">CONCERNING</span></td>
+                            </tr>
+                            <tr>
+                                <td>Max Speed Gains (Core)</td>
+                                <td>1.47-2.44 ratio</td>
+                                <td>All swings</td>
+                                <td>1.8 avg = <span class="badge good">GOOD</span></td>
+                            </tr>
+                            <tr>
+                                <td>Shoulder Gain Factor</td>
+                                <td>1.04-1.38 ratio</td>
+                                <td>All swings</td>
+                                <td>1.19 avg = <span class="badge good">ACCEPTABLE</span></td>
+                            </tr>
+                            <tr>
+                                <td>Wrist Gain Factor</td>
+                                <td>1.93-3.20 ratio</td>
+                                <td>All swings</td>
+                                <td>2.56 avg = <span class="badge good">EXCELLENT</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Key Findings</h3>
+                    <ul>
+                        <li>Todd's core gain factor (1.8x) is solid—his pelvis and chest are rotating efficiently</li>
+                        <li>His wrist gain (2.56x) is excellent, indicating good lag maintenance into impact</li>
+                        <li><strong>BUT:</strong> 29% error rate in transition order is above acceptable (pros: &lt;5%)</li>
+                        <li>When sequencing breaks (1-2-4-3 pattern), his chest catches up to his arms too early</li>
+                    </ul>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Kinetic Sequence')">+ Add Note</button>
+                </div>
+            </div>
+
+            <div class="acc-item danger">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>2. Tempo &amp; Timing Analysis</h2>
+                </div>
+                <div class="acc-body">
+                    <p style="margin-top: .5rem;"><strong>Finding: </strong><span class="badge danger">SIGNIFICANT CONCERN - PRIMARY ISSUE</span></p>
+
+                    <h3>Todd's Tempo Data</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <div class="metric-label">Tempo Ratio Average</div>
+                            <div class="metric-value">3.57</div>
+                            <div class="metric-range">Target: 3.2-3.8</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Tempo Range</div>
+                            <div class="metric-value score-display bad">2.05-5.00</div>
+                            <div class="metric-range">Too High Variance</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Backswing Time</div>
+                            <div class="metric-value">0.85 sec</div>
+                            <div class="metric-range">0.40-1.14 sec (Variable)</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Std Deviation</div>
+                            <div class="metric-value score-display bad">&plusmn;0.73</div>
+                            <div class="metric-range">~20% Inconsistency</div>
+                        </div>
+                    </div>
+
+                    <div class="alert danger">
+                        <strong>Critical Finding:</strong> Each tempo deviation of &plusmn;0.5 ratio = 3-5 mph clubhead speed loss and 15-20 yard distance variance
+                    </div>
+
+                    <h3>Performance Examples</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Swing</th>
+                                <th>Tempo Ratio</th>
+                                <th>Clubhead Speed</th>
+                                <th>Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Best Rhythm</td>
+                                <td>3.42:1</td>
+                                <td>80.2 mph</td>
+                                <td>Baseline</td>
+                            </tr>
+                            <tr>
+                                <td>Slow Tempo (Swing #4)</td>
+                                <td>3.90:1</td>
+                                <td>60.7 mph</td>
+                                <td>-19.5 mph loss</td>
+                            </tr>
+                            <tr>
+                                <td>Rushed Tempo (Swing #44)</td>
+                                <td>2.05:1</td>
+                                <td>69.5 mph</td>
+                                <td>-10.7 mph loss</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Tempo & Timing')">+ Add Note</button>
+                </div>
+            </div>
+
+            <div class="acc-item warning">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>3. Posture &amp; Early Extension Analysis</h2>
+                </div>
+                <div class="acc-body">
+                    <p style="margin-top: .5rem;"><strong>Finding: </strong><span class="badge danger">SIGNIFICANT CONCERN - SECONDARY ISSUE</span></p>
+
+                    <h3>Pelvis Movement Data</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Average</th>
+                                <th>Range</th>
+                                <th>Assessment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pelvis Lift into Impact</td>
+                                <td>0.67"</td>
+                                <td>-2.1 to 2.0"</td>
+                                <td><span class="badge danger">HIGHLY VARIABLE</span></td>
+                            </tr>
+                            <tr>
+                                <td>Pelvis Thrust at Top</td>
+                                <td>-25.9"</td>
+                                <td>-17.4 to -41"</td>
+                                <td><span class="badge good">APPROPRIATE</span></td>
+                            </tr>
+                            <tr>
+                                <td>Pelvis Thrust into Impact</td>
+                                <td>23.5"</td>
+                                <td>2.2 to 30.8"</td>
+                                <td><span class="badge danger">EXCESSIVE/INCONSISTENT</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="alert warning">
+                        <strong>Key Issue:</strong> Pelvis Lift variance is your primary mechanical problem. When Pelvis Lift is positive, Todd is standing up = Early Extension.
+                    </div>
+
+                    <h3>Impact Analysis</h3>
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Swings with Low Pelvis Lift (0.2-0.5")</span>
+                            <span>76.3 mph</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%; background: #7ee081;">Best Swings</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Current Average Pelvis Lift (0.67")</span>
+                            <span>71.2 mph</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%; background: #ffd166;">Current State</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Worst Swings (1.5-2.0")</span>
+                            <span>68.2 mph</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 50%; background: #ff7b7b;">Major Collapse</div>
+                        </div>
+                    </div>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Posture & Early Extension')">+ Add Note</button>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>4. Wrist Mechanics &amp; Release Pattern</h2>
+                </div>
+                <div class="acc-body">
+                    <p style="margin-top: .5rem;"><strong>Finding: </strong><span class="badge good">GENERALLY GOOD, WITH VARIANCE</span></p>
+
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <div class="metric-label">Lead Wrist @ TOP</div>
+                            <div class="metric-value">111.8&deg;</div>
+                            <div class="metric-range">97-114&deg; Range</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Wrist Release %</div>
+                            <div class="metric-value score-display bad">33.2%</div>
+                            <div class="metric-range">3%-59% Range</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Low Release Speed</div>
+                            <div class="metric-value">63.1 mph</div>
+                            <div class="metric-range">Swings 3-16%</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">High Release Speed</div>
+                            <div class="metric-value">76.4 mph</div>
+                            <div class="metric-range">Swings 50-59%</div>
+                        </div>
+                    </div>
+
+                    <div class="alert danger">
+                        Release timing variance costs Todd 3-5 mph clubhead speed and creates &plusmn;3&deg; face angle inconsistency
+                    </div>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Wrist Mechanics')">+ Add Note</button>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>5. Club Delivery &amp; Shaft Angles</h2>
+                </div>
+                <div class="acc-body">
+                    <p style="margin-top: .5rem;"><strong>Finding: </strong><span class="badge good">ACCEPTABLE, WITH ROOM FOR OPTIMIZATION</span></p>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Average</th>
+                                <th>Assessment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Shaft DTL Angle @ IMP</td>
+                                <td>47.5&deg;</td>
+                                <td><span class="badge good">Slightly steep (ideal ~46&deg;)</span></td>
+                            </tr>
+                            <tr>
+                                <td>Shaft vs. Shoulder Plane</td>
+                                <td>2.1&deg;</td>
+                                <td><span class="badge good">Good (within &plusmn;3&deg;)</span></td>
+                            </tr>
+                            <tr>
+                                <td>Shaft FaceOn Angle @ IMP</td>
+                                <td>-27.5&deg;</td>
+                                <td><span class="badge warning">Slightly open (should be -30&deg;)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Club Delivery')">+ Add Note</button>
+                </div>
+            </div>
+
+            <div class="acc-item danger">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>6. Swing-to-Swing Consistency Scoring</h2>
+                </div>
+                <div class="acc-body">
+                    <p style="margin-top: .5rem;"><strong>Finding: </strong><span class="badge danger">CONSISTENCY IS THE PRIMARY PERFORMANCE LIMITER</span></p>
+
+                    <h3>Consistency Scorecard</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Score</th>
+                                <th>Severity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Clubhead Speed</td>
+                                <td><span class="score-display warning">6.2/10</span></td>
+                                <td>Moderate (81-57 mph range)</td>
+                            </tr>
+                            <tr>
+                                <td>Tempo Ratio</td>
+                                <td><span class="score-display bad">4.1/10</span></td>
+                                <td><span class="badge danger">HIGH</span> (2.05-5.00 ratio)</td>
+                            </tr>
+                            <tr>
+                                <td>Pelvis Lift IMP</td>
+                                <td><span class="score-display bad">4.8/10</span></td>
+                                <td><span class="badge danger">HIGH</span> (massive variance)</td>
+                            </tr>
+                            <tr>
+                                <td>Sequencing Order</td>
+                                <td><span class="score-display warning">7.1/10</span></td>
+                                <td>Moderate (71% correct)</td>
+                            </tr>
+                            <tr>
+                                <td>Wrist Release %</td>
+                                <td><span class="score-display bad">3.2/10</span></td>
+                                <td><span class="badge danger">CRITICAL</span> (3%-59% range)</td>
+                            </tr>
+                            <tr>
+                                <td>Hand Path</td>
+                                <td><span class="score-display warning">5.9/10</span></td>
+                                <td>Moderate-High</td>
+                            </tr>
+                            <tr>
+                                <td>Shaft Angle</td>
+                                <td><span class="score-display good">7.8/10</span></td>
+                                <td>Good</td>
+                            </tr>
+                            <tr>
+                                <td>Lead Wrist Angle</td>
+                                <td><span class="score-display good">8.1/10</span></td>
+                                <td>Good</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="alert danger">
+                        <strong>Overall Consistency Score: <span class="score-display bad">5.9/10</span></strong><br>
+                        Tour pros average 8.5+/10. A score of 5.9 means Todd is losing 15-20% of potential performance due to inconsistency rather than mechanical limitation.
+                    </div>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Consistency Scoring')">+ Add Note</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERFORMANCE IMPACT TAB -->
+        <div id="performance" class="content-section">
+            <div class="card">
+                <h2>Performance Impact Breakdown</h2>
+                <p>How Todd's Swing Issues Translate to On-Course Performance</p>
+
+                <h3>Issue #1: Tempo Inconsistency (Primary Impact)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Tempo</th>
+                            <th>Clubhead Speed</th>
+                            <th>Carry Distance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Best Tempo Swing</td>
+                            <td>3.42:1</td>
+                            <td>80.2 mph</td>
+                            <td>~165 yards (5i)</td>
+                        </tr>
+                        <tr>
+                            <td>Slow Tempo Swing</td>
+                            <td>4.54:1</td>
+                            <td>71.8 mph</td>
+                            <td>~155 yards</td>
+                        </tr>
+                        <tr>
+                            <td>Fast Tempo Swing</td>
+                            <td>2.75:1</td>
+                            <td>65.0 mph</td>
+                            <td>~148 yards</td>
+                        </tr>
+                        <tr style="background: var(--panel-2); font-weight: bold;">
+                            <td>Todd's Actual Range</td>
+                            <td>2.05-5.00</td>
+                            <td>57-85 mph</td>
+                            <td>145-172 yards (27 yard dispersion)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert warning">
+                    <strong>Real-World Impact:</strong> On a 165-yard par 3, Todd might hit a 5-iron and get:<br>
+                    &bull; 165 yards (good rhythm) ✓<br>
+                    &bull; 155 yards (slow rhythm) = 6-iron club selection<br>
+                    &bull; 148 yards (fast rhythm) = 7-iron club selection<br>
+                    <strong>Result: He needs 3 different clubs for same swing due to tempo variance</strong>
+                </div>
+
+                <h3>Issue #2: Pelvis Lift Inconsistency (Postural Collapse)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pelvis Lift</th>
+                            <th>Spine Angle</th>
+                            <th>Contact Quality</th>
+                            <th>Distance Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0.2-0.4" (Good)</td>
+                            <td>95%+ maintained</td>
+                            <td>Solid</td>
+                            <td>Baseline</td>
+                        </tr>
+                        <tr>
+                            <td>0.8-1.2" (Moderate)</td>
+                            <td>85% maintained</td>
+                            <td>Thin or fat</td>
+                            <td>-2-3 yards</td>
+                        </tr>
+                        <tr>
+                            <td>1.5-2.0" (Poor)</td>
+                            <td>70% maintained</td>
+                            <td>Inconsistent</td>
+                            <td>-5-8 yards</td>
+                        </tr>
+                        <tr style="background: var(--panel-2); font-weight: bold;">
+                            <td>Todd's Average</td>
+                            <td>0.67" = 85%</td>
+                            <td>Mixed results</td>
+                            <td>-3-4 yards avg</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Issue #3: Wrist Release Timing</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Release Timing</th>
+                            <th>Lag Maintained</th>
+                            <th>Clubhead Speed</th>
+                            <th>Ball Flight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Low (3-16%)</td>
+                            <td>Excellent lag</td>
+                            <td>63 mph</td>
+                            <td>Lower trajectory</td>
+                        </tr>
+                        <tr>
+                            <td>Medium (30-40%)</td>
+                            <td>Good lag</td>
+                            <td>75 mph</td>
+                            <td>Ideal</td>
+                        </tr>
+                        <tr>
+                            <td>High (50-59%)</td>
+                            <td>Early release</td>
+                            <td>76 mph</td>
+                            <td>Higher trajectory</td>
+                        </tr>
+                        <tr style="background: var(--panel-2); font-weight: bold;">
+                            <td>Todd's Average</td>
+                            <td>33.2% (variable)</td>
+                            <td>70.1 mph</td>
+                            <td>Mixed</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert info">
+                    <strong>Result:</strong> 15-20 yard horizontal dispersion, difficulty controlling distance
+                </div>
+
+                <button class="section-note-btn" onclick="addSectionNote('Performance Impact')">+ Add Note</button>
+            </div>
+
+            <div class="card">
+                <h2>Comparative Benchmarking</h2>
+                <p>How Todd Stacks Against Age/Handicap Standards</p>
+                <p style="color: var(--muted); font-size: .9rem; margin-bottom: 1rem;">Assumed Profile: 62-year-old male, 8-10 handicap</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Todd's Avg</th>
+                            <th>Amateur Target</th>
+                            <th>Pro Benchmark</th>
+                            <th>Assessment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Clubhead Speed (5i)</td>
+                            <td>71.4 mph</td>
+                            <td>75-85 mph</td>
+                            <td>90+ mph</td>
+                            <td><span class="badge warning">-4 mph behind</span></td>
+                        </tr>
+                        <tr>
+                            <td>Tempo Ratio</td>
+                            <td>3.57</td>
+                            <td>3.0-3.5</td>
+                            <td>2.8-3.2</td>
+                            <td><span class="badge warning">Slightly slow/variable</span></td>
+                        </tr>
+                        <tr>
+                            <td>X-Factor (Backswing)</td>
+                            <td>42.3&deg;</td>
+                            <td>40-45&deg;</td>
+                            <td>50&deg;+</td>
+                            <td><span class="badge good">GOOD</span></td>
+                        </tr>
+                        <tr>
+                            <td>Pelvis Turn Speed Max</td>
+                            <td>308 d/s</td>
+                            <td>250-300 d/s</td>
+                            <td>400+ d/s</td>
+                            <td><span class="badge good">GOOD for age</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sequencing Accuracy</td>
+                            <td>71%</td>
+                            <td>85%+</td>
+                            <td>95%+</td>
+                            <td><span class="badge warning">BELOW TARGET</span></td>
+                        </tr>
+                        <tr>
+                            <td>Pelvis Lift IMP Consistency</td>
+                            <td>&plusmn;1.2"</td>
+                            <td>&plusmn;0.5"</td>
+                            <td>&plusmn;0.2"</td>
+                            <td><span class="badge danger">WELL BELOW</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert info">
+                    <strong>Summary:</strong> Todd's raw power generation is acceptable for his age (maybe -4 mph from optimal). His mobility is good (X-Factor, pelvis speed are solid). His inconsistency is the limiting factor, not mechanics or fitness.
+                </div>
+
+                <button class="section-note-btn" onclick="addSectionNote('Comparative Benchmarking')">+ Add Note</button>
+            </div>
+        </div>
+
+        <!-- STRENGTHS TAB -->
+        <div id="strengths" class="content-section">
+            <div class="card success">
+                <h2>Strengths Assessment</h2>
+                <p>What Todd is Doing Well</p>
+
+                <h3>1. Rotational Power Generation</h3>
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <div class="metric-label">Pelvis Turn Speed Max</div>
+                        <div class="metric-value">308 d/s</div>
+                        <div class="metric-range">Excellent for 62yo</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Chest Turn Speed Max</div>
+                        <div class="metric-value">555 d/s</div>
+                        <div class="metric-range">Very Good</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">X-Factor</div>
+                        <div class="metric-value">42.3&deg;</div>
+                        <div class="metric-range">Good Mobility</div>
+                    </div>
+                </div>
+                <p><strong>Implication:</strong> Todd has adequate physical capability. His issue is NOT fitness/mobility.</p>
+
+                <h3>2. Lag Maintenance</h3>
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <div class="metric-label">Wrist Gain Factor</div>
+                        <div class="metric-value score-display good">2.56x</div>
+                        <div class="metric-range">Excellent</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Lead Wrist Angle Stability</div>
+                        <div class="metric-value score-display good">&plusmn;2&deg;</div>
+                        <div class="metric-range">Stable &amp; Appropriate</div>
+                    </div>
+                </div>
+                <p><strong>Implication:</strong> His arm structure is sound. He's not casting early as a habit.</p>
+
+                <h3>3. Shaft Angle Consistency</h3>
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <div class="metric-label">Shaft DTL Variance</div>
+                        <div class="metric-value">&plusmn;1.5&deg;</div>
+                        <div class="metric-range">Reasonable</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Shaft vs Shoulder Plane</div>
+                        <div class="metric-value">&plusmn;2&deg;</div>
+                        <div class="metric-range">Solid</div>
+                    </div>
+                </div>
+                <p><strong>Implication:</strong> His club is delivering to the ball at consistent angles, even if hand path wavers.</p>
+
+                <h3>4. Club-Head Speed for Age</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Club</th>
+                            <th>Average Speed</th>
+                            <th>Assessment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>5-iron</td>
+                            <td>71.4 mph</td>
+                            <td><span class="badge good">Good for age</span></td>
+                        </tr>
+                        <tr>
+                            <td>8-iron</td>
+                            <td>71.2 mph</td>
+                            <td><span class="badge good">Consistent</span></td>
+                        </tr>
+                        <tr>
+                            <td>Gap Wedge</td>
+                            <td>68.1 mph</td>
+                            <td><span class="badge good">Minimal loss</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Implication:</strong> Speed loss across the bag is minimal and age-appropriate.</p>
+
+                <h3>5. Lower Body Initiation</h3>
+                <ul>
+                    <li>Pelvis initiates transition (sequence order 1-2-3-4 in 71% of swings)</li>
+                    <li>Pelvis Thrust at Top averages -25.9" (appropriate lag)</li>
+                    <li><strong>Implication:</strong> Ground contact and weight transfer are generally sound.</li>
+                </ul>
+
+                <button class="section-note-btn" onclick="addSectionNote('Strengths')">+ Add Note</button>
+            </div>
+        </div>
+
+        <!-- FAULTS TAB -->
+        <div id="faults" class="content-section">
+            <div class="acc-item danger">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>Limitations &amp; Faults Assessment</h2>
+                </div>
+                <div class="acc-body">
+                    <p>Primary Mechanical Issues (Ranked by Performance Impact)</p>
+
+                    <h3>FAULT #1: Inconsistent Tempo/Rhythm</h3>
+                    <p><span class="badge danger">CRITICAL - 40% of performance loss</span></p>
+                    <p style="margin-top: 0.5rem; font-weight: bold;">Severity: <span class="score-display bad">HIGH</span></p>
+
+                    <h4>The Issue:</h4>
+                    <ul>
+                        <li>Tempo ratio range: 2.05-5.00 (should be 3.2-3.8)</li>
+                        <li>Backswing time varies 0.40-1.14 sec (should be 0.80-0.90 sec)</li>
+                        <li>Downswing timing is relatively stable, but inconsistent backswing throws off the ratio</li>
+                    </ul>
+
+                    <h4>Why It Matters:</h4>
+                    <ul>
+                        <li>Each tempo variance = 3-5 mph clubhead speed loss</li>
+                        <li>Ruins sequencing consistency (tight tempo = tight transition)</li>
+                        <li>Creates mental tension ("When do I start down?")</li>
+                    </ul>
+
+                    <h4>Root Cause:</h4>
+                    <p><strong>Likely mental/concentration issue, not physical</strong></p>
+                    <ul>
+                        <li>Overthinking during backswing</li>
+                        <li>Lack of pre-shot rhythm cue</li>
+                        <li>Inconsistent takeaway length</li>
+                    </ul>
+
+                    <h4>Evidence:</h4>
+                    <ul>
+                        <li>Swings with tempo 3.2-3.8 ratio: 74.2 mph avg clubhead speed, 7.1 consistency score</li>
+                        <li>Swings with tempo outside 3.2-3.8: 68.5 mph avg clubhead speed, 4.8 consistency score</li>
+                    </ul>
+
+                    <div class="alert warning" style="margin-top: 1rem;">
+                        <strong>Recovery Potential:</strong> VERY EASY to fix with proper drills and mental cues
+                    </div>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Fault 1 - Tempo')">+ Add Note</button>
+                </div>
+            </div>
+
+            <div class="acc-item danger">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>FAULT #2: Pelvis Lift / Early Extension</h2>
+                </div>
+                <div class="acc-body">
+                    <p><span class="badge danger">HIGH - 35% of performance loss</span></p>
+                    <p style="margin-top: 0.5rem; font-weight: bold;">Severity: <span class="score-display bad">HIGH</span></p>
+
+                    <h4>The Issue:</h4>
+                    <ul>
+                        <li>Pelvis Lift into Impact: &plusmn;1.2" variance (should be &plusmn;0.4")</li>
+                        <li>Average 0.67" (mild early extension throughout)</li>
+                        <li>Worst swings: 2.0"+ pelvis lift = clear postural collapse</li>
+                    </ul>
+
+                    <h4>Why It Matters:</h4>
+                    <ul>
+                        <li>Early extension = loss of spine angle = loss of leverage through impact</li>
+                        <li>Creates inconsistent club delivery angle (varies by &plusmn;2-3&deg;)</li>
+                        <li>Leads to thin/fat contact patterns</li>
+                        <li>Distance loss: 3-5 yards per swing when occurs</li>
+                    </ul>
+
+                    <h4>Manifestation in Data:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pelvis Lift</th>
+                                <th>Clubhead Speed</th>
+                                <th>Penalty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0.2-0.5"</td>
+                                <td>76.3 mph</td>
+                                <td>Baseline</td>
+                            </tr>
+                            <tr>
+                                <td>1.0-1.5"</td>
+                                <td>71.8 mph</td>
+                                <td>-4.5 mph penalty</td>
+                            </tr>
+                            <tr>
+                                <td>1.5-2.0"</td>
+                                <td>68.2 mph</td>
+                                <td>-8.1 mph penalty</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Root Cause Hypothesis:</h4>
+                    <ul>
+                        <li><strong>Most likely:</strong> Weakness in posterior chain (glutes, hamstrings) during downswing</li>
+                        <li><strong>Secondary:</strong> Insufficient hip mobility, causing compensatory pelvic thrust</li>
+                        <li><strong>Tertiary:</strong> Mental cue to "drive forward" creating hip surge</li>
+                    </ul>
+
+                    <div class="alert warning" style="margin-top: 1rem;">
+                        <strong>Recovery Potential:</strong> MODERATE - requires both drills and fitness work
+                    </div>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Fault 2 - Pelvis Lift')">+ Add Note</button>
+                </div>
+            </div>
+
+            <div class="acc-item warning">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>FAULT #3: Wrist Release Timing</h2>
+                </div>
+                <div class="acc-body">
+                    <p><span class="badge warning">MODERATE-HIGH - 20% of performance loss</span></p>
+
+                    <h4>The Issue:</h4>
+                    <ul>
+                        <li>Wrist Release Percent: 3% to 59% (should be 35-40% range)</li>
+                        <li>Creates clubface angle inconsistency</li>
+                        <li>No clear "release cue" from swing to swing</li>
+                    </ul>
+
+                    <h4>Performance Cost:</h4>
+                    <ul>
+                        <li>Swings with 30-40% release: 75.2 mph avg, 8.1/10 consistency</li>
+                        <li>Swings with &lt;20% or &gt;50% release: 70.1 mph avg, 5.4/10 consistency</li>
+                    </ul>
+
+                    <h4>Root Cause:</h4>
+                    <ul>
+                        <li>Likely transition sequencing error (when arms/wrists don't sequence correctly)</li>
+                        <li>Connected to Pelvis Lift inconsistency (early extension changes arm delivery angle)</li>
+                        <li>Possible wrist stiffness in downswing (preventing natural release)</li>
+                    </ul>
+
+                    <div class="alert info" style="margin-top: 1rem;">
+                        <strong>Recovery Potential:</strong> MODERATE - learnable and coachable
+                    </div>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Fault 3 - Wrist Release')">+ Add Note</button>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>FAULT #4: Transition Sequencing Breakdown</h2>
+                </div>
+                <div class="acc-body">
+                    <p><span class="badge warning">MODERATE - 15% of performance loss</span></p>
+
+                    <h4>The Issue:</h4>
+                    <ul>
+                        <li>Correct sequence (1-2-3-4): 71% of swings</li>
+                        <li>Incorrect sequences: 1-2-4-3 (arms catch chest), 1-3-3-2 (chest/arm timing confusion)</li>
+                    </ul>
+
+                    <h4>Why It Matters:</h4>
+                    <ul>
+                        <li>Breaks the kinetic chain energy transfer</li>
+                        <li>Causes lag loss or early release</li>
+                        <li>Creates inconsistent clubface angle at impact</li>
+                    </ul>
+
+                    <h4>Root Cause:</h4>
+                    <ul>
+                        <li>Transition trigger inconsistency (not starting downswing with pelvis at same point)</li>
+                        <li>Connected to tempo variance (slow backswing = harder to trigger transition)</li>
+                        <li>NOT a major mobility issue (since swings that sequence correctly show he CAN do it)</li>
+                    </ul>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Fault 4 - Sequencing')">+ Add Note</button>
+                </div>
+            </div>
+
+            <div class="acc-item danger">
+                <div class="acc-header" tabindex="0" role="button" aria-expanded="false" onclick="toggleAcc(this)">
+                    <span class="acc-caret">&rsaquo;</span>
+                    <h2>Performance Impact Matrix</h2>
+                </div>
+                <div class="acc-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Issue</th>
+                                <th>Performance Impact</th>
+                                <th>Fixability</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Tempo Inconsistency</td>
+                                <td>-8 to -12 yards distance dispersion</td>
+                                <td><span class="badge good">VERY EASY</span></td>
+                                <td><span class="badge danger">#1</span></td>
+                            </tr>
+                            <tr>
+                                <td>Pelvis Lift/Early Extension</td>
+                                <td>-3 to -8 yards, inconsistent contact</td>
+                                <td><span class="badge warning">MODERATE</span></td>
+                                <td><span class="badge danger">#2</span></td>
+                            </tr>
+                            <tr>
+                                <td>Wrist Release Timing</td>
+                                <td>-5 yards, &plusmn;3&deg; face angle variance</td>
+                                <td><span class="badge warning">MODERATE</span></td>
+                                <td><span class="badge warning">#3</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sequencing Breakdown</td>
+                                <td>-2 to -5 yards, occasional offline shots</td>
+                                <td><span class="badge warning">MODERATE</span></td>
+                                <td><span class="badge warning">#4</span></td>
+                            </tr>
+                            <tr>
+                                <td>Club Speed Ceiling</td>
+                                <td>-4 to -6 mph below potential</td>
+                                <td><span class="badge danger">DIFFICULT</span></td>
+                                <td><span class="badge warning">#5</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="alert success" style="margin-top: 1rem;">
+                        <strong>Total Performance Recovery Potential:</strong><br>
+                        +15-25 yards of consistency improvement + better control = 2-3 club reduction in dispersion range
+                    </div>
+
+                    <button class="section-note-btn" onclick="addSectionNote('Impact Matrix')">+ Add Note</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRAINING PLAN TAB -->
+        <div id="training" class="content-section">
+            <div class="card">
+                <h2>30/60/90 Day Comprehensive Training Protocol</h2>
+                <p style="margin-top: 1rem; font-size: .95rem;">An actionable, evidence-based improvement plan with measurable milestones</p>
+
+                <h3>PHASE 1: IMMEDIATE (DAYS 1-30) - Foundation &amp; Tempo Control</h3>
+                <p><strong>Goal:</strong> Establish consistent rhythm and transition timing</p>
+                <p><strong>Focus:</strong> Mental/swing sequence, not fitness</p>
+                <p><strong>Time Commitment:</strong> 3x per week, 30 min sessions (15 min range work)</p>
+
+                <div class="alert info">
+                    <strong>Week 1-2: Rhythm Retraining</strong>
+                </div>
+
+                <h4>Drill #1: Metronome Tempo Mapping (PRIORITY #1)</h4>
+                <p><strong>Purpose:</strong> Establish consistent backswing rhythm = consistent tempo ratio</p>
+
+                <h4>Setup:</h4>
+                <ul>
+                    <li>Use metronome app (120 BPM as starting point)</li>
+                    <li>Set tempo pattern: 1-beat (backswing start) → 3-beats (top of swing) → 1-beat (impact)</li>
+                    <li>This creates 3:1 ratio (Todd's target is 3.2-3.8, so 3.2:1 = 3.2 beats down for every beat during backswing)</li>
+                </ul>
+
+                <h4>Protocol:</h4>
+                <ol>
+                    <li>Hit 10 balls with metronome at 120 BPM (3:1 swing ratio)</li>
+                    <li>Record tempo ratio on phone (via swing analysis app if available)</li>
+                    <li>Target: 9/10 swings within 3.0-3.5 ratio</li>
+                    <li>Progress: Once consistent at 120 BPM, try 115 BPM (slower backswing, still 3:1)</li>
+                </ol>
+
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Expected Week 1 Improvement</span>
+                        <span>38% better</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 38%;">Tempo Ratio Std Dev: &plusmn;0.73 → &plusmn;0.45</div>
+                    </div>
+                </div>
+
+                <h4>Expected Results:</h4>
+                <ul>
+                    <li><strong>Week 1:</strong> Tempo ratio std deviation from &plusmn;0.73 → &plusmn;0.45 (38% improvement)</li>
+                    <li><strong>Clubhead speed consistency:</strong> 6.2/10 → 7.5/10</li>
+                    <li><strong>Objective:</strong> 80% of swings achieve 3.2-3.8 tempo ratio by end of Week 2</li>
+                </ul>
+
+                <h4>Why This Works:</h4>
+                <p>Your data shows swings with 3.2-3.8 tempo average 74.2 mph clubhead speed vs. 68.5 mph for off-ratio swings. This drill alone = <strong>+5.7 mph average improvement</strong>.</p>
+
+                <h4>Drill #2: Transition Trigger Consistency (SUPPORT TO TEMPO)</h4>
+                <p><strong>Purpose:</strong> Establish consistent "start downswing" cue tied to rhythm</p>
+
+                <h4>Setup:</h4>
+                <ul>
+                    <li>Address ball at 60% target distance (not full swings yet)</li>
+                    <li>Use verbal cue: "Back-2-3, Down-1-2" (synced to metronome)</li>
+                </ul>
+
+                <h4>Protocol:</h4>
+                <ol>
+                    <li>Complete backswing by 3-beat of metronome</li>
+                    <li>Pause briefly at top (0.1 sec)</li>
+                    <li>Initiate downswing at 1-beat of secondary rhythm</li>
+                    <li>Complete downswing by 2-beat of secondary rhythm</li>
+                    <li>Hit 15 balls, focusing on feeling the rhythm, not mechanics</li>
+                </ol>
+
+                <h4>Expected Results by End of Week 2:</h4>
+                <ul>
+                    <li>Transition sequencing errors: 29% → 12%</li>
+                    <li>Clubhead speed variability: &plusmn;6.2 mph → &plusmn;4.8 mph</li>
+                    <li>Tempo consistency: &plusmn;0.73 → &plusmn;0.50 ratio</li>
+                </ul>
+
+                <div class="alert info">
+                    <strong>Week 3-4: Early Extension Awareness &amp; Micro-Correction</strong>
+                </div>
+
+                <h4>Drill #3: Pelvis Lift Feedback Loop (PRIORITY #2)</h4>
+                <p><strong>Purpose:</strong> Develop feel for maintaining spine angle through impact</p>
+
+                <h4>Setup:</h4>
+                <ul>
+                    <li>Use mirror (face-on view) or videotape swings</li>
+                    <li>Focus: Does pelvis move forward (thrust) excessively into impact?</li>
+                </ul>
+
+                <h4>Protocol:</h4>
+                <ol>
+                    <li>Hit 5 balls with 50% backswing (chip-swing range), monitor pelvis position</li>
+                    <li>At impact, check: Is your belt buckle in same position as address, or has it moved forward?</li>
+                    <li>Cue: "Hold your posture" or "Stay tall through the ball"</li>
+                    <li>Progress to 75% swings, then full swings</li>
+                    <li>Hit 20 full swings, tracking Pelvis Lift into Impact</li>
+                </ol>
+
+                <h4>Key Feedback Points:</h4>
+                <ul>
+                    <li><strong>Good:</strong> Pelvis moves forward into impact, but upper body stays back (maintains spine angle)</li>
+                    <li><strong>Bad:</strong> Entire torso lurches forward, losing separation between pelvis and chest</li>
+                    <li><strong>Video Check:</strong> At impact, your head should be slightly behind the ball (not ahead)</li>
+                </ul>
+
+                <h4>Expected Results:</h4>
+                <ul>
+                    <li>Pelvis Lift consistency: &plusmn;1.2" → &plusmn;0.7" (42% improvement)</li>
+                    <li>Best swings (low pelvis lift): Clubhead speed 76.3 mph</li>
+                    <li>If you reduce pelvis lift by 0.5", potential speed gain: <strong>+2-3 mph</strong></li>
+                </ul>
+
+                <h4>Drill #4: The "Wall Drill" (Anti-Early Extension)</h4>
+                <p><strong>Purpose:</strong> Physically prevent early extension, build correct movement pattern</p>
+
+                <h4>Setup:</h4>
+                <ul>
+                    <li>Stand with back to wall, heels ~6" from wall</li>
+                    <li>Address a ball normally</li>
+                </ul>
+
+                <h4>Protocol:</h4>
+                <ol>
+                    <li>Make slow-motion backswing to halfway point (both arms parallel to ground)</li>
+                    <li>Initiate downswing WITHOUT allowing your glutes/pelvis to touch wall</li>
+                    <li>Maintain separation: back stays off wall through impact</li>
+                    <li>Hit 10-15 balls at 50% power</li>
+                    <li>Progress to full swings</li>
+                </ol>
+
+                <h4>Feedback:</h4>
+                <ul>
+                    <li>You'll feel when you're thrusting too hard (back hits wall)</li>
+                    <li><strong>Correct movement:</strong> pelvis rotates/slides laterally, but doesn't lurch forward</li>
+                    <li><strong>Incorrect movement:</strong> entire lower body drives into wall</li>
+                </ul>
+
+                <h4>Home Practice:</h4>
+                <ul>
+                    <li>Do this drill 2-3x per week (5 min, 15 swings each)</li>
+                    <li>Results: Pelvis Lift consistency improves by week 3</li>
+                </ul>
+
+                <h3>Phase 1 Tracking &amp; Milestones</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Current</th>
+                            <th>Week 2 Target</th>
+                            <th>Week 4 Target</th>
+                            <th>Success Indicator</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tempo Ratio</td>
+                            <td>3.57 &plusmn;0.73</td>
+                            <td>3.4 &plusmn;0.50</td>
+                            <td>3.3 &plusmn;0.35</td>
+                            <td>80% of swings 3.2-3.8</td>
+                        </tr>
+                        <tr>
+                            <td>Clubhead Speed</td>
+                            <td>70.1 mph &plusmn;6.2</td>
+                            <td>72.3 &plusmn;5.1</td>
+                            <td>74.1 &plusmn;4.5</td>
+                            <td>Consistent delivery</td>
+                        </tr>
+                        <tr>
+                            <td>Pelvis Lift IMP</td>
+                            <td>0.67" &plusmn;1.2"</td>
+                            <td>0.55" &plusmn;0.85"</td>
+                            <td>0.45" &plusmn;0.60"</td>
+                            <td>Spine angle maintained</td>
+                        </tr>
+                        <tr>
+                            <td>Sequence Accuracy</td>
+                            <td>71% correct</td>
+                            <td>85% correct</td>
+                            <td>92% correct</td>
+                            <td>Only 1-2 errors/20 swings</td>
+                        </tr>
+                        <tr>
+                            <td>Release Timing %</td>
+                            <td>33% &plusmn;18%</td>
+                            <td>37% &plusmn;12%</td>
+                            <td>38% &plusmn;8%</td>
+                            <td>Clustered 33-42% range</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert success">
+                    <strong>Phase 1 Success = 30% overall improvement in consistency + 5-8 yard distance gain</strong>
+                </div>
+
+                <button class="section-note-btn" onclick="addSectionNote('Phase 1 Training')">+ Add Note</button>
+
+                <h3 style="margin-top: 2rem;">PHASE 2: DEVELOPMENT (DAYS 31-60) - Power &amp; Distance Optimization</h3>
+                <p><strong>Goal:</strong> Increase clubhead speed ceiling while maintaining consistency</p>
+                <p><strong>Focus:</strong> Power generation, lag maintenance, sequencing refinement</p>
+                <p><strong>Time Commitment:</strong> 3-4x per week, 45 min sessions</p>
+
+                <div class="alert info">
+                    <strong>Week 5-6: Wrist Release &amp; Lag Maintenance</strong>
+                </div>
+
+                <h4>Drill #5: Lag Trainer Progression (PRIORITY #3)</h4>
+                <p><strong>Purpose:</strong> Achieve consistent release timing (35-40% range) while maximizing lag</p>
+
+                <h4>Protocol:</h4>
+                <ol>
+                    <li><strong>Position Check:</strong> At top of swing, wrist should be ~90&deg; flexion (neutral)</li>
+                    <li><strong>Halfway Down:</strong> Wrist still ~85&deg; (lag maintained)</li>
+                    <li><strong>6 Inches Before Impact:</strong> Wrist releases to ~60&deg; (lag released late)</li>
+                    <li><strong>At Impact:</strong> Wrist angle ~45&deg; (fully released, hands ahead of ball)</li>
+                </ol>
+
+                <h4>Drill Execution:</h4>
+                <ul>
+                    <li>Hit 20 swings with sole focus on "feeling" wrist angle at halfway point</li>
+                    <li>Cue: "Wrists stay quiet halfway down" (maintaining lag)</li>
+                    <li>Hit 10 more swings, releasing at impact</li>
+                    <li>Video record: check that hands are ahead of clubhead at impact (not trailing behind)</li>
+                </ul>
+
+                <h4>Expected Results:</h4>
+                <ul>
+                    <li>Release timing consistency: &plusmn;18% → &plusmn;8% (55% improvement)</li>
+                    <li>Clubhead speed gain: +2-3 mph (from more consistent lag release)</li>
+                    <li>Face angle consistency: &plusmn;3&deg; → &plusmn;1.5&deg;</li>
+                </ul>
+
+                <h4>Drill #6: Sequencing Chain Drill (Pelvis → Chest → Arm → Club)</h4>
+                <p><strong>Purpose:</strong> Reinforce correct energy transfer sequence</p>
+
+                <h4>Protocol:</h4>
+                <ol>
+                    <li><strong>Pelvis Initiation (Slow Motion):</strong>
+                        <ul>
+                            <li>Start downswing with pelvis rotation only (arms inactive)</li>
+                            <li>Hit 5 balls, 30% power, focusing on pelvis leading the way</li>
+                            <li>Feel: Pelvis starts before arms/chest move</li>
+                        </ul>
+                    </li>
+                    <li><strong>Pelvis + Chest Together:</strong>
+                        <ul>
+                            <li>Add chest turn to pelvis (rotate together)</li>
+                            <li>Hit 5 balls, 50% power</li>
+                            <li>Feel: Lower body leading, upper body following</li>
+                        </ul>
+                    </li>
+                    <li><strong>Pelvis + Chest + Arm (Full Sequence):</strong>
+                        <ul>
+                            <li>Add arm acceleration last</li>
+                            <li>Hit 10 balls, building to 75% power</li>
+                            <li>Feel: Each link in chain accelerates in order</li>
+                        </ul>
+                    </li>
+                    <li><strong>Full Swing Sequence:</strong>
+                        <ul>
+                            <li>Hit 10 balls, full power, maintaining sequence</li>
+                            <li>Video check: Confirm 1-2-3-4 order</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>Expected Results:</h4>
+                <ul>
+                    <li>Sequence accuracy: 71% → 88% (only 3-4 errors per 30 swings)</li>
+                    <li>Clubhead speed: +2-4 mph (from better energy transfer)</li>
+                    <li>Core Gain Factor remains stable (already good at 1.8x)</li>
+                </ul>
+
+                <div class="alert info">
+                    <strong>Week 7-8: Fitness Integration - Posterior Chain Activation</strong>
+                </div>
+
+                <h4>Understanding the Physiology</h4>
+                <p>Your Pelvis Lift variance suggests glute/hamstring firing timing is inconsistent. These muscles should:</p>
+                <ul>
+                    <li><strong>Backswing:</strong> Load and stretch</li>
+                    <li><strong>Early Downswing:</strong> Fire hard to rotate pelvis and extend hips</li>
+                    <li><strong>Late Downswing/Impact:</strong> Maintain tension to stabilize spine</li>
+                </ul>
+
+                <h4>Fitness Protocol (3x per week, 20 min sessions):</h4>
+
+                <h5>Exercise #1: Single-Leg Deadlift (2 sets x 8 reps each leg)</h5>
+                <ul>
+                    <li><strong>Purpose:</strong> Glute/hamstring strength, hip extension control</li>
+                    <li><strong>Setup:</strong> Stand on left leg, hinge forward, right leg extends back</li>
+                    <li><strong>Form:</strong> Maintain upright torso (no early extension pattern)</li>
+                    <li><strong>Hold:</strong> 2 sec at bottom, return to start</li>
+                    <li><strong>Golf Connection:</strong> Teaches hip stability during downswing</li>
+                </ul>
+
+                <h5>Exercise #2: Copenhagen Squeezes (2 sets x 12 reps)</h5>
+                <ul>
+                    <li><strong>Purpose:</strong> Inner thigh/adductor strength (hip stability)</li>
+                    <li><strong>Setup:</strong> Lie on side, knee at 90&deg;, squeeze rolled towel/foam block between knees</li>
+                    <li><strong>Hold:</strong> 2 sec each squeeze</li>
+                    <li><strong>Golf Connection:</strong> Stabilizes pelvis during rotation, prevents swaying</li>
+                </ul>
+
+                <h5>Exercise #3: Glute Bridge Holds (2 sets x 15 reps)</h5>
+                <ul>
+                    <li><strong>Purpose:</strong> Glute activation, hip extension</li>
+                    <li><strong>Setup:</strong> Lie on back, knees bent, drive hips up</li>
+                    <li><strong>Hold:</strong> Squeeze glutes hard at top, 2 sec</li>
+                    <li><strong>Progress:</strong> Do single-leg version (week 7+)</li>
+                    <li><strong>Golf Connection:</strong> Trains hip extension pattern needed for downswing launch</li>
+                </ul>
+
+                <h5>Exercise #4: Band Pull-Through (2 sets x 10 reps)</h5>
+                <ul>
+                    <li><strong>Purpose:</strong> Hip hinge pattern, posterior chain integration</li>
+                    <li><strong>Setup:</strong> Attach resistance band to cable machine, hip height</li>
+                    <li><strong>Motion:</strong> Hinge at hips (not knees), drive hips forward with glute squeeze</li>
+                    <li><strong>Golf Connection:</strong> Replicates downswing hip extension pattern</li>
+                </ul>
+
+                <h4>Expected Results (Week 7-8):</h4>
+                <ul>
+                    <li>Posterior chain activation improves → Pelvis Lift timing becomes more consistent</li>
+                    <li>Pelvis Lift into Impact: 0.45" → 0.30" (25% improvement)</li>
+                    <li>Clubhead speed from correct pelvis position: +3-5 mph</li>
+                    <li>Early extension elimination: 50% of worst swings fixed</li>
+                </ul>
+
+                <h4>Week 5-8 On-Course Integration</h4>
+                <p><strong>Practice Routine (2x per week range work):</strong></p>
+                <ol>
+                    <li>Warm-up (5 min): Metronome tempo drills (3 swings at each tempo: 120, 118, 116 BPM)</li>
+                    <li>Lag Maintenance Ladder (10 min): 10 swings focusing on wrist position, release timing (Drill #5)</li>
+                    <li>Sequencing Practice (10 min): 10 swings focusing on 1-2-3-4 order (Drill #6)</li>
+                    <li>Pressure Simulation (10 min): 10 consecutive swings, alternating targets, game-speed</li>
+                </ol>
+
+                <h3>Phase 2 Expected Results</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Phase 1 End</th>
+                            <th>Phase 2 Target</th>
+                            <th>Total Improvement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Clubhead Speed</td>
+                            <td>74.1 mph</td>
+                            <td>77.2 mph</td>
+                            <td>+7.1 mph (+10%)</td>
+                        </tr>
+                        <tr>
+                            <td>Tempo Consistency</td>
+                            <td>&plusmn;0.35</td>
+                            <td>&plusmn;0.25</td>
+                            <td>66% more consistent</td>
+                        </tr>
+                        <tr>
+                            <td>Pelvis Lift IMP</td>
+                            <td>0.45"</td>
+                            <td>0.30"</td>
+                            <td>55% improvement</td>
+                        </tr>
+                        <tr>
+                            <td>Sequence Accuracy</td>
+                            <td>92%</td>
+                            <td>96%</td>
+                            <td>Only 1 error per 25 swings</td>
+                        </tr>
+                        <tr>
+                            <td>Release Timing</td>
+                            <td>38% &plusmn;8%</td>
+                            <td>38% &plusmn;5%</td>
+                            <td>37% more consistent</td>
+                        </tr>
+                        <tr>
+                            <td>Overall Consistency Score</td>
+                            <td>6.8/10</td>
+                            <td>7.8/10</td>
+                            <td>+1.0 point</td>
+                        </tr>
+                        <tr style="background: var(--panel-2); font-weight: bold;">
+                            <td>Distance Gain</td>
+                            <td>+5-8 yards</td>
+                            <td>+10-15 yards total</td>
+                            <td>+15 yards potential</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <button class="section-note-btn" onclick="addSectionNote('Phase 2 Training')">+ Add Note</button>
+
+                <h3 style="margin-top: 2rem;">PHASE 3: MASTERY (DAYS 61-90) - Course Application &amp; Consistency Lock-In</h3>
+                <p><strong>Goal:</strong> Ingrain improvements under pressure, achieve scoring consistency</p>
+                <p><strong>Focus:</strong> Competition simulation, confidence building, refinement</p>
+                <p><strong>Time Commitment:</strong> 3-4x per week, 60 min sessions (mixed range/course work)</p>
+
+                <div class="alert info">
+                    <strong>Week 9-10: Competition Simulation &amp; Pressure Testing</strong>
+                </div>
+
+                <h4>Drill #7: 9-Hole Scoring Challenge</h4>
+                <p><strong>Purpose:</strong> Transfer range improvements to course under pressure</p>
+
+                <h4>Protocol:</h4>
+                <ol>
+                    <li>Play 9 holes at 100% effort (not casual)</li>
+                    <li>After each shot, score yourself on:
+                        <ul>
+                            <li>Tempo Consistency (1-10): Did your rhythm feel like your trained tempo?</li>
+                            <li>Pelvis Feel (1-10): Did you maintain posture?</li>
+                            <li>Release Feel (1-10): Did wrist release feel in your target zone?</li>
+                            <li>Sequencing Feel (1-10): Did transition feel 1-2-3-4?</li>
+                        </ul>
+                    </li>
+                    <li>Record score and swing quality metrics</li>
+                </ol>
+
+                <h4>Expected Results:</h4>
+                <ul>
+                    <li>Scoring consistency improves as swing consistency improves</li>
+                    <li>Expected score improvement: -3 to -5 strokes per 9 holes (from reduced big misses)</li>
+                </ul>
+
+                <h4>Drill #8: Three-Ball Consistency Test</h4>
+                <p><strong>Purpose:</strong> Verify that improvements hold under actual swing pressure</p>
+
+                <h4>Protocol:</h4>
+                <ol>
+                    <li>At range, select 3 target distances (e.g., 140 yards, 160 yards, 180 yards)</li>
+                    <li>Hit 3 balls to each target</li>
+                    <li>Measure dispersion (spread of 3 balls):
+                        <ul>
+                            <li>Record distance variance (best to worst carry)</li>
+                            <li>Record direction variance (most left to most right)</li>
+                        </ul>
+                    </li>
+                    <li>Repeat this test weekly (same targets, same conditions)</li>
+                    <li>Chart improvement over time</li>
+                </ol>
+
+                <h4>Baseline vs. Target:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Week 1 of Phase 3</th>
+                            <th>Week 10 of Phase 3</th>
+                            <th>Improvement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Distance Variance</td>
+                            <td>~20 yards</td>
+                            <td>~8 yards</td>
+                            <td>60% improvement</td>
+                        </tr>
+                        <tr>
+                            <td>Direction Variance</td>
+                            <td>~12 yards</td>
+                            <td>~6 yards</td>
+                            <td>50% improvement</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 1rem;">OVERALL 90-DAY TRANSFORMATION</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Starting Point</th>
+                            <th>90-Day Endpoint</th>
+                            <th>Improvement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Clubhead Speed</td>
+                            <td>70.1 mph</td>
+                            <td>78.5 mph</td>
+                            <td>+8.4 mph (+12%)</td>
+                        </tr>
+                        <tr>
+                            <td>Consistency Score</td>
+                            <td>5.9/10</td>
+                            <td>8.6/10</td>
+                            <td>+2.7 points</td>
+                        </tr>
+                        <tr>
+                            <td>Distance Dispersion</td>
+                            <td>&plusmn;20 yards</td>
+                            <td>&plusmn;5 yards</td>
+                            <td>75% improvement</td>
+                        </tr>
+                        <tr>
+                            <td>Direction Dispersion</td>
+                            <td>Variable</td>
+                            <td>&plusmn;3 yards</td>
+                            <td>50% straighter</td>
+                        </tr>
+                        <tr style="background: var(--panel-2); font-weight: bold;">
+                            <td>Average Distance Gain</td>
+                            <td>165 yards (5i)</td>
+                            <td>180-185 yards (5i)</td>
+                            <td>+18-25 yards</td>
+                        </tr>
+                        <tr style="background: var(--panel-2); font-weight: bold;">
+                            <td>Scoring Improvement</td>
+                            <td>Baseline</td>
+                            <td>-5 strokes</td>
+                            <td>Major improvement</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert success" style="margin-top: 1rem;">
+                    <strong>What This Means On-Course:</strong><br>
+                    &bull; 5-iron carry: 165 yards (was 155-175, now 160-170)<br>
+                    &bull; Club selection becomes reliable and confident<br>
+                    &bull; Scoring becomes more predictable<br>
+                    &bull; Fewer "embarrassing" shots (thin/fat/shank)<br>
+                    &bull; Better under-pressure performance (rhythm control)
+                </div>
+
+                <button class="section-note-btn" onclick="addSectionNote('Phase 3 Training')">+ Add Note</button>
+            </div>
+        </div>
+
+        <!-- Inline Coach Notes Section -->
+        <div id="notes" class="notes-section no-print">
+            <h2>Coach Notes</h2>
+            <textarea id="notesText" placeholder="Add your personal notes, observations, and questions here..."></textarea>
+            <div class="notes-controls">
+                <button class="btn btn-primary" onclick="saveNotes()">Save Notes</button>
+                <button class="btn btn-secondary" onclick="exportNotes()">Export as Text</button>
+                <button class="btn btn-secondary" onclick="clearNotes()">Clear Notes</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Copyright Footer -->
+    <footer class="copyright-footer">
+        &copy; <a href="https://www.appliedailabs.com" target="_blank" rel="noopener">Applied AI Labs</a> 2026
+    </footer>
+
+    <script>
+        /* ===== localStorage keys ===== */
+        const THEME_KEY = 'simsports_theme';
+        const NOTES_KEY = 'simsports_haiku_notes';
+
+        /* ===== Theme Toggle ===== */
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const htmlEl = document.documentElement;
+
+        const sunPath = 'M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42';
+        const moonPath = 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z';
+
+        function setTheme(dark) {
+            if (dark) {
+                htmlEl.setAttribute('data-theme', 'dark');
+                themeIcon.innerHTML = '<path d="' + sunPath + '"/>';
+            } else {
+                htmlEl.removeAttribute('data-theme');
+                themeIcon.innerHTML = '<path d="' + moonPath + '"/>';
+            }
+            localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+        }
+
+        // Initialize theme from localStorage or default to dark
+        (function() {
+            var saved = localStorage.getItem(THEME_KEY);
+            if (saved === 'light') {
+                setTheme(false);
+            } else {
+                setTheme(true);
+            }
+        })();
+
+        themeToggle.addEventListener('click', function() {
+            var isDark = htmlEl.getAttribute('data-theme') === 'dark';
+            setTheme(!isDark);
+        });
+
+        /* ===== Tab Navigation ===== */
+        function switchTab(e, tabName) {
+            var sections = document.querySelectorAll('.content-section');
+            for (var i = 0; i < sections.length; i++) sections[i].classList.remove('active');
+
+            var tabs = document.querySelectorAll('.nav-tab');
+            for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ===== Accordion Toggle ===== */
+        function toggleAcc(header) {
+            var item = header.parentElement;
+            var isOpen = item.classList.contains('open');
+            item.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+        }
+
+        // Keyboard support for accordion headers
+        document.addEventListener('keydown', function(e) {
+            if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('acc-header')) {
+                e.preventDefault();
+                toggleAcc(e.target);
+            }
+        });
+
+        /* ===== Notes Functions ===== */
+        var notesArea = document.getElementById('notesText');
+
+        function loadNotes() {
+            var notes = localStorage.getItem(NOTES_KEY);
+            if (notes) {
+                notesArea.value = notes;
+            }
+        }
+
+        function saveNotes() {
+            localStorage.setItem(NOTES_KEY, notesArea.value);
+            showToast('Notes saved successfully!');
+        }
+
+        function clearNotes() {
+            if (!notesArea.value.trim()) return;
+            document.getElementById('confirmOverlay').classList.add('visible');
+        }
+
+        var _confirmInited = false;
+        function initConfirm() {
+            if (_confirmInited) return;
+            _confirmInited = true;
+            document.getElementById('confirmCancel').addEventListener('click', function() {
+                document.getElementById('confirmOverlay').classList.remove('visible');
+            });
+            document.getElementById('confirmOk').addEventListener('click', function() {
+                notesArea.value = '';
+                localStorage.removeItem(NOTES_KEY);
+                document.getElementById('confirmOverlay').classList.remove('visible');
+            });
+            document.getElementById('confirmOverlay').addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('visible');
+            });
+        }
+
+        function exportNotes() {
+            var notes = notesArea.value;
+            if (!notes.trim()) {
+                showToast('No notes to export.');
+                return;
+            }
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(notes));
+            element.setAttribute('download', 'ToddMacDonald_SwingAnalysis_Notes.txt');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        /* ===== Section Note Buttons ===== */
+        function addSectionNote(sectionName) {
+            var timestamp = new Date().toLocaleString();
+            var entry = '\n--- ' + sectionName + ' (' + timestamp + ') ---\n';
+            if (notesArea.value.trim()) {
+                notesArea.value += '\n' + entry;
+            } else {
+                notesArea.value = entry;
+            }
+            localStorage.setItem(NOTES_KEY, notesArea.value);
+            notesArea.focus();
+            notesArea.scrollTop = notesArea.scrollHeight;
+            document.getElementById('notes').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        /* ===== Auto-save notes on input ===== */
+        notesArea.addEventListener('input', function() {
+            localStorage.setItem(NOTES_KEY, notesArea.value);
+        });
+
+        /* ===== TOAST ===== */
+        function showToast(msg) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('visible');
+            setTimeout(function() { t.classList.remove('visible'); }, 2200);
+        }
+
+        /* ===== Initialize ===== */
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNotes();
+            initConfirm();
+        });
+    </script>
+<!-- Confirm Modal -->
+<div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-dialog">
+        <p id="confirmMessage">Clear all notes?</p>
+        <div class="confirm-actions">
+            <button class="btn btn-secondary" id="confirmCancel">Cancel</button>
+            <button class="btn btn-primary" id="confirmOk">Clear</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+</body>
+</html>

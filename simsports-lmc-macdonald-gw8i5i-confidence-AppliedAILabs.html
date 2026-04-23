@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM.SPORTS Arena — Confidence Report</title>
+    <style>
+        /* ── Theme Tokens ──────────────────────────────── */
+        :root {
+            --accent: #1190CB;
+            --accent-2: #5AB4E6;
+        }
+        [data-theme="dark"] {
+            --bg: #0b1020;
+            --panel: #121931;
+            --panel-2: #182244;
+            --text: #e9eefc;
+            --muted: #aab6d3;
+            --border: rgba(255,255,255,.12);
+            --shadow: 0 10px 30px rgba(0,0,0,.25);
+            --expanded-panel: #1c2848;
+            --chip-bg: rgba(17,144,203,.08);
+            --chip-text: var(--accent-2);
+            --hero-glow-1: rgba(17,144,203,.18);
+            --hero-glow-2: rgba(90,180,230,.14);
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f5;
+            --panel: #ffffff;
+            --panel-2: #f0f2f5;
+            --text: #1a1d21;
+            --muted: #6b7280;
+            --border: rgba(0,0,0,.1);
+            --shadow: 0 4px 16px rgba(0,0,0,.06);
+            --expanded-panel: #ffffff;
+            --chip-bg: rgba(17,144,203,.06);
+            --chip-text: #0d6e99;
+            --hero-glow-1: rgba(17,144,203,.1);
+            --hero-glow-2: rgba(90,180,230,.08);
+        }
+
+        /* ── Reset & Base ──────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── Layout ────────────────────────────────────── */
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .report-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 24px;
+            background: var(--panel);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .report-header::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 220px; height: 220px;
+            background: radial-gradient(circle, var(--hero-glow-1), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .report-header::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: 30%;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, var(--hero-glow-2), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .brand-badge {
+            width: 48px; height: 48px; border-radius: 10px;
+            background: var(--accent);
+            color: #fff; font-weight: 800;
+            font-size: .8rem; letter-spacing: .02em;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .header-info { position: relative; z-index: 1; }
+        .header-info h1 {
+            font-size: 1.25rem; font-weight: 800; line-height: 1.2;
+            margin-bottom: 2px;
+        }
+        .header-info h1 a {
+            color: inherit; text-decoration: none;
+        }
+        .header-info h1 a:hover {
+            color: var(--accent);
+        }
+        .header-subtitle {
+            font-size: .95rem; font-weight: 700; color: var(--muted);
+            margin-bottom: 4px;
+        }
+        .header-meta {
+            font-size: .82rem; color: var(--muted); line-height: 1.6;
+        }
+        .header-meta span {
+            display: inline-block;
+            padding: 0 8px;
+            border-left: 1px solid var(--border);
+        }
+        .header-meta span:first-child { border-left: none; padding-left: 0; }
+        .location-line {
+            font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+            color: var(--muted); opacity: .7; margin-top: 4px;
+        }
+
+        /* ── Intro ─────────────────────────────────────── */
+        .intro {
+            font-size: .9rem; color: var(--muted);
+            margin-bottom: 24px; line-height: 1.7;
+            padding: 0 4px;
+        }
+
+        /* ── Section Cards ─────────────────────────────── */
+        .section-card {
+            background: var(--panel);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .section-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            border-left: 4px solid var(--accent);
+            user-select: none;
+            transition: background .2s;
+        }
+        .section-header:hover {
+            background: rgba(17,144,203,.06);
+        }
+        .section-header.open {
+            background: rgba(17,144,203,.06);
+            border-bottom: 1px solid rgba(17,144,203,.2);
+        }
+        .section-header.open .acc-caret {
+            transform: rotate(90deg);
+            color: var(--accent);
+        }
+        .section-header.open .section-title {
+            color: var(--accent);
+        }
+        .section-title {
+            font-size: 1rem; font-weight: 700;
+            display: flex; align-items: center; gap: 6px;
+            transition: color .2s;
+        }
+        .acc-caret {
+            display: inline-block;
+            transition: transform .2s ease;
+            font-size: .9rem;
+        }
+        .section-body {
+            padding: 20px;
+            display: none;
+        }
+        .section-body.visible {
+            display: block;
+            background: var(--expanded-panel);
+        }
+        .section-body h3 {
+            font-size: .92rem; font-weight: 700;
+            color: var(--text); margin: 20px 0 8px;
+        }
+        .section-body h3:first-child { margin-top: 0; }
+        .section-body p {
+            font-size: .88rem; color: var(--muted);
+            margin-bottom: 10px; line-height: 1.7;
+        }
+        .section-body ul, .section-body ol {
+            margin: 8px 0 12px 20px;
+            font-size: .88rem; color: var(--muted);
+            line-height: 1.7;
+        }
+        .section-body li { margin-bottom: 4px; }
+        .section-body strong { color: var(--text); }
+
+        /* ── Section Border Colors ─────────────────────── */
+        .section-card[data-type="agreement"] .section-header {
+            border-left-color: var(--accent);
+        }
+        .section-card[data-type="dispute"] .section-header {
+            border-left-color: #e67e22;
+        }
+        .section-card[data-type="validation"] .section-header {
+            border-left-color: var(--accent);
+        }
+        .section-card[data-type="confidence"] .section-header {
+            border-left-color: var(--accent);
+        }
+
+        /* ── Dispute Panel Tint ────────────────────────── */
+        .section-card[data-type="dispute"] .section-body.visible {
+            background: var(--expanded-panel);
+        }
+
+        /* ── Table ─────────────────────────────────────── */
+        .data-table-wrap { overflow-x: auto; margin: 12px 0; }
+        table {
+            width: 100%; border-collapse: collapse;
+            font-size: .85rem;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--panel-2);
+            color: var(--text);
+            font-weight: 700;
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+        td { color: var(--muted); }
+        tr:hover td { background: rgba(17,144,203,.04); }
+
+        /* ── Confidence Bar ────────────────────────────── */
+        .confidence-bar {
+            height: 20px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            transition: width .4s ease, opacity .3s ease;
+        }
+        .confidence-bar.hidden { width: 0 !important; opacity: 0; }
+        .confidence-score {
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .avg-note {
+            font-size: .82rem; color: var(--muted);
+            font-style: italic; margin-top: 10px;
+        }
+
+        /* ── Chips ─────────────────────────────────────── */
+        .chip {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: .75rem;
+            font-weight: 600;
+            background: var(--chip-bg);
+            color: var(--chip-text);
+        }
+        .chip.dispute { background: rgba(230,126,34,.1); color: #e67e22; }
+
+        /* ── Section Note Button ───────────────────────── */
+        .section-note-btn {
+            background: rgba(17,144,203,.08);
+            border: 1px solid rgba(17,144,203,.2);
+            color: var(--accent);
+            font-size: .82rem; font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 14px;
+            display: inline-block;
+            transition: background .2s;
+        }
+        .section-note-btn:hover {
+            background: rgba(17,144,203,.16);
+        }
+
+        /* ── Toggle Bars Button ────────────────────────── */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: .85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .2s;
+        }
+        .btn-primary:hover { opacity: .88; }
+
+        /* ── Notes Section ─────────────────────────────── */
+        .notes-section {
+            background: var(--panel);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        .notes-section h2 {
+            font-size: 1rem; font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .notes-section textarea {
+            width: 100%;
+            min-height: 120px;
+            background: var(--panel-2);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: .88rem;
+            line-height: 1.6;
+            resize: vertical;
+        }
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* ── Theme Toggle ──────────────────────────────── */
+        .theme-toggle {
+            position: fixed; top: 16px; right: 16px; z-index: 120;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--panel); color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .2s;
+        }
+        .theme-toggle:hover { background: var(--panel-2); }
+        .theme-toggle svg {
+            width: 20px; height: 20px;
+            fill: none; stroke: currentColor;
+            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* ── Copyright Footer ──────────────────────────── */
+        .copyright-footer {
+            margin-top: 32px; padding: 20px 0;
+            border-top: 1px solid var(--border);
+            text-align: center; font-size: .82rem;
+            color: var(--muted);
+        }
+        .copyright-footer a {
+            color: var(--accent); text-decoration: none; font-weight: 600;
+        }
+        .copyright-footer a:hover { text-decoration: underline; }
+
+        /* ── Print Styles ──────────────────────────────── */
+        @media print {
+            body { background: #fff !important; color: #1a1d21 !important; }
+            .theme-toggle, .section-note-btn, .btn-primary, .notes-section { display: none !important; }
+            .section-card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+            .section-header { border-left-color: #1190CB !important; }
+            .report-header { box-shadow: none; }
+            .report-header::before, .report-header::after { display: none; }
+            .brand-badge { background: #1190CB !important; }
+            .section-body { display: block !important; background: #fff !important; }
+            .copyright-footer { border-top-color: #ddd; }
+        }
+
+        /* ── Responsive ────────────────────────────────── */
+        @media (max-width: 640px) {
+            .page-wrapper { padding: 16px 12px 0; }
+            .report-header { padding: 16px; }
+            .header-info h1 { font-size: 1.05rem; }
+            .header-meta span { display: block; border-left: none; padding: 0; }
+            .section-header { padding: 14px 16px; }
+            .section-body { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle no-print" id="themeToggle" type="button" title="Toggle light/dark mode">
+        <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+    </button>
+
+    <div class="page-wrapper">
+        <!-- Header -->
+        <div class="report-header">
+            <div class="brand-badge">SIM</div>
+            <div class="header-info">
+                <h1><a href="https://www.simsportsarena.com" target="_blank" rel="noopener">SIM.SPORTS Arena</a></h1>
+                <div class="header-subtitle">Comparative Analysis of Golf Swing Reports</div>
+                <div class="header-meta">
+                    <span>Golfer: Todd MacDonald (62 yrs)</span>
+                    <span>Swings: 49 (5i, 8i, GW)</span>
+                    <span>Models: Flash / Pro / Haiku</span>
+                </div>
+                <div class="location-line">PARK CITY, UTAH</div>
+            </div>
+        </div>
+
+        <!-- Intro -->
+        <p class="intro">This report compares three AI-generated swing analyses: Gemini 3 Flash (Flash), Gemini 3.1 Pro (Pro), and Claude 4.5 Haiku (Haiku). The focus is on identifying <strong>strong areas of agreement</strong> (high validation of accuracy) and <strong>significant areas of dispute</strong> (not subtle differences, but core divergences in interpretation or emphasis). Subtle variations in data phrasing (e.g., exact ranges) are noted but not treated as disputes unless they alter conclusions.</p>
+
+        <!-- 1. Agreement -->
+        <div class="section-card" data-type="agreement">
+            <div class="section-header open" onclick="toggleSection(this)">
+                <span class="section-title"><span class="acc-caret">&rsaquo;</span> 1. Strong Areas of Agreement</span>
+                <span class="chip">95% Confidence</span>
+            </div>
+            <div class="section-body visible">
+                <p>All three reports show <strong>high alignment</strong> on the core biomechanical faults and their impacts, validating the overall accuracy of the data interpretation. Disagreements are mostly in emphasis or minor quantification, not fundamental diagnosis.</p>
+
+                <h3>A. Tempo Inconsistency as a Primary Consistency Killer</h3>
+                <ul>
+                    <li>All reports identify <strong>high variability in tempo ratio</strong> (range: 2.05&ndash;5.00 across swings), with averages around 3.5&ndash;4.0:1 (slower backswing, rushed downswing).</li>
+                    <li>Impact: Leads to timing breakdowns, clubhead speed fluctuations (57&ndash;85 mph for 5i), and distance dispersion (up to 27 yards). Flash and Pro call it &ldquo;highly volatile&rdquo;; Haiku deems it the &ldquo;primary issue&rdquo; with &plusmn;20% inconsistency.</li>
+                    <li>Strong Validation: Universal recommendation for metronome/tempo drills (e.g., 3:1 ratio target), confirming this as a reliable, non-physical fault.</li>
+                </ul>
+
+                <h3>B. Early Extension (Pelvis Thrust/Lift) as a Major Power Leak</h3>
+                <ul>
+                    <li>All highlight <strong>Pelvis Thrust at impact</strong> (2.0&ndash;4.9&Prime; toward the ball, avg. ~2.5&ndash;4&Prime;), causing posture loss, &ldquo;flip-hooks&rdquo; or blocks, and inconsistent contact.</li>
+                    <li>Impact: Reduces compression, leads to thin/fat shots, and costs 3&ndash;8 yards. Pro and Flash call it &ldquo;classic TPI fault&rdquo;; Haiku notes avg. Pelvis Lift 0.67&Prime; with high variance (&plusmn;1.2&Prime;).</li>
+                    <li>Strong Validation: Identical root cause hypothesis (hip mobility compensation at age 62) and drills (e.g., Chair Behind Glutes to prevent thrust). High inter-report reliability here.</li>
+                </ul>
+
+                <h3>C. Kinematic Sequencing Errors in Transition</h3>
+                <ul>
+                    <li>All describe <strong>disrupted sequence</strong> (ideal: Pelvis-Chest-Arms-Club; common errors: 1-2-4-3 or 1-3-3-2), occurring in 25&ndash;29% of swings, leading to casting/early release.</li>
+                    <li>Impact: Explains speed variance (60&ndash;84 mph) and wrist unhinging too early. Flash/Pro: &ldquo;Transition Misfire&rdquo;; Haiku: 71% correct but 29% errors &ldquo;concerning.&rdquo;</li>
+                    <li>Strong Validation: Agreement on drills like Step-Away or Pump Drill to enforce &ldquo;Pelvis First.&rdquo; Core energy transfer fault is unanimously identified.</li>
+                </ul>
+
+                <h3>D. Wrist Release Variance and Clubhead Speed Potential</h3>
+                <ul>
+                    <li><strong>Wrist Release Percent</strong> fluctuates wildly (3&ndash;59% or 7&ndash;54%), causing inconsistent lag and face control.</li>
+                    <li>Impact: Higher release = speed but poor contact; lower = compression but lost distance. All note avg. clubhead speed ~70&ndash;71 mph for 5i (mid-80s max, good for age).</li>
+                    <li>Strong Validation: Haiku praises wrist gain (2.56x, excellent), but all agree variance is the issue. No disputes on baseline athleticism (functional for 62yo).</li>
+                </ul>
+
+                <h3>E. Overall Profile and Recommendations</h3>
+                <ul>
+                    <li>Todd's swing is <strong>functional/athletic for age</strong> (X-Factor 36&ndash;42&deg;, good rotational mobility), but inconsistency limits performance (15&ndash;20% potential loss).</li>
+                    <li>Age-Appropriate Focus: Protect lower back, emphasize efficiency. Universal protocols: Tempo sync, sequencing reset, anti-thrust drills, hip mobility screen.</li>
+                    <li>Strong Validation: Reports align on ~15&ndash;25 yard recovery potential via consistency fixes, affirming data's diagnostic value.</li>
+                </ul>
+
+                <button class="section-note-btn" onclick="addSectionNote('Agreement')">+ Add Note</button>
+            </div>
+        </div>
+
+        <!-- 2. Dispute -->
+        <div class="section-card" data-type="dispute">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span class="section-title"><span class="acc-caret">&rsaquo;</span> 2. Significant Areas of Dispute</span>
+                <span class="chip dispute">Moderate</span>
+            </div>
+            <div class="section-body">
+                <p>Disputes are limited and not contradictory in diagnosis but differ in <strong>emphasis, severity rating, or additional elements</strong>. No report fundamentally invalidates another; differences likely stem from AI model priorities (e.g., Flash/Pro more fault-focused, Haiku more balanced with strengths).</p>
+
+                <h3>A. Severity and Frequency of Sequencing Errors</h3>
+                <p><strong>Dispute Level: Moderate-Significant.</strong> Flash and Pro portray sequencing as a &ldquo;recurring primary error&rdquo; (achieved only ~25% of the time, &ldquo;majority&rdquo; disrupted), tying it directly to casting and speed loss. Haiku rates it &ldquo;moderate concern&rdquo; with 71% correct sequences (29% errors), calling core gains &ldquo;solid&rdquo; (1.8x) and wrist gain &ldquo;excellent.&rdquo;</p>
+                <ul>
+                    <li>Impact: Haiku downplays as secondary to tempo/posture; Flash/Pro elevate it as &ldquo;transition misfire.&rdquo; This shifts priority&mdash;could affect drill focus (sequencing vs. rhythm first).</li>
+                    <li>Validation Note: Not a data conflict (error rates align ~25&ndash;29%), but interpretive: Haiku's optimism vs. others' caution. Suggests data supports both but highlights need for swing-specific video review.</li>
+                </ul>
+
+                <h3>B. Lateral Sway as a Distinct Fault</h3>
+                <p><strong>Dispute Level: Significant (Omission vs. Emphasis).</strong> Pro strongly flags &ldquo;significant sway&rdquo; (Pelvis Sway TOP: -4.0&Prime; to -9.5&Prime;, compensation for trail-hip rotation), calling it a &ldquo;massive timing requirement.&rdquo; Haiku notes high sway variance (TOP: -9 to 17&Prime;, IMP: -36 to 10&Prime;) but integrates it into pelvis inconsistency without standalone emphasis. Flash omits sway entirely, focusing on thrust/extension.</p>
+                <ul>
+                    <li>Impact: Pro adds a unique drill (Step Drill/Right Heel Up); others don't. This could be a missed fault in Flash/Haiku, potentially underestimating lateral slide's role in sequencing breakdowns.</li>
+                    <li>Validation Note: Data likely supports sway (Haiku's variance confirms), but Flash's omission questions completeness. Pro's addition enhances accuracy but introduces unshared specificity.</li>
+                </ul>
+
+                <h3>C. Quantification of Tempo and Pelvis Metrics</h3>
+                <p><strong>Dispute Level: Moderate.</strong> Pro reports tempo avg. 4.0:1 (backswing 0.95s, downswing 0.22s, &ldquo;erratic with spikes to 5.0&rdquo;). Haiku: avg. 3.57 (&plusmn;0.73 SD, backswing 0.85s). Flash: &ldquo;highly volatile&rdquo; without avg. Pelvis data varies: Pro/Flash thrust-focused (2&ndash;4.9&Prime;); Haiku lift-focused (0.67&Prime; avg., thrust 23.5&Prime; avg. but excessive range).</p>
+                <ul>
+                    <li>Impact: Subtle numerical differences alter perceived &ldquo;ideal target&rdquo; (Pro: 3:1; Haiku: 3.2&ndash;3.8). No conflicting conclusions, but could mislead on baselines.</li>
+                    <li>Validation Note: Likely rounding/calculation variances; core volatility agreement validates, but suggests re-analysis of raw data for precision.</li>
+                </ul>
+
+                <h3>D. Strengths vs. Fault Emphasis</h3>
+                <p><strong>Dispute Level: Moderate (Philosophical).</strong> Haiku balances with detailed strengths (e.g., 7.2/10 profile, good power generation, 5.9/10 consistency score). Flash/Pro are more critical (focus on &ldquo;power leaks&rdquo; without scores, implying lower baseline). Haiku benchmarks Todd as &ldquo;-4 mph behind amateur target&rdquo; but &ldquo;good for age.&rdquo;</p>
+                <ul>
+                    <li>Impact: Haiku's positivity boosts motivation; others risk demotivation. Disputes overall &ldquo;ceiling&rdquo; perception.</li>
+                    <li>Validation Note: Aligns on faults but Haiku adds benchmarking, enhancing report utility without contradiction.</li>
+                </ul>
+
+                <button class="section-note-btn" onclick="addSectionNote('Dispute')">+ Add Note</button>
+            </div>
+        </div>
+
+        <!-- 3. Validation -->
+        <div class="section-card" data-type="validation">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span class="section-title"><span class="acc-caret">&rsaquo;</span> 3. Overall Validation of Swing Reports' Accuracy</span>
+                <span class="chip">85% Reliable</span>
+            </div>
+            <div class="section-body">
+                <p>The reports demonstrate <strong>high overall accuracy</strong> through ~80&ndash;90% agreement on key faults (tempo, extension, sequencing, release variance), impacts (inconsistency costs 15&ndash;25 yards/dispersion), and fixes (drills, hip screen). This cross-validation suggests the underlying 3D data (TPI standards) is reliably interpreted, with no major outliers indicating fabrication or error.</p>
+                <ul>
+                    <li><strong>Strengths in Validation:</strong> Core TPI philosophies (e.g., 3:1 tempo, ground-up sequence) are consistently applied. Age-appropriate nuance (mobility compensation) unifies recommendations. Agreement on variability as the &ldquo;consistency killer&rdquo; affirms diagnostic focus.</li>
+                    <li><strong>Limitations:</strong> Minor disputes (e.g., sway emphasis) highlight model biases&mdash;Pro adds depth, Haiku provides balance, Flash is concise but omissive. Subtle data quant differences suggest averaging artifacts; raw data re-verification recommended for precision.</li>
+                    <li><strong>Conclusion:</strong> Reports are mutually reinforcing, validating Todd's profile as an athletic 62yo with fixable inconsistency (not physical limits). Confidence in collective accuracy: High (85%). Prioritize agreed drills; probe sway via coach.</li>
+                </ul>
+
+                <button class="section-note-btn" onclick="addSectionNote('Validation')">+ Add Note</button>
+            </div>
+        </div>
+
+        <!-- 4. Confidence Table -->
+        <div class="section-card" data-type="confidence">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span class="section-title"><span class="acc-caret">&rsaquo;</span> 4. Confidence Scores Across Top 5 Areas</span>
+                <span class="chip">Avg 88.4%</span>
+            </div>
+            <div class="section-body">
+                <p>Confidence scores (0&ndash;100%) reflect inter-report agreement strength. High = unanimous diagnosis/impact; Medium = nuances in severity/data; Low = disputes/omissions. Scores based on alignment, not absolute truth.</p>
+
+                <button class="btn-primary" onclick="toggleBars()" style="margin-bottom:12px;">Toggle Confidence Bars</button>
+
+                <div class="data-table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Area</th>
+                                <th>Description</th>
+                                <th>Agreement</th>
+                                <th>Score</th>
+                                <th>Visual</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Tempo Inconsistency</td>
+                                <td>High variance (2.05&ndash;5.00 ratio) as primary timing issue; metronome fixes.</td>
+                                <td><span class="chip">Unanimous</span></td>
+                                <td class="confidence-score">95%</td>
+                                <td style="min-width:140px"><div class="confidence-bar" style="width:95%"></div></td>
+                            </tr>
+                            <tr>
+                                <td>Early Extension / Pelvis Thrust</td>
+                                <td>2&ndash;5&Prime; thrust causing posture loss; chair drills, hip mobility root.</td>
+                                <td><span class="chip">Unanimous</span></td>
+                                <td class="confidence-score">92%</td>
+                                <td><div class="confidence-bar" style="width:92%"></div></td>
+                            </tr>
+                            <tr>
+                                <td>Wrist Release Variance</td>
+                                <td>3&ndash;59% fluctuations; lag inconsistency, speed/contact trade-off.</td>
+                                <td><span class="chip">Strong</span></td>
+                                <td class="confidence-score">88%</td>
+                                <td><div class="confidence-bar" style="width:88%"></div></td>
+                            </tr>
+                            <tr>
+                                <td>Kinematic Sequencing</td>
+                                <td>25&ndash;29% errors (1-2-4-3); casting/release impact, sequencing drills.</td>
+                                <td><span class="chip">High</span></td>
+                                <td class="confidence-score">85%</td>
+                                <td><div class="confidence-bar" style="width:85%"></div></td>
+                            </tr>
+                            <tr>
+                                <td>Overall Consistency / Potential</td>
+                                <td>15&ndash;20% performance loss from variance; 15&ndash;25 yd recovery via efficiency.</td>
+                                <td><span class="chip">High</span></td>
+                                <td class="confidence-score">82%</td>
+                                <td><div class="confidence-bar" style="width:82%"></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="avg-note">Average Confidence: 88.4% &mdash; Reports are highly reliable for coaching; use agreements as core plan.</p>
+
+                <button class="section-note-btn" onclick="addSectionNote('Confidence Scores')">+ Add Note</button>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="notes-section" id="notes">
+            <h2>Coach Notes</h2>
+            <textarea id="notesArea" placeholder="Add notes here..."></textarea>
+        </div>
+
+        <!-- Copyright -->
+        <footer class="copyright-footer">
+            &copy; <a href="https://www.appliedailabs.com" target="_blank" rel="noopener">Applied AI Labs</a> 2026
+        </footer>
+    </div>
+
+    <script>
+        /* ── Theme Toggle ─────────────────────────────── */
+        const sunPath = 'M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42M12 6a6 6 0 100 12 6 6 0 000-12z';
+        const moonPath = 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z';
+
+        function setTheme() {
+            const saved = localStorage.getItem('simsports_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+            document.getElementById('themeIcon').innerHTML =
+                '<path d="' + (saved === 'dark' ? sunPath : moonPath) + '"/>';
+        }
+        document.getElementById('themeToggle').addEventListener('click', function () {
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('simsports_theme', next);
+            setTheme();
+        });
+        setTheme();
+
+        /* ── Accordion ────────────────────────────────── */
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const isOpen = header.classList.contains('open');
+            header.classList.toggle('open');
+            body.classList.toggle('visible');
+        }
+
+        /* ── Confidence Bars Toggle ───────────────────── */
+        function toggleBars() {
+            const bars = document.querySelectorAll('.confidence-bar');
+            bars.forEach(function (bar) { bar.classList.toggle('hidden'); });
+        }
+
+        /* ── Section Notes ────────────────────────────── */
+        var NOTES_KEY = 'simsports_confidence_notes';
+        var notesArea = document.getElementById('notesArea');
+        notesArea.value = localStorage.getItem(NOTES_KEY) || '';
+        notesArea.addEventListener('input', function () {
+            localStorage.setItem(NOTES_KEY, notesArea.value);
+        });
+
+        function addSectionNote(sectionName) {
+            var timestamp = new Date().toLocaleString();
+            var entry = '\n--- ' + sectionName + ' (' + timestamp + ') ---\n';
+            if (notesArea.value.trim()) {
+                notesArea.value += '\n' + entry;
+            } else {
+                notesArea.value = entry;
+            }
+            localStorage.setItem(NOTES_KEY, notesArea.value);
+            notesArea.focus();
+            notesArea.scrollTop = notesArea.scrollHeight;
+            document.getElementById('notes').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>
