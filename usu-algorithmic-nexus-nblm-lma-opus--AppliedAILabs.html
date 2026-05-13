@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Algorithmic Nexus | USU Board AI Research Project</title>
+  <style>
+    :root {
+      --primary:    #00346e;
+      --accent:     #0074d9;
+      --highlight:  #00aeef;
+      --gold:       #f0a500;
+      --dark:       #0d1b2a;
+      --mid:        #1c3251;
+      --light-bg:   #f4f7fb;
+      --card-bg:    #ffffff;
+      --text:       #1a2535;
+      --muted:      #5a6a80;
+      --border:     #d0dce8;
+      --radius:     10px;
+      --shadow:     0 4px 20px rgba(0,52,110,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--light-bg);
+      color: var(--text);
+      line-height: 1.72;
+    }
+
+    /* ── CITE REFS ── */
+    sup.cite a {
+      display: inline-block;
+      background: rgba(0,116,217,0.10);
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 0 4px;
+      border-radius: 3px;
+      margin: 0 1px;
+      vertical-align: super;
+      line-height: 1;
+      transition: background .2s, color .2s;
+    }
+    sup.cite a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* ── TOP BANNER ── */
+    #top-banner {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 60%, var(--mid) 100%);
+      color: #fff;
+      position: sticky;
+      top: 0; z-index: 1000;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+    }
+    .banner-inner {
+      max-width: 1400px; margin: 0 auto;
+      padding: 14px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .brand-block { display: flex; align-items: center; gap: 14px; }
+    .brand-logo {
+      width: 46px; height: 46px;
+      background: var(--gold); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900; color: var(--dark);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(240,165,0,0.30);
+    }
+    .brand-text { line-height: 1.25; }
+    .brand-title { font-size: 0.82rem; font-weight: 700; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; }
+    .brand-sub   { font-size: 0.72rem; color: rgba(255,255,255,0.70); letter-spacing: 0.04em; }
+
+    /* hamburger */
+    #menu-toggle {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 6px;
+    }
+    #menu-toggle span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all .3s; }
+
+    /* nav pills */
+    #top-nav { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+    #top-nav a {
+      color: rgba(255,255,255,0.82); text-decoration: none;
+      font-size: 0.73rem; font-weight: 600; letter-spacing: 0.03em;
+      padding: 5px 11px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.18);
+      transition: background .2s, color .2s; white-space: nowrap;
+    }
+    #top-nav a:hover { background: var(--highlight); color: #fff; border-color: var(--highlight); }
+
+    /* ── HERO ── */
+    #hero {
+      background: linear-gradient(160deg, var(--dark) 0%, var(--primary) 55%, #005a9e 100%);
+      color: #fff; padding: 72px 28px 60px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    #hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-badge {
+      display: inline-block; position: relative;
+      background: rgba(240,165,0,0.18); border: 1px solid rgba(240,165,0,0.50);
+      color: var(--gold); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 5px 16px; border-radius: 20px; margin-bottom: 20px;
+    }
+    #hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.8rem); font-weight: 800;
+      line-height: 1.2; max-width: 900px; margin: 0 auto 16px; position: relative;
+    }
+    #hero h1 em { color: var(--gold); font-style: normal; }
+    .hero-sub { font-size: 1.05rem; color: rgba(255,255,255,0.78); max-width: 700px; margin: 0 auto 30px; position: relative; }
+    .hero-meta {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;
+      font-size: 0.78rem; color: rgba(255,255,255,0.60); position: relative;
+    }
+    .hero-meta span { display: flex; align-items: center; gap: 6px; }
+    .hero-meta svg { width:14px; height:14px; fill: var(--gold); }
+
+    /* ── PAGE LAYOUT ── */
+    .page-wrap {
+      max-width: 1400px; margin: 0 auto;
+      padding: 40px 28px 60px;
+      display: grid; grid-template-columns: 260px 1fr;
+      gap: 32px; align-items: start;
+    }
+
+    /* ── SIDEBAR TOC ── */
+    #toc-sidebar {
+      position: sticky; top: 78px;
+      background: var(--card-bg); border-radius: var(--radius);
+      border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .toc-header {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff; padding: 14px 18px;
+      font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    #toc-sidebar nav { padding: 10px 0; max-height: calc(100vh - 160px); overflow-y: auto; }
+    #toc-sidebar nav a {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 7px 18px; font-size: 0.79rem; color: var(--muted);
+      text-decoration: none; border-left: 3px solid transparent;
+      transition: all .2s; line-height: 1.35;
+    }
+    #toc-sidebar nav a:hover,
+    #toc-sidebar nav a.active {
+      color: var(--accent); border-left-color: var(--accent);
+      background: rgba(0,116,217,0.05);
+    }
+    .toc-num {
+      font-size: 0.68rem; font-weight: 700; color: var(--gold);
+      background: rgba(240,165,0,0.12);
+      padding: 1px 5px; border-radius: 3px; margin-top: 1px; flex-shrink: 0;
+    }
+
+    /* ── MAIN ── */
+    #main-content { min-width: 0; }
+
+    /* ── SECTION CARDS ── */
+    .report-section {
+      background: var(--card-bg); border-radius: var(--radius);
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+      margin-bottom: 28px; overflow: hidden; scroll-margin-top: 90px;
+    }
+    .section-header {
+      padding: 20px 28px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .section-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .section-header-text { flex: 1; }
+    .section-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.10em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+    }
+    .section-header h2 { font-size: 1.15rem; font-weight: 700; color: var(--primary); line-height: 1.3; }
+    .section-body { padding: 22px 28px; }
+    .section-body p { margin-bottom: 14px; color: var(--text); font-size: 0.93rem; }
+    .section-body p:last-child { margin-bottom: 0; }
+
+    /* ── TABLES ── */
+    .table-block { margin: 20px 0; }
+    .table-title {
+      font-size: 0.78rem; font-weight: 700; color: var(--primary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+    }
+    .table-title::before {
+      content: ''; width: 4px; height: 16px;
+      background: var(--gold); border-radius: 2px; display: inline-block;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    thead tr { background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); }
+    thead th { color: #fff; font-weight: 600; padding: 11px 14px; text-align: left; white-space: nowrap; font-size: 0.78rem; }
+    tbody tr:nth-child(even) { background: rgba(0,116,217,0.04); }
+    tbody tr:hover { background: rgba(0,116,217,0.08); }
+    tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; }
+    .badge-green  { background: #e6f9f0; color: #1a7d44; }
+    .badge-red    { background: #fce8e8; color: #b52b2b; }
+    .badge-gold   { background: rgba(240,165,0,0.15); color: #9a6800; }
+    .badge-blue   { background: rgba(0,116,217,0.10); color: var(--accent); }
+
+    /* ── STAT GRID ── */
+    .stat-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 14px; margin: 20px 0;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary) 0%, #005a9e 100%);
+      color: #fff; border-radius: 8px; padding: 18px 14px; text-align: center;
+    }
+    .stat-value { font-size: 2rem; font-weight: 800; color: var(--gold); line-height: 1; }
+    .stat-label { font-size: 0.72rem; color: rgba(255,255,255,0.78); margin-top: 6px; line-height: 1.3; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: 8px; padding: 14px 18px; margin: 16px 0;
+      font-size: 0.88rem; display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .callout-text { flex: 1; }
+    .callout-text strong { display: block; margin-bottom: 4px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .callout.warning  { background: #fff8e6; border-left: 4px solid var(--gold);   color: #7a5000; }
+    .callout.danger   { background: #fce8e8; border-left: 4px solid #d94040;       color: #7a1515; }
+    .callout.info     { background: #e6f0fb; border-left: 4px solid var(--accent); color: #00316a; }
+    .callout.success  { background: #e6f9f0; border-left: 4px solid #1a7d44;       color: #0d4522; }
+
+    /* ── PROGRESS BARS ── */
+    .progress-group { margin: 16px 0; }
+    .progress-item  { margin-bottom: 12px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 0.80rem; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+    .progress-bar-bg { background: var(--border); border-radius: 6px; height: 10px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--primary), var(--highlight)); transition: width 1s ease; }
+
+    /* ── RECOMMENDATIONS ── */
+    .rec-list { list-style: none; margin: 10px 0; }
+    .rec-list li { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .rec-list li:last-child { border-bottom: none; }
+    .rec-num {
+      width: 32px; height: 32px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800;
+    }
+    .rec-content strong { color: var(--primary); font-size: 0.92rem; display: block; margin-bottom: 4px; }
+    .rec-content p { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+    /* ── REFERENCES ── */
+    .ref-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px; margin-top: 10px;
+    }
+    .ref-item {
+      background: var(--light-bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 10px 14px;
+      display: flex; gap: 10px; align-items: flex-start;
+      scroll-margin-top: 90px;
+      transition: background .25s, border-color .25s;
+    }
+    .ref-item:target,
+    .ref-item.highlight {
+      background: #fff8e6;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(240,165,0,0.25);
+    }
+    .ref-num {
+      width: 24px; height: 24px; flex-shrink: 0;
+      background: var(--primary); color: #fff;
+      border-radius: 4px; font-size: 0.68rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ref-item a { font-size: 0.77rem; color: var(--accent); text-decoration: none; line-height: 1.4; word-break: break-word; }
+    .ref-item a:hover { text-decoration: underline; color: var(--primary); }
+    .ref-domain { font-size: 0.66rem; color: var(--muted); display: block; margin-top: 2px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark); color: rgba(255,255,255,0.65);
+      text-align: center; padding: 28px; font-size: 0.78rem;
+    }
+    footer strong { color: var(--gold); }
+
+    /* ── SCROLL TOP ── */
+    #scroll-top {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff; border: none; border-radius: 50%;
+      cursor: pointer; display: none; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,52,110,0.40);
+      font-size: 18px; z-index: 500; transition: opacity .3s;
+    }
+    #scroll-top:hover { background: linear-gradient(135deg, var(--accent), var(--primary)); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      #toc-sidebar { display: none; position: static; }
+      #toc-sidebar.open { display: block; }
+      #menu-toggle { display: flex; }
+    }
+    @media (max-width: 600px) {
+      .banner-inner { padding: 12px 16px; }
+      #hero { padding: 48px 16px 40px; }
+      .page-wrap { padding: 20px 14px 40px; }
+      .section-body { padding: 16px; }
+      .section-header { padding: 14px 16px 12px; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     TOP BANNER
+════════════════════════════════════ -->
+<div id="top-banner">
+  <div class="banner-inner">
+    <div class="brand-block">
+      <div class="brand-logo">AI</div>
+      <div class="brand-text">
+        <div class="brand-title">USU Board AI Research Project</div>
+        <div class="brand-sub">By Applied AI Labs &nbsp;·&nbsp; 2026 Edition</div>
+      </div>
+    </div>
+    <button id="menu-toggle" aria-label="Toggle navigation" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="top-nav">
+      <a href="#section-intro">Overview</a>
+      <a href="#section-quant">Data</a>
+      <a href="#section-psych">Behavior</a>
+      <a href="#section-stealth">Stealth Funnel</a>
+      <a href="#section-zeroclicks">Zero-Click</a>
+      <a href="#section-trust">Trust</a>
+      <a href="#section-hallucinations">Hallucinations</a>
+      <a href="#section-fraud">Fraud</a>
+      <a href="#section-geo">GEO</a>
+      <a href="#section-demo">Demographics</a>
+      <a href="#section-readiness">Readiness</a>
+      <a href="#section-impact">Degree Value</a>
+      <a href="#section-future">Future</a>
+      <a href="#section-recs">Recommendations</a>
+      <a href="#references">References</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     HERO
+════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-badge">Research Report &nbsp;·&nbsp; Early 2026</div>
+  <h1>The <em>Algorithmic Nexus</em>:<br>Artificial Intelligence &amp; the Structural<br>Redefinition of Higher Education Discovery</h1>
+  <p class="hero-sub">How AI-mediated search is reshaping enrollment funnels, student behavior, and institutional strategy across higher education.</p>
+  <div class="hero-meta">
+    <span><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>USU Board AI Research Project</span>
+    <span><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Applied AI Labs</span>
+    <span><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>2024–2026 Analysis Period</span>
+    <span><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>41 Primary Sources</span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     MAIN LAYOUT
+════════════════════════════════════ -->
+<div class="page-wrap">
+
+  <!-- ── SIDEBAR TOC ── -->
+  <aside id="toc-sidebar">
+    <div class="toc-header">📋 &nbsp;Table of Contents</div>
+    <nav>
+      <a href="#section-intro"><span class="toc-num">01</span>Executive Overview</a>
+      <a href="#section-quant"><span class="toc-num">02</span>Quantitative AI Shift</a>
+      <a href="#section-psych"><span class="toc-num">03</span>Psychological Drivers</a>
+      <a href="#section-stealth"><span class="toc-num">04</span>Stealth Applicant Crisis</a>
+      <a href="#section-zeroclicks"><span class="toc-num">05</span>Zero-Click &amp; CTR Erosion</a>
+      <a href="#section-trust"><span class="toc-num">06</span>Trust &amp; Credibility</a>
+      <a href="#section-hallucinations"><span class="toc-num">07</span>Hallucinations &amp; Inequity</a>
+      <a href="#section-fraud"><span class="toc-num">08</span>Fraud &amp; Ghost Students</a>
+      <a href="#section-geo"><span class="toc-num">09</span>GEO Strategy</a>
+      <a href="#section-demo"><span class="toc-num">10</span>Demographics</a>
+      <a href="#section-readiness"><span class="toc-num">11</span>Institutional Readiness</a>
+      <a href="#section-impact"><span class="toc-num">12</span>AI &amp; Degree Value</a>
+      <a href="#section-future"><span class="toc-num">13</span>Future Strategy</a>
+      <a href="#section-recs"><span class="toc-num">14</span>Recommendations</a>
+      <a href="#references"><span class="toc-num">Ref</span>References (41)</a>
+    </nav>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main id="main-content">
+
+    <!-- ══════════ 01 EXECUTIVE OVERVIEW ══════════ -->
+    <section class="report-section" id="section-intro">
+      <div class="section-header">
+        <div class="section-icon">🌐</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 01 · Executive Overview</div>
+          <h2>A Behavioral Revolution in Higher Education Discovery</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>The landscape of higher education recruitment has entered a period of profound structural instability, driven by a fundamental realignment in how prospective students navigate the information ecosystem. As of early 2026, the transition from traditional keyword-based search to generative, AI-mediated discovery has moved beyond the experimental phase and established itself as the dominant paradigm for program exploration and institutional evaluation.<sup class="cite"><a href="#ref-1">[1]</a><a href="#ref-2">[2]</a><a href="#ref-3">[3]</a><a href="#ref-4">[4]</a></sup></p>
+
+        <p>This shift represents more than a technological update; it is a behavioral revolution that has decoupled search volume from website traffic and placed an algorithmic filter between the university and its prospective applicants. The traditional enrollment funnel, once defined by visible touchpoints and measurable engagement, has been replaced by a "dark" funnel where early impressions are formed, shortlists are narrowed, and institutions are eliminated before they are even aware a prospect exists.<sup class="cite"><a href="#ref-1">[1]</a><a href="#ref-2">[2]</a><a href="#ref-3">[3]</a><a href="#ref-4">[4]</a></sup></p>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">80%</div>
+            <div class="stat-label">of grad/adult learner prospects operate in "stealth mode" <sup class="cite"><a href="#ref-4" style="color:#fff;background:rgba(255,255,255,0.2)">[4]</a><a href="#ref-18" style="color:#fff;background:rgba(255,255,255,0.2)">[18]</a><a href="#ref-19" style="color:#fff;background:rgba(255,255,255,0.2)">[19]</a><a href="#ref-20" style="color:#fff;background:rgba(255,255,255,0.2)">[20]</a></sup></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">64.82%</div>
+            <div class="stat-label">of Google searches end with zero clicks (2026) <sup class="cite"><a href="#ref-12" style="color:#fff;background:rgba(255,255,255,0.2)">[12]</a><a href="#ref-13" style="color:#fff;background:rgba(255,255,255,0.2)">[13]</a></sup></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">46%</div>
+            <div class="stat-label">of HS students used AI in college search by Fall 2025 <sup class="cite"><a href="#ref-1" style="color:#fff;background:rgba(255,255,255,0.2)">[1]</a><a href="#ref-2" style="color:#fff;background:rgba(255,255,255,0.2)">[2]</a><a href="#ref-8" style="color:#fff;background:rgba(255,255,255,0.2)">[8]</a></sup></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">58%</div>
+            <div class="stat-label">lower CTR when AI Overviews appear <sup class="cite"><a href="#ref-12" style="color:#fff;background:rgba(255,255,255,0.2)">[12]</a><a href="#ref-21" style="color:#fff;background:rgba(255,255,255,0.2)">[21]</a><a href="#ref-24" style="color:#fff;background:rgba(255,255,255,0.2)">[24]</a></sup></div>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-text">
+            <strong>Key Insight</strong>
+            Approximately 79% of prospective students report reading Google's AI-generated overviews <em>before</em> engaging with traditional organic links.<sup class="cite"><a href="#ref-5">[5]</a><a href="#ref-6">[6]</a><a href="#ref-10">[10]</a></sup> The AI-generated summary has become the "zeroth" search result — setting the context for all subsequent discovery and, in many cases, providing sufficient information to conclude the search without further website navigation.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 02 QUANTITATIVE ══════════ -->
+    <section class="report-section" id="section-quant">
+      <div class="section-header">
+        <div class="section-icon">📊</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 02 · Quantitative Analysis</div>
+          <h2>The Magnitude of the AI Behavioral Shift (2024–2026)</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>Empirical data from the 2025 and 2026 recruitment cycles reveals a rapid normalization of artificial intelligence as a primary research tool. In late 2025, longitudinal studies indicated that <strong>50% of prospective students</strong> utilized AI-powered search tools on a weekly basis to explore higher education options.<sup class="cite"><a href="#ref-5">[5]</a><a href="#ref-6">[6]</a><a href="#ref-7">[7]</a></sup></p>
+
+        <p>This adoption curve is particularly steep among high school students, a demographic where AI usage during the college search process increased from 26% in the spring of 2025 to 46% by the fall of the same year.<sup class="cite"><a href="#ref-1">[1]</a><a href="#ref-2">[2]</a><a href="#ref-8">[8]</a></sup> This near-doubling of usage within a single semester suggests that AI has moved from a niche utility to a mainstream advisory surrogate, functioning as a "cognitive filter" that redefines the initial informational interaction between student and institution.<sup class="cite"><a href="#ref-9">[9]</a></sup></p>
+
+        <p>The integration of AI into the search process is not limited to standalone chatbots like ChatGPT or Claude. Approximately 79% of prospective students report reading Google's AI-generated overviews before engaging with traditional organic links.<sup class="cite"><a href="#ref-5">[5]</a><a href="#ref-6">[6]</a><a href="#ref-10">[10]</a></sup></p>
+
+        <div class="table-block">
+          <div class="table-title">Longitudinal AI Integration Metrics (2024–2026)</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Metric</th><th>Spring 2024</th><th>Spring 2025</th><th>Fall 2025</th><th>Early 2026</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>High School Student AI Adoption</td><td>12%</td><td>26%</td><td>46%</td><td><span class="badge badge-gold">48%</span></td>
+                </tr>
+                <tr>
+                  <td>Weekly AI Search Frequency</td><td>15%</td><td>31%</td><td>50%</td><td><span class="badge badge-gold">52%</span></td>
+                </tr>
+                <tr>
+                  <td>AI Overview Interaction Rate</td><td>N/A</td><td>44%</td><td>79%</td><td><span class="badge badge-gold">81%</span></td>
+                </tr>
+                <tr>
+                  <td>Trust in AI-Generated Citations</td><td>18%</td><td>34%</td><td>56%</td><td><span class="badge badge-gold">58%</span></td>
+                </tr>
+                <tr>
+                  <td>Zero-Click Search Prevalence</td><td>50%</td><td>60%</td><td>62%</td><td><span class="badge badge-gold">64.82%</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Data compiled and synthesized from
+            <sup class="cite"><a href="#ref-1">[1]</a><a href="#ref-5">[5]</a><a href="#ref-6">[6]</a><a href="#ref-9">[9]</a><a href="#ref-11">[11]</a><a href="#ref-12">[12]</a><a href="#ref-13">[13]</a></sup>
+          </p>
+        </div>
+
+        <p>The transition to AI-mediated search is driven by three primary psychological and practical imperatives: speed, synthesis, and conversational interrogation. According to recent surveys, <strong>62% of prospective students</strong> cite the need for speed and convenience as their primary motivation for utilizing AI search engines.<sup class="cite"><a href="#ref-3">[3]</a><a href="#ref-14">[14]</a></sup> These tools allow students to bypass the laborious process of navigating through complex, often disparate university websites, which frequently bury critical data such as tuition, admission requirements, and career outcomes under layers of marketing-heavy navigation.<sup class="cite"><a href="#ref-4">[4]</a></sup> AI effectively compresses this research by aggregating disparate data points into cohesive, comparative summaries.<sup class="cite"><a href="#ref-5">[5]</a><a href="#ref-15">[15]</a></sup></p>
+      </div>
+    </section>
+
+    <!-- ══════════ 03 PSYCHOLOGICAL DRIVERS ══════════ -->
+    <section class="report-section" id="section-psych">
+      <div class="section-header">
+        <div class="section-icon">🧠</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 03 · Behavioral Science</div>
+          <h2>Psychological Drivers &amp; the Rise of Conversational Interrogation</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>The shift from fragmented keyword queries (e.g., <em>"nursing schools California"</em>) to long-tail, natural language prompts (e.g., <em>"What are the most affordable online RN to BSN programs in California that allow local clinicals?"</em>) signifies a move toward "Search as Conversation."<sup class="cite"><a href="#ref-15">[15]</a><a href="#ref-16">[16]</a></sup> Students are increasingly treating AI as a surrogate for real-world advisors, with <strong>one in four</strong> reported to be engaged in ongoing, multi-turn conversations with AI tools about their college search.<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+        <div class="table-block">
+          <div class="table-title">Evolution of Search Queries &amp; Student Intent</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Search Mode</th><th>Traditional Keyword</th><th>AI Natural Language Prompt</th><th>Intent Category</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Discovery</strong></td>
+                  <td>"Best MBA programs Boston"</td>
+                  <td>"Compare top-ranked MBA programs in Boston for ROI and alumni networking."</td>
+                  <td><span class="badge badge-blue">Comparative Synthesis</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Requirements</strong></td>
+                  <td>"GPA for Stanford"</td>
+                  <td>"What is the minimum GPA and SAT score needed for Stanford, and what extracurriculars do they prefer?"</td>
+                  <td><span class="badge badge-blue">Deep Fact-Finding</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Financials</strong></td>
+                  <td>"UC Berkeley tuition"</td>
+                  <td>"What is the total cost of attendance for an out-of-state engineering student at UC Berkeley including housing?"</td>
+                  <td><span class="badge badge-blue">Comprehensive Costing</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Outcomes</strong></td>
+                  <td>"Nursing jobs salary California"</td>
+                  <td>"Which nursing programs in California have the highest NCLEX pass rates and job placement in high-paying hospitals?"</td>
+                  <td><span class="badge badge-blue">Outcome-First Research</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Logistics</strong></td>
+                  <td>"Application deadline college"</td>
+                  <td>"Build a 3-month schedule for applying to six liberal arts colleges with January deadlines."</td>
+                  <td><span class="badge badge-blue">Process Management</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Analysis of query patterns based on <sup class="cite"><a href="#ref-1">[1]</a><a href="#ref-4">[4]</a><a href="#ref-7">[7]</a><a href="#ref-15">[15]</a></sup></p>
+        </div>
+
+        <div class="callout info" style="margin-top:20px;">
+          <div class="callout-icon">🔍</div>
+          <div class="callout-text">
+            <strong>Funnel Stage Breakdown</strong>
+            AI search engines most heavily influence the <strong>Awareness</strong> (21%) and <strong>Shortlisting</strong> (22%) stages. Even in the final Decide &amp; Apply phase, 18% of students still use AI as a checkpoint to verify details and reduce uncertainty.<sup class="cite"><a href="#ref-3">[3]</a></sup>
+          </div>
+        </div>
+
+        <div class="progress-group" style="margin-top:20px;">
+          <div class="table-title">Motivation Factors for AI Adoption in College Search</div>
+          <div class="progress-item">
+            <div class="progress-label"><span>Speed &amp; Convenience <sup class="cite"><a href="#ref-3">[3]</a><a href="#ref-14">[14]</a></sup></span><span>62%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:62%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-label"><span>Contextual Deep Understanding <sup class="cite"><a href="#ref-5">[5]</a><a href="#ref-16">[16]</a></sup></span><span>61–84%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:75%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-label"><span>Citation-Driven Trust <sup class="cite"><a href="#ref-5">[5]</a><a href="#ref-6">[6]</a><a href="#ref-10">[10]</a></sup></span><span>56%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:56%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-label"><span>One-to-One Assistance <sup class="cite"><a href="#ref-3">[3]</a><a href="#ref-5">[5]</a></sup></span><span>45%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:45%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-label"><span>Quality of Information <sup class="cite"><a href="#ref-3">[3]</a><a href="#ref-5">[5]</a></sup></span><span>42%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:42%"></div></div>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Data sourced from <sup class="cite"><a href="#ref-3">[3]</a><a href="#ref-5">[5]</a><a href="#ref-16">[16]</a></sup></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 04 STEALTH APPLICANT ══════════ -->
+    <section class="report-section" id="section-stealth">
+      <div class="section-header">
+        <div class="section-icon">👻</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 04 · Enrollment Intelligence</div>
+          <h2>The Stealth Applicant Crisis: Data Opacity &amp; Funnel Invisibility</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>The reliance on AI search engines has fundamentally exacerbated the "stealth applicant" phenomenon, a challenge that has plagued enrollment marketers for over a decade but has reached a critical inflection point in 2026. Historically, "stealth applicants" were students who remained unknown to an institution — failing to fill out inquiry forms or attend virtual tours — until the moment they submitted a formal application.<sup class="cite"><a href="#ref-17">[17]</a><a href="#ref-18">[18]</a></sup> In 2026, research demonstrates that up to <strong>80% of prospective students</strong> are operating in this stealth mode, particularly in the graduate and adult learner segments.<sup class="cite"><a href="#ref-4">[4]</a><a href="#ref-18">[18]</a><a href="#ref-19">[19]</a><a href="#ref-20">[20]</a></sup></p>
+
+        <p>The growth of AI search platforms like ChatGPT, Gemini, and Perplexity has created a "zero-click" environment where students can conduct deep institutional research without ever visiting a university's proprietary domain.<sup class="cite"><a href="#ref-12">[12]</a><a href="#ref-21">[21]</a><a href="#ref-22">[22]</a></sup> This results in an "invisible pipeline" where institutions lose the ability to nurture prospects through traditional CRM-based email and text campaigns.<sup class="cite"><a href="#ref-4">[4]</a><a href="#ref-17">[17]</a><a href="#ref-20">[20]</a></sup></p>
+
+        <div class="callout danger">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-text">
+            <strong>Critical Risk</strong>
+            36% of prospective students report being less likely to consider a college if it does not appear in their AI search results, and 18% have actively removed an institution from their shortlist based on an AI-generated response — before any human interaction occurred.<sup class="cite"><a href="#ref-1">[1]</a><a href="#ref-3">[3]</a><a href="#ref-23">[23]</a></sup>
+          </div>
+        </div>
+
+        <div class="table-block" style="margin-top:24px;">
+          <div class="table-title">Impact of Stealth Behaviors on Institutional Predictability</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Recruitment Factor</th><th>Traditional Model (Pre-2020)</th><th>AI-Era Model (2025–2026)</th><th>Strategic Implication</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Visibility</strong></td><td>Controlled via direct marketing and SEO</td><td>Mediated by AI LLM training data and RAG</td><td>Focus must shift to AI visibility audits</td></tr>
+                <tr><td><strong>Engagement</strong></td><td>Measured by inquiry forms and downloads</td><td>"Dark" engagement within AI chat interfaces</td><td>Inquiry volume is no longer a valid KPI</td></tr>
+                <tr><td><strong>Relationship</strong></td><td>Built over 12–18 months of nurturing</td><td>Formed instantly via AI-generated summaries</td><td>The window for institutional influence is shrinking</td></tr>
+                <tr><td><strong>Funnel Logic</strong></td><td>Predictable conversion from lead to app</td><td>Unpredictable arrival of stealth applicants</td><td>Yield predictability declines significantly</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Analysis based on <sup class="cite"><a href="#ref-4">[4]</a><a href="#ref-17">[17]</a><a href="#ref-18">[18]</a><a href="#ref-20">[20]</a></sup></p>
+        </div>
+
+        <p>This dark search process means that if a university's data is not accurately represented within an LLM's training set or is not accessible via real-time retrieval-augmented generation (RAG), the institution risks being eliminated from the student's consideration set before a single human interaction occurs.<sup class="cite"><a href="#ref-7">[7]</a><a href="#ref-22">[22]</a></sup></p>
+      </div>
+    </section>
+
+    <!-- ══════════ 05 ZERO-CLICK ══════════ -->
+    <section class="report-section" id="section-zeroclicks">
+      <div class="section-header">
+        <div class="section-icon">📉</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 05 · Technical Erosion</div>
+          <h2>Zero-Click Search &amp; The Great Decoupling</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>The rollout of AI-powered search features has triggered what industry analysts describe as <strong>"The Great Decoupling"</strong> — a phenomenon where total search volume continues to rise while organic clicks to external websites decline sharply.<sup class="cite"><a href="#ref-13">[13]</a></sup> In 2026, approximately <strong>64.82% of all Google searches</strong> end without a user clicking through to any website, a steady climb from 50% in 2019.<sup class="cite"><a href="#ref-12">[12]</a><a href="#ref-13">[13]</a></sup> This zero-click trend is particularly aggressive on mobile devices, where the rate reaches as high as <strong>77.2%</strong>.<sup class="cite"><a href="#ref-13">[13]</a></sup></p>
+
+        <p>The presence of an AI Overview in search results correlates with a <strong>58% lower average click-through rate (CTR)</strong> for the top-ranking organic page.<sup class="cite"><a href="#ref-12">[12]</a><a href="#ref-21">[21]</a><a href="#ref-24">[24]</a></sup> This represents a fundamental shift in the economics of SEO. Historically, a position-one ranking ensured a dominant share of traffic; in the AI era, a position-one ranking may still yield zero traffic if the AI Overview satisfies the user's query directly on the SERP.</p>
+
+        <div class="table-block">
+          <div class="table-title">CTR Erosion &amp; the Conversion Paradox</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Metric</th><th>Traditional Organic Traffic</th><th>Post-AI Overview Referral</th><th>Variance</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Click-Through Rate (Pos. 1)</strong></td><td>15% – 31.7%</td><td>8% – 19.8%</td><td><span class="badge badge-red">−47% to −58%</span></td></tr>
+                <tr><td><strong>Conversion Rate</strong></td><td>2.8%</td><td>14.2%</td><td><span class="badge badge-green">+407%</span></td></tr>
+                <tr><td><strong>Bounce Rate</strong></td><td>48% – 55%</td><td>28% – 32%</td><td><span class="badge badge-green">−41%</span></td></tr>
+                <tr><td><strong>Session Duration</strong></td><td>1 min 45 sec</td><td>3 min 12 sec</td><td><span class="badge badge-green">+34%</span></td></tr>
+                <tr><td><strong>Pages per Session</strong></td><td>1.8</td><td>2.7</td><td><span class="badge badge-green">+50%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Metrics compiled from <sup class="cite"><a href="#ref-12">[12]</a><a href="#ref-13">[13]</a><a href="#ref-21">[21]</a><a href="#ref-24">[24]</a><a href="#ref-25">[25]</a></sup></p>
+        </div>
+
+        <div class="callout success" style="margin-top:20px;">
+          <div class="callout-icon">✅</div>
+          <div class="callout-text">
+            <strong>The Conversion Paradox</strong>
+            AI acts as a pre-qualification layer. Users who click through from an AI overview to a program page have already had preliminary questions answered and are moving deeper into the consideration phase — exhibiting <strong>407% higher conversion rates</strong> and <strong>50% more pages per session</strong>. This necessitates a shift in strategy from "Traffic Acquisition" to "Visibility and Influence."<sup class="cite"><a href="#ref-12">[12]</a><a href="#ref-21">[21]</a><a href="#ref-25">[25]</a></sup>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 06 TRUST ══════════ -->
+    <section class="report-section" id="section-trust">
+      <div class="section-header">
+        <div class="section-icon">🔐</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 06 · Credibility Dynamics</div>
+          <h2>Trust, Credibility &amp; the Paradox of Institutional Authority</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>While AI usage for discovery is surging, a complex dynamic regarding trust and credibility has emerged. Institutional websites remain the "anchor of trust," with <strong>77% of respondents</strong> rating them as the most reliable source for program research.<sup class="cite"><a href="#ref-4">[4]</a><a href="#ref-5">[5]</a><a href="#ref-6">[6]</a></sup> However, AI is rapidly gaining a secondary form of credibility through the "citation effect." Research indicates that <strong>56% of students</strong> are more likely to trust a brand or institution if it is explicitly cited by an AI tool.<sup class="cite"><a href="#ref-5">[5]</a><a href="#ref-6">[6]</a><a href="#ref-10">[10]</a></sup></p>
+
+        <p>This creates a critical feedback loop: AI surfaces the institution, the student verifies the information on the official website, and trust is compounded. Conversely, a lack of citation in an AI overview acts as a signal of obscurity or non-existence. This dynamic has turned AI into a new kind of "gatekeeper."<sup class="cite"><a href="#ref-3">[3]</a></sup> While students approach social media and traditional rankings with some skepticism, AI results often carry an "illusion of omniscience" that provides a false sense of certainty.<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+
+        <div class="table-block">
+          <div class="table-title">Factors Influencing Trust &amp; AI Adoption</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Motivation Factor</th><th>Prevalence</th><th>Impact on Discovery</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Speed and Convenience</strong></td><td><span class="badge badge-gold">62%</span></td><td>Accelerates shortlist formation; reduces direct site visits</td></tr>
+                <tr><td><strong>One-to-One Assistance</strong></td><td><span class="badge badge-gold">45%</span></td><td>Creates a personalized advisory experience at scale</td></tr>
+                <tr><td><strong>Quality of Information</strong></td><td><span class="badge badge-gold">42%</span></td><td>Increases reliance on AI for objective fact-checking</td></tr>
+                <tr><td><strong>Contextual Deep Understanding</strong></td><td><span class="badge badge-gold">61%–84%</span></td><td>Helps students decode complex academic and financial jargon</td></tr>
+                <tr><td><strong>Citation-Driven Trust</strong></td><td><span class="badge badge-gold">56%</span></td><td>Increases institutional credibility when referenced by LLMs</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Data sourced from <sup class="cite"><a href="#ref-3">[3]</a><a href="#ref-5">[5]</a><a href="#ref-16">[16]</a></sup></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 07 HALLUCINATIONS ══════════ -->
+    <section class="report-section" id="section-hallucinations">
+      <div class="section-header">
+        <div class="section-icon">🚨</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 07 · Risk Assessment</div>
+          <h2>Hallucinations, Information Inequity &amp; the Credibility Crisis</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>The primary barrier to universal AI adoption in the college search is the persistent risk of "hallucinations" — instances where the AI generates inaccurate, outdated, or fabricated information with a high degree of confidence.<sup class="cite"><a href="#ref-26">[26]</a><a href="#ref-27">[27]</a><a href="#ref-28">[28]</a></sup> In higher education, these are particularly dangerous when they involve financial aid, tuition, and admissions requirements. Admissions experts warn that AI results often lack the required nuance for complex queries regarding affordability, where individual context — such as household income, state residency, and merit-based eligibility — is vital.<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+
+        <p>Researchers report that LLMs generate impressive fluency even when hallucinating, delivering precise details like exact dates, specific percentages, and detailed procedures with a confidence that makes them highly believable.<sup class="cite"><a href="#ref-28">[28]</a></sup> This has led to a growing "hallucination crisis" in professional fields; for instance, the AI Hallucination Cases Database tracked <strong>1,174 court and tribunal decisions</strong> by early 2026 where judges confronted AI-generated fabrications in legal filings.<sup class="cite"><a href="#ref-26">[26]</a></sup> This trend serves as a cautionary tale for higher education: relying on AI to draft application essays or research program requirements without rigorously fact-checking the output risks critical errors.<sup class="cite"><a href="#ref-27">[27]</a></sup></p>
+
+        <div class="callout warning">
+          <div class="callout-icon">⚖️</div>
+          <div class="callout-text">
+            <strong>The Inequity of Flawed AI Results</strong>
+            The impact of flawed AI results is not distributed equally. Families with financial resources can hire private educational consultants to verify AI-generated data.<sup class="cite"><a href="#ref-2">[2]</a></sup> First-generation and low-income students, who may lack such support, are more likely to become overly reliant on chatbots for critical financial decisions.<sup class="cite"><a href="#ref-2">[2]</a></sup> If an AI fails to identify a specific scholarship or misinterprets tuition remission policies, these students may discard viable options based on erroneous information, potentially exacerbating existing educational inequities.<sup class="cite"><a href="#ref-2">[2]</a><a href="#ref-29">[29]</a></sup>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 08 FRAUD ══════════ -->
+    <section class="report-section" id="section-fraud">
+      <div class="section-header">
+        <div class="section-icon">🕵️</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 08 · Threat Intelligence</div>
+          <h2>The Dark Side: Ghost Students, Fraud &amp; Identity Theft</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>As universities optimize their digital presence for AI retrieval, they must also contend with the rise of <strong>"Ghost Student" scams</strong> and sophisticated financial aid fraud. In 2024 and 2025, criminal networks increasingly utilized AI to manufacture synthetic identities and automate fraudulent applications to higher education institutions.<sup class="cite"><a href="#ref-30">[30]</a><a href="#ref-31">[31]</a></sup></p>
+
+        <p>These "ghost students" are often AI-powered bots that use stolen personal data and Social Security numbers to enroll in online courses, meet minimal participation requirements, and trigger the disbursement of federal and state financial aid.<sup class="cite"><a href="#ref-30">[30]</a><a href="#ref-32">[32]</a></sup> In 2024 alone, California community colleges reported over <strong>1.2 million suspicious applications</strong> and 223,000 suspected fake enrollments, resulting in <strong>$13 million in lost funds</strong>.<sup class="cite"><a href="#ref-30">[30]</a><a href="#ref-31">[31]</a></sup></p>
+
+        <div class="table-block">
+          <div class="table-title">Mechanism of AI-Driven Financial Aid Fraud</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Phase of Fraud</th><th>AI Involvement</th><th>Operational Outcome</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Identity Creation</strong></td><td>Generative AI creates synthetic or repurposed identities</td><td>Bypasses traditional enrollment checks</td></tr>
+                <tr><td><strong>Application Submission</strong></td><td>Bots automate mass submissions to multiple colleges</td><td>Overwhelms manual review processes</td></tr>
+                <tr><td><strong>Course Participation</strong></td><td>AI scripts log into online portals and perform tasks</td><td>Satisfies participation checks for aid disbursement</td></tr>
+                <tr><td><strong>Fund Disbursement</strong></td><td>FAFSA forms are triggered by fake enrollment status</td><td>Funds directed to scammer-controlled accounts</td></tr>
+                <tr><td><strong>Disappearance</strong></td><td>Bots "drop" courses once funds are confirmed</td><td>Leaves victims (whose SSNs were used) with debt</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Process analysis based on <sup class="cite"><a href="#ref-30">[30]</a><a href="#ref-31">[31]</a><a href="#ref-32">[32]</a></sup></p>
+        </div>
+
+        <p>The U.S. Department of Education implemented enhanced fraud controls in 2025, including mandatory identity verification for first-time applicants, which successfully halted over <strong>$1 billion in attempted aid theft</strong>.<sup class="cite"><a href="#ref-32">[32]</a></sup> However, the presence of ghost students in key courses can still fill enrollment caps, preventing genuine students from registering for the classes they need to graduate.<sup class="cite"><a href="#ref-30">[30]</a></sup></p>
+      </div>
+    </section>
+
+    <!-- ══════════ 09 GEO ══════════ -->
+    <section class="report-section" id="section-geo">
+      <div class="section-header">
+        <div class="section-icon">⚙️</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 09 · Technical Strategy</div>
+          <h2>Generative Engine Optimization (GEO): The 2026 Playbook</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>In response to the zero-click landscape, a new set of disciplines has emerged: <strong>Generative Engine Optimization (GEO)</strong> and <strong>Answer Engine Optimization (AEO)</strong>. Unlike traditional SEO, which focuses on ranking in a list of links, GEO and AEO are designed to ensure an institution is cited, summarized, and recommended by the Large Language Models (LLMs) themselves.<sup class="cite"><a href="#ref-22">[22]</a><a href="#ref-33">[33]</a><a href="#ref-34">[34]</a></sup></p>
+
+        <p>The mechanisms of GEO are grounded in a 2023 research framework developed by researchers at Princeton, Georgia Tech, and other institutions.<sup class="cite"><a href="#ref-34">[34]</a></sup> Their study, titled "GEO: Generative Engine Optimization," introduced a benchmark of 10,000 queries and established that specific optimization techniques could <strong>boost content visibility in AI responses by 30–40%</strong>.<sup class="cite"><a href="#ref-34">[34]</a></sup></p>
+
+        <div class="callout info" style="margin-bottom:20px;">
+          <div class="callout-icon">🏗️</div>
+          <div class="callout-text">
+            <strong>Four Strategic Pillars of GEO Implementation</strong>
+            <br><br>
+            <strong>1. Structured Data &amp; Schema Nesting:</strong> JSON-LD schema markup is critical for helping AI systems clearly understand and summarize content. Strategic schema nesting — such as nesting FAQPage schema inside Article or Course schema — increases citation frequency by approximately 40%.<sup class="cite"><a href="#ref-35">[35]</a><a href="#ref-36">[36]</a></sup>
+            <br><br>
+            <strong>2. Entity-Based SEO &amp; NLP Grounding:</strong> Utilizing NLP techniques — such as placing concise, direct answers within the first 200 words — improves the likelihood of the content being used to "ground" an AI response.<sup class="cite"><a href="#ref-22">[22]</a><a href="#ref-37">[37]</a><a href="#ref-38">[38]</a></sup>
+            <br><br>
+            <strong>3. Factual Specificity &amp; Statistics:</strong> Adding statistics and verifiable claims improved visibility by up to 40%. AI models prioritize content with specific data points, quotes from experts, and clear attribution.<sup class="cite"><a href="#ref-34">[34]</a></sup>
+            <br><br>
+            <strong>4. Information Architecture &amp; Canonical Truth:</strong> If tuition data on a program page differs from a PDF or third-party listing, AI models may choose not to cite the institution due to low confidence.<sup class="cite"><a href="#ref-7">[7]</a><a href="#ref-22">[22]</a></sup>
+          </div>
+        </div>
+
+        <div class="table-block">
+          <div class="table-title">Comparison of Optimization Strategies for 2026</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Strategy</th><th>Primary Target</th><th>Core Tactic</th><th>Success Metric</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Traditional SEO</strong></td><td>Search Engine Crawlers</td><td>Meta tags, backlinks, keywords</td><td>Organic Traffic, CTR</td></tr>
+                <tr><td><strong>GEO</strong></td><td>LLMs and RAG Systems</td><td>Schema nesting, statistics, factual depth</td><td>Citation frequency, Share of Model</td></tr>
+                <tr><td><strong>AEO</strong></td><td>Chat interfaces / Voice</td><td>Q&amp;A formatting, conversational prose</td><td>Inclusion in AI summaries</td></tr>
+                <tr><td><strong>Video SEO</strong></td><td>YouTube, TikTok</td><td>Transcripts, captions, keyword titles</td><td>Video views, discovery engagement</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Source: <sup class="cite"><a href="#ref-22">[22]</a><a href="#ref-33">[33]</a><a href="#ref-34">[34]</a><a href="#ref-35">[35]</a><a href="#ref-37">[37]</a></sup></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 10 DEMOGRAPHICS ══════════ -->
+    <section class="report-section" id="section-demo">
+      <div class="section-header">
+        <div class="section-icon">🌍</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 10 · Demographic Analysis</div>
+          <h2>Demographic &amp; Generational Divergence in AI Usage</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>The adoption of AI in education is not uniform, showing significant divergence across gender, socioeconomic status, and geography. In the United States, gender appears to be a factor in how teens engage with AI; boys report using AI more frequently. Approximately <strong>42% of American boys</strong> use chatbots daily, compared to <strong>30% of girls</strong>.<sup class="cite"><a href="#ref-16">[16]</a></sup></p>
+
+        <p>Geographically, the United States ranks <strong>24th globally</strong> in general population AI adoption (28.3%), trailing countries like Singapore (61%) and the United Arab Emirates (54%).<sup class="cite"><a href="#ref-11">[11]</a></sup> However, the adoption among the student demographic remains an outlier, with over <strong>80% of U.S. high school and college students</strong> utilizing AI for school-related tasks.<sup class="cite"><a href="#ref-11">[11]</a></sup> This rapid normalization among the youth suggests a coming "generational ambivalence," where students use AI as a tutor and assistant but express anxiety about its impact on their future careers.<sup class="cite"><a href="#ref-9">[9]</a></sup></p>
+
+        <div class="table-block">
+          <div class="table-title">Global Teen Attitudes Toward AI (2025–2026)</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Region</th><th>Daily Chatbot Usage</th><th>Believe AI Helps Deep Learning</th><th>Use AI for College Planning Advice</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>🇧🇷 Brazil</td><td><span class="badge badge-gold">46%</span></td><td><span class="badge badge-green">84%</span></td><td>33%</td></tr>
+                <tr><td>🇺🇸 United States</td><td><span class="badge badge-gold">36%</span></td><td><span class="badge badge-green">61%</span></td><td>31%</td></tr>
+                <tr><td>🇫🇷 France</td><td><span class="badge badge-gold">20%</span></td><td><span class="badge badge-green">68%</span></td><td>10%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Data sourced from <sup class="cite"><a href="#ref-16">[16]</a></sup></p>
+        </div>
+
+        <p style="margin-top:16px;">In the U.S., the rapid growth of AI in college search is likely tied to the high cost of education and the resulting anxiety around ROI. Students are using AI to "decode jargon" and "check ROI" as a defensive mechanism against the high financial stakes of their decisions.<sup class="cite"><a href="#ref-39">[39]</a></sup></p>
+      </div>
+    </section>
+
+    <!-- ══════════ 11 READINESS ══════════ -->
+    <section class="report-section" id="section-readiness">
+      <div class="section-header">
+        <div class="section-icon">🏛️</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 11 · Institutional Assessment</div>
+          <h2>Institutional Readiness &amp; The Governance Gap</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>Despite the rapid shift in student behavior, institutional readiness lags significantly. While 50% of students use AI weekly, only <strong>30% of higher education institutions</strong> report having a formal AI search strategy in place as of late 2025.<sup class="cite"><a href="#ref-5">[5]</a><a href="#ref-7">[7]</a></sup> Most institutions (60%) are still in the "early stages of exploring" AI search, and <strong>10% believe AI search will not significantly impact student discovery at all</strong>.<sup class="cite"><a href="#ref-5">[5]</a><a href="#ref-7">[7]</a></sup></p>
+
+        <p>The barriers to implementation are largely structural rather than philosophical. Approximately <strong>70% of institutions</strong> cite limited bandwidth or competing priorities, and 36% cite a lack of in-house expertise or training.<sup class="cite"><a href="#ref-7">[7]</a></sup> This "visibility gap" represents a strategic risk; if institutions waiting for "clear ROI" data delay their AI-facing optimizations, they may find themselves permanently excluded from the algorithmic consideration sets being built by current prospects.<sup class="cite"><a href="#ref-6">[6]</a><a href="#ref-7">[7]</a></sup></p>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">30%</div>
+            <div class="stat-label">of institutions have a formal AI search strategy <sup class="cite"><a href="#ref-5" style="color:#fff;background:rgba(255,255,255,0.2)">[5]</a><a href="#ref-7" style="color:#fff;background:rgba(255,255,255,0.2)">[7]</a></sup></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">70%</div>
+            <div class="stat-label">cite limited bandwidth as the primary barrier <sup class="cite"><a href="#ref-7" style="color:#fff;background:rgba(255,255,255,0.2)">[7]</a></sup></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">10%</div>
+            <div class="stat-label">believe AI search won't significantly impact discovery <sup class="cite"><a href="#ref-5" style="color:#fff;background:rgba(255,255,255,0.2)">[5]</a><a href="#ref-7" style="color:#fff;background:rgba(255,255,255,0.2)">[7]</a></sup></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">60%</div>
+            <div class="stat-label">still in early exploration phase only <sup class="cite"><a href="#ref-5" style="color:#fff;background:rgba(255,255,255,0.2)">[5]</a><a href="#ref-7" style="color:#fff;background:rgba(255,255,255,0.2)">[7]</a></sup></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 12 DEGREE VALUE ══════════ -->
+    <section class="report-section" id="section-impact">
+      <div class="section-header">
+        <div class="section-icon">🎓</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 12 · Student Sentiment</div>
+          <h2>AI's Impact on Careers &amp; the Perceived Value of a Degree</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>A survey of high school students conducted in late 2025 revealed a growing skepticism about the long-term value of a traditional degree in the AI era. These findings highlight a twofold challenge: institutions must not only optimize for AI discovery but also demonstrate their ability to integrate AI into their curricula while reassuring students of the enduring value of human-centric skills like critical thinking and complex problem-solving.<sup class="cite"><a href="#ref-9">[9]</a></sup></p>
+
+        <div class="table-block">
+          <div class="table-title">High School Student Perceptions of AI &amp; Future Careers</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Student Perception</th><th>% of Respondents</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Believe AI tools are essential for academic success</td><td><span class="badge badge-gold">65%</span></td></tr>
+                <tr><td>Feel "uncertain" about AI's effect on their future</td><td><span class="badge badge-blue">44%</span></td></tr>
+                <tr><td>AI will influence their chosen career path</td><td><span class="badge badge-blue">43%</span></td></tr>
+                <tr><td>AI makes them consider alternatives to college (apprenticeships/business)</td><td><span class="badge badge-red">39%</span></td></tr>
+                <tr><td>AI will reduce the number of jobs requiring a degree</td><td><span class="badge badge-red">38%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:0.77rem;color:var(--muted);margin-top:8px;">Data sourced from <sup class="cite"><a href="#ref-1">[1]</a><a href="#ref-8">[8]</a><a href="#ref-9">[9]</a><a href="#ref-40">[40]</a></sup></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 13 FUTURE STRATEGY ══════════ -->
+    <section class="report-section" id="section-future">
+      <div class="section-header">
+        <div class="section-icon">🔭</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 13 · Forward Outlook</div>
+          <h2>The Future of Institutional Strategy in an AI-First World</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>For university leadership, the transition to an AI-first search environment necessitates a total re-evaluation of the enrollment pipeline. The evidence suggests that institutions that wait for a "clear ROI" on AI strategy before acting are likely to fall behind as student behavior accelerates.<sup class="cite"><a href="#ref-6">[6]</a><a href="#ref-7">[7]</a></sup> A formal AI search strategy requires more than technical adjustments; it requires operational alignment across admissions, marketing, and IT to ensure data accuracy and visibility.<sup class="cite"><a href="#ref-7">[7]</a></sup></p>
+
+        <p>The rise of AI as a primary search tool marks the end of the traditional, linear enrollment funnel. In this new paradigm, the algorithm acts as a powerful gatekeeper, shaping first impressions and influencing real enrollment decisions long before an institution has direct contact with a prospect. The decoupling of search volume from website traffic means that <strong>"visibility" no longer guarantees "visits," but it remains a prerequisite for "consideration."</strong><sup class="cite"><a href="#ref-12">[12]</a><a href="#ref-13">[13]</a></sup></p>
+
+        <p>Institutions that successfully adapt will be those that embrace technical GEO disciplines<sup class="cite"><a href="#ref-22">[22]</a><a href="#ref-33">[33]</a><a href="#ref-34">[34]</a></sup>, maintain rigorous data integrity<sup class="cite"><a href="#ref-7">[7]</a><a href="#ref-22">[22]</a></sup>, and understand that their website's primary function has changed: it is no longer just a destination for students, but the foundational source material for the AI assistants that will guide the next generation of learners.</p>
+
+        <div class="callout info">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-text">
+            <strong>Strategic Imperative</strong>
+            Visibility in 2026 is distributed across traditional search, AI interfaces, and social platforms like YouTube, TikTok, and Reddit.<sup class="cite"><a href="#ref-6">[6]</a><a href="#ref-41">[41]</a></sup> An effective strategy ensures a consistent brand narrative across all these platforms, as they all serve as signals for the LLMs that synthesize information for students.<sup class="cite"><a href="#ref-41">[41]</a></sup>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 14 RECOMMENDATIONS ══════════ -->
+    <section class="report-section" id="section-recs">
+      <div class="section-header">
+        <div class="section-icon">✅</div>
+        <div class="section-header-text">
+          <div class="section-label">Section 14 · Strategic Recommendations</div>
+          <h2>Priority Actions for 2026 and Beyond</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <ul class="rec-list">
+          <li>
+            <div class="rec-num">1</div>
+            <div class="rec-content">
+              <strong>Establish Data Discipline</strong>
+              <p>Treat programmatic data as a strategic asset. Inconsistent data across various digital touchpoints is the primary driver of AI hallucinations and exclusions.<sup class="cite"><a href="#ref-7">[7]</a><a href="#ref-22">[22]</a></sup> Centralizing "Source of Truth" data for tuition, outcomes, and requirements is non-negotiable.</p>
+            </div>
+          </li>
+          <li>
+            <div class="rec-num">2</div>
+            <div class="rec-content">
+              <strong>Prioritize Answer-First Content</strong>
+              <p>Move away from brochure-style copy toward a "reference material" structure. Pages that feature clear headers, direct answers, and tabular data are significantly more likely to be cited by AI retrieval systems.<sup class="cite"><a href="#ref-7">[7]</a><a href="#ref-34">[34]</a></sup></p>
+            </div>
+          </li>
+          <li>
+            <div class="rec-num">3</div>
+            <div class="rec-content">
+              <strong>Embrace Multi-Channel Orchestration</strong>
+              <p>Visibility in 2026 is distributed across traditional search, AI interfaces, and social platforms like YouTube, TikTok, and Reddit.<sup class="cite"><a href="#ref-6">[6]</a><a href="#ref-41">[41]</a></sup> Ensure a consistent brand narrative across all platforms — they all serve as signals for the LLMs that synthesize information for students.<sup class="cite"><a href="#ref-41">[41]</a></sup></p>
+            </div>
+          </li>
+          <li>
+            <div class="rec-num">4</div>
+            <div class="rec-content">
+              <strong>Humanize the "Final Mile"</strong>
+              <p>As AI handles the initial discovery and comparison, the role of the university website and human interactions shifts toward verification and "human connection."<sup class="cite"><a href="#ref-4">[4]</a><a href="#ref-17">[17]</a></sup> While AI can synthesize facts, it cannot replicate the authentic voices of students and faculty. Pair hard data with real student narratives to win both the algorithm and the human.<sup class="cite"><a href="#ref-39">[39]</a></sup></p>
+            </div>
+          </li>
+          <li>
+            <div class="rec-num">5</div>
+            <div class="rec-content">
+              <strong>Operationalize AI Ethics &amp; Fraud Prevention</strong>
+              <p>In light of the "ghost student" epidemic, institutions must implement AI-driven identity verification and fraud detection platforms to protect their federal student aid integrity and ensure that legitimate students have access to courses.<sup class="cite"><a href="#ref-30">[30]</a></sup></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════ REFERENCES ══════════ -->
+    <section class="report-section" id="references">
+      <div class="section-header">
+        <div class="section-icon">📚</div>
+        <div class="section-header-text">
+          <div class="section-label">Source Documentation</div>
+          <h2>References &amp; Primary Sources</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="ref-grid">
+
+          <div class="ref-item" id="ref-1">
+            <div class="ref-num">1</div>
+            <div><a href="https://www.higheredjobs.com/articles/articleDisplay.cfm?ID=4617" target="_blank" rel="noopener">Nearly Half of High School Students Now Use AI to Search for Colleges, Survey Finds</a><span class="ref-domain">higheredjobs.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-2">
+            <div class="ref-num">2</div>
+            <div><a href="https://feed.georgetown.edu/access-affordability/how-ai-is-changing-students-college-search/" target="_blank" rel="noopener">How AI is changing students' college search – THE FEED</a><span class="ref-domain">feed.georgetown.edu</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-3">
+            <div class="ref-num">3</div>
+            <div><a href="https://www.manaferra.com/ai-search-in-college-search-process/" target="_blank" rel="noopener">AI Search Is Already Changing How Students Choose Colleges</a><span class="ref-domain">manaferra.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-4">
+            <div class="ref-num">4</div>
+            <div><a href="https://eab.com/resources/blog/adult-education-blog/ai-amplifying-stealth-search-behavior/" target="_blank" rel="noopener">Here's how AI is amplifying stealth search behavior – EAB</a><span class="ref-domain">eab.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-5">
+            <div class="ref-num">5</div>
+            <div><a href="https://www.searchinfluence.com/blog/30-ai-search-higher-education-stats-2026/" target="_blank" rel="noopener">30+ AI Search in Higher Education Stats [2026]</a><span class="ref-domain">searchinfluence.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-6">
+            <div class="ref-num">6</div>
+            <div><a href="https://www.searchinfluence.com/blog/ai-search-in-higher-education-how-students-search-2025/" target="_blank" rel="noopener">AI Search in Higher Education: How Students Search 2025</a><span class="ref-domain">searchinfluence.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-7">
+            <div class="ref-num">7</div>
+            <div><a href="https://www.searchinfluence.com/blog/higher-education-ai-search-strategy/" target="_blank" rel="noopener">Higher Education AI Search Strategy: What Students Expect vs. How Institutions Must Adapt</a><span class="ref-domain">searchinfluence.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-8">
+            <div class="ref-num">8</div>
+            <div><a href="https://eab.com/about/newsroom/press/ai-in-college-search-survey/" target="_blank" rel="noopener">Nearly Half of High School Students Now Use AI in College Search – EAB</a><span class="ref-domain">eab.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-9">
+            <div class="ref-num">9</div>
+            <div><a href="https://aivancity.ai/en/blog/etude-lia-nouveau-conseiller-dorientation-des-lyceens/" target="_blank" rel="noopener">Study: Is AI the New Career Advisor for High School Students? – aivancity</a><span class="ref-domain">aivancity.ai</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-10">
+            <div class="ref-num">10</div>
+            <div><a href="https://kanopi.com/blog/ai-for-higher-education/" target="_blank" rel="noopener">AI for Higher Ed: Scaling Your Digital &amp; Web Strategy – Kanopi Studios</a><span class="ref-domain">kanopi.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-11">
+            <div class="ref-num">11</div>
+            <div><a href="https://hai.stanford.edu/ai-index/2026-ai-index-report" target="_blank" rel="noopener">The 2026 AI Index Report – Stanford HAI</a><span class="ref-domain">hai.stanford.edu</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-12">
+            <div class="ref-num">12</div>
+            <div><a href="https://www.digitalapplied.com/blog/zero-click-search-statistics-2026-complete-data" target="_blank" rel="noopener">Zero-Click Search Statistics 2026: Complete Data Guide – Digital Applied</a><span class="ref-domain">digitalapplied.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-13">
+            <div class="ref-num">13</div>
+            <div><a href="https://thedigitalbloom.com/learn/2025-organic-traffic-crisis-analysis-report/" target="_blank" rel="noopener">2025 Organic Traffic Crisis: Zero-Click &amp; AI Impact Analysis Report – The Digital Bloom</a><span class="ref-domain">thedigitalbloom.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-14">
+            <div class="ref-num">14</div>
+            <div><a href="https://www.scribd.com/document/955864963/I-Would-Like-a-Comprehensive-SEO-Audit-of-the-Webs" target="_blank" rel="noopener">SEO Audit for Christ University Website – Scribd</a><span class="ref-domain">scribd.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-15">
+            <div class="ref-num">15</div>
+            <div><a href="https://www.higher-education-marketing.com/blog/generative-engine-optimization-for-higher-education" target="_blank" rel="noopener">Generative Engine Optimization &amp; GEO Keywords – Higher Education Marketing</a><span class="ref-domain">higher-education-marketing.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-16">
+            <div class="ref-num">16</div>
+            <div><a href="https://digitalwellnesslab.org/articles/what-we-learned-about-how-teens-in-brazil-france-and-the-us-are-using-ai/" target="_blank" rel="noopener">What We Learned About How Teens in Brazil, France, and the US Are Using AI</a><span class="ref-domain">digitalwellnesslab.org</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-17">
+            <div class="ref-num">17</div>
+            <div><a href="https://unibuddy.com/guides/humanize-your-enrollment-funnel-attract-nurture-and-convert-future-students/" target="_blank" rel="noopener">Humanize Your Enrollment Funnel: Attract, Nurture, and Convert Future Students – Unibuddy</a><span class="ref-domain">unibuddy.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-18">
+            <div class="ref-num">18</div>
+            <div><a href="https://eab.com/resources/podcasts/new-survey-reveals-what-todays-adult-learners-really-want/" target="_blank" rel="noopener">New Survey Reveals What Today's Adult Learners Really Want – EAB</a><span class="ref-domain">eab.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-19">
+            <div class="ref-num">19</div>
+            <div><a href="https://eab.com/resources/blog/adult-education-blog/5-steps-graduate-enrollment-teams-can-take-to-reduce-manual-work/" target="_blank" rel="noopener">5 Steps Graduate Enrollment Teams Can Take to Reduce Manual Work – EAB</a><span class="ref-domain">eab.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-20">
+            <div class="ref-num">20</div>
+            <div><a href="https://files.wmich.edu/s3fs-public/2026-04/eab_apply-advance-rebuilding-grad-pipeline-in-ai-era_04-2026.pdf" target="_blank" rel="noopener">Rebuilding the Graduate and Adult Pipeline in the Age of AI – WMU / EAB</a><span class="ref-domain">wmich.edu</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-21">
+            <div class="ref-num">21</div>
+            <div><a href="https://www.superlines.io/articles/ai-search-statistics/" target="_blank" rel="noopener">AI Search Statistics 2026: 60+ Data Points on Visibility, Citations, and Traffic – Superlines</a><span class="ref-domain">superlines.io</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-22">
+            <div class="ref-num">22</div>
+            <div><a href="https://llmclicks.ai/blog/generative-engine-optimization-geo-saas/" target="_blank" rel="noopener">Generative Engine Optimization (GEO): The 2026 Playbook – LLMClicks.ai</a><span class="ref-domain">llmclicks.ai</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-23">
+            <div class="ref-num">23</div>
+            <div><a href="https://www.ifactory.com/insights/how-a-website-redesign-sparks-campus-wide-transformation/" target="_blank" rel="noopener">How a Website Redesign Sparks Campus-Wide Transformation – IFACTORY</a><span class="ref-domain">ifactory.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-24">
+            <div class="ref-num">24</div>
+            <div><a href="https://ahrefs.com/blog/ai-overviews-reduce-clicks-update/" target="_blank" rel="noopener">Update: AI Overviews Reduce Clicks by 58% – Ahrefs</a><span class="ref-domain">ahrefs.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-25">
+            <div class="ref-num">25</div>
+            <div><a href="https://www.success.com/zero-click-search-strategy" target="_blank" rel="noopener">Google's Becoming A Decision Engine: How To Survive The AI 'Zero-Click' Era – SUCCESS</a><span class="ref-domain">success.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-26">
+            <div class="ref-num">26</div>
+            <div><a href="https://csdisco.com/blog/ai-hallucinations-legal-decisions-trends" target="_blank" rel="noopener">AI Hallucinations and Legal Decisions: Trend Watch – DISCO</a><span class="ref-domain">csdisco.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-27">
+            <div class="ref-num">27</div>
+            <div><a href="https://www.illinoiscourts.gov/News/1665/Paste-in-Haste-The-Fallout-of-AI-Hallucinations-in-Court-Filings-and-the-New-ARDCs-Guide-to-Implementing-AI/news-detail/" target="_blank" rel="noopener">Paste in Haste: The Fallout of AI Hallucinations in Court Filings – Illinois Courts</a><span class="ref-domain">illinoiscourts.gov</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-28">
+            <div class="ref-num">28</div>
+            <div><a href="https://www.snhu.edu/about-us/newsroom/education/misinformation-vs-disinformation" target="_blank" rel="noopener">Misinformation vs. Disinformation in the Age of AI – SNHU</a><span class="ref-domain">snhu.edu</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-29">
+            <div class="ref-num">29</div>
+            <div><a href="https://www.scholaro.com/db/News/how-institutions-raise-first-generation-graduation-rates-287" target="_blank" rel="noopener">From Access to Completion: How Institutions Raise First-Generation Graduation Rates – Scholaro</a><span class="ref-domain">scholaro.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-30">
+            <div class="ref-num">30</div>
+            <div><a href="https://www.idtheftcenter.org/post/ai-steal-college-financial-aid/" target="_blank" rel="noopener">How Scammers Are Using AI to Steal College Financial Aid – ITRC</a><span class="ref-domain">idtheftcenter.org</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-31">
+            <div class="ref-num">31</div>
+            <div><a href="https://www.laccd.edu/news/ghost-student-scammers-are-using-ai-steal-financial-aid-federal-investigators-warn/" target="_blank" rel="noopener">'Ghost Student' Scammers Are Using AI to Steal Financial Aid – LACCD</a><span class="ref-domain">laccd.edu</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-32">
+            <div class="ref-num">32</div>
+            <div><a href="https://www.ed.gov/about/news/press-release/us-department-of-education-prevents-more-1-billion-federal-student-aid-fraud-year-additional-crackdowns-expected-2026" target="_blank" rel="noopener">U.S. Department of Education Prevents More Than $1 Billion in Federal Student Aid Fraud – ED.gov</a><span class="ref-domain">ed.gov</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-33">
+            <div class="ref-num">33</div>
+            <div><a href="https://eab.com/resources/blog/adult-education-blog/the-higher-ed-seo-checklist/" target="_blank" rel="noopener">The Higher Ed SEO Checklist: AI-Proof .edu Strategies – EAB</a><span class="ref-domain">eab.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-34">
+            <div class="ref-num">34</div>
+            <div><a href="https://geoptie.com/blog/generative-engine-optimization" target="_blank" rel="noopener">Generative Engine Optimization (GEO): The Definitive Guide [2026] – Geoptie</a><span class="ref-domain">geoptie.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-35">
+            <div class="ref-num">35</div>
+            <div><a href="https://medium.com/@vicki-larson/how-structured-data-schema-transforms-your-ai-search-visibility-in-2026-9e968313b2d7" target="_blank" rel="noopener">How Structured Data Schema Transforms Your AI Search Visibility in 2026 – Medium</a><span class="ref-domain">medium.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-36">
+            <div class="ref-num">36</div>
+            <div><a href="https://www.reddit.com/r/TechSEO/comments/1qobwh1/what_technical_seo_changes_are_required_to/" target="_blank" rel="noopener">Technical SEO Changes for AI Search Engines and Zero-Click Results in 2026 – Reddit r/TechSEO</a><span class="ref-domain">reddit.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-37">
+            <div class="ref-num">37</div>
+            <div><a href="https://wellows.com/blog/schema-and-nlp-best-practices-for-ai-search/" target="_blank" rel="noopener">Schema &amp; NLP Best Practices for AI Search Visibility (2026 Guide) – Wellows</a><span class="ref-domain">wellows.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-38">
+            <div class="ref-num">38</div>
+            <div><a href="https://www.forbes.com/councils/forbesagencycouncil/2026/01/21/2026-geo-strategy-optimizing-your-content-for-ai-powered-search/" target="_blank" rel="noopener">2026 GEO Strategy: Optimizing Your Content For AI-Powered Search – Forbes</a><span class="ref-domain">forbes.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-39">
+            <div class="ref-num">39</div>
+            <div><a href="https://highereducationmarketinginstitute.com/blog/ai-driven-higher-education-marketing-student-outcomes-transparency-storytelling/" target="_blank" rel="noopener">Outcome-First, Student-Forward: How AI and Smart Ops Are Rewriting Higher Ed Marketing – HEMI</a><span class="ref-domain">highereducationmarketinginstitute.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-40">
+            <div class="ref-num">40</div>
+            <div><a href="https://www.demandsage.com/ai-in-education-statistics/" target="_blank" rel="noopener">77 AI in Education Statistics 2026 (Global Trends &amp; Facts) – DemandSage</a><span class="ref-domain">demandsage.com</span></div>
+          </div>
+
+          <div class="ref-item" id="ref-41">
+            <div class="ref-num">41</div>
+            <div><a href="https://rcstrat.com/research-and-insights/digital-marketing-strategy-for-higher-education-the-2026-enrollment-playbook/" target="_blank" rel="noopener">Digital Marketing Strategy for Higher Education: The 2026 Enrollment Playbook – RC Strategic</a><span class="ref-domain">rcstrat.com</span></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>USU Board AI Research Project</strong> &nbsp;·&nbsp; Produced by <strong>Applied AI Labs</strong> &nbsp;·&nbsp; Analysis Period: 2024–2026 &nbsp;·&nbsp; 41 Primary Sources</p>
+  <p style="margin-top:8px; font-size:0.72rem; opacity:0.6;">This report is intended for institutional research and strategic planning purposes. All statistics are sourced from publicly available research and industry analyses.</p>
+</footer>
+
+<!-- SCROLL TOP -->
+<button id="scroll-top" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</button>
+
+<script>
+  // ── SCROLL-TO-TOP VISIBILITY ──
+  const scrollBtn = document.getElementById('scroll-top');
+  window.addEventListener('scroll', () => {
+    scrollBtn.style.display = window.scrollY > 500 ? 'flex' : 'none';
+  });
+
+  // ── ACTIVE TOC LINK (IntersectionObserver) ──
+  const sections = document.querySelectorAll('.report-section');
+  const tocLinks  = document.querySelectorAll('#toc-sidebar nav a');
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        tocLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+
+  sections.forEach(s => sectionObserver.observe(s));
+
+  // ── MOBILE NAV TOGGLE ──
+  function toggleMobileNav() {
+    document.getElementById('toc-sidebar').classList.toggle('open');
+  }
+
+  // ── HIGHLIGHT REFERENCED SOURCE ON CLICK ──
+  document.querySelectorAll('sup.cite a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      // Remove previous highlights
+      document.querySelectorAll('.ref-item.highlight').forEach(el => el.classList.remove('highlight'));
+      // Get target ref
+      const targetId = this.getAttribute('href').substring(1);
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.classList.add('highlight');
+        // Remove highlight after 4 seconds
+        setTimeout(() => targetEl.classList.remove('highlight'), 4000);
+      }
+    });
+  });
+
+  // ── ANIMATE PROGRESS BARS ON SCROLL ──
+  const bars = document.querySelectorAll('.progress-bar-fill');
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const w = el.style.width;
+        el.style.width = '0';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => { el.style.width = w; });
+        });
+        barObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  bars.forEach(b => barObserver.observe(b));
+</script>
+</body>
+</html>
