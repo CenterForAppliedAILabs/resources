@@ -11,13 +11,13 @@
     ]
   },
   {
-    "title": "2. Vibe Coding",
+    "title": "2. Vibe Coding - Content and examples",
     "description": "Hands-on AI coding tutorials and tools",
     "patterns": ["Vibe Coding*-AppliedAILabs*"]
   },
   {
-    "title": "3. Newcomer Activity Prompts",
-    "description": "Prompt examples and activities for people new to AI",
+    "title": "3. Newcomer Club or Park City Activity Prompts",
+    "description": "Prompt examples and activities for members of the PC Newcomers club - workshop related content",
     "patterns": ["*newcomer*-AppliedAILabs*", "Newcomers-activity*", "prompt-best-practices*-AppliedAILabs*"]
   },
   {
@@ -39,7 +39,7 @@
     "patterns": ["synth-governance*-AppliedAILabs*", "Gemini Analysis*-AppliedAILabs*", "Emergent Properties*-AppliedAILabs*"]
   },
   {
-    "title": "8. SimSports",
+    "title": "8. SimSports - example AI enhanced swing coaching",
     "patterns": ["*SimSports*-AppliedAILabs*", "*simsports*-AppliedAILabs*"]
   }
 ]
