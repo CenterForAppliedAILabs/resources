@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Customer Identification Report · Applied AI Labs</title>
+<meta name="description" content="A database research framework to identify customers for Sublime Laser's precision tubular medical-device components. A report by Applied AI Labs." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#070b16; --bg-2:#0b1120; --panel:#0f1729; --panel-2:#131c33;
+    --line:#1e293f; --line-2:#273350;
+    --ink:#e9f0fb; --ink-2:#aebbd2; --muted:#6b7a96;
+    --aal-blue:#009efd; --aal-teal:#16d9e3; --aal-green:#00d084;
+    --cyan:#22d3ee; --blue:#3b82f6; --violet:#8b5cf6;
+    --green:#34d399; --amber:#fbbf24; --red:#f87171; --pink:#f472b6;
+    --grad:linear-gradient(135deg,#009efd 0%,#16d9e3 52%,#00d084 100%);
+    --grad-soft:linear-gradient(135deg,rgba(0,158,253,.16),rgba(0,208,132,.16));
+    --radius:16px; --radius-sm:10px;
+    --shadow:0 18px 50px -20px rgba(0,0,0,.7);
+    --glow:0 0 0 1px rgba(0,217,252,.28), 0 0 30px -6px rgba(0,158,253,.38);
+    --side-w:264px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
+    background:radial-gradient(900px 600px at 85% -5%,rgba(0,158,253,.10),transparent 60%),radial-gradient(800px 600px at 5% 10%,rgba(0,208,132,.08),transparent 55%),var(--bg);
+    -webkit-font-smoothing:antialiased;line-height:1.6}
+  h1,h2,h3,h4{font-family:'Space Grotesk','Inter',sans-serif;letter-spacing:-.02em;line-height:1.15}
+  ::selection{background:rgba(22,217,227,.3)}
+
+  .app{display:flex;min-height:100vh}
+  .sidebar{position:fixed;inset:0 auto 0 0;width:var(--side-w);z-index:40;background:linear-gradient(180deg,var(--bg-2),var(--bg));border-right:1px solid var(--line);padding:22px 18px;display:flex;flex-direction:column}
+  .brand{display:flex;align-items:center;gap:12px;padding:6px 8px 18px;border-bottom:1px solid var(--line);margin-bottom:16px}
+  .logo{width:42px;height:42px;border-radius:11px;background:var(--grad);display:grid;place-items:center;box-shadow:var(--glow);flex:none}
+  .brand .name{font-family:'Space Grotesk';font-weight:700;font-size:15px;line-height:1.1}
+  .brand .name span{display:block;font-size:11px;font-weight:500;color:var(--aal-teal);letter-spacing:.04em}
+  .brand .sub{font-size:11px;color:var(--muted);margin-top:2px}
+  .nav-label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:14px 10px 8px;font-weight:600}
+  .nav{display:flex;flex-direction:column;gap:3px;overflow-y:auto}
+  .nav button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;color:var(--ink-2);cursor:pointer;padding:10px 12px;border-radius:10px;font-size:13.5px;font-weight:500;transition:.18s;font-family:inherit}
+  .nav button .ic{width:18px;height:18px;flex:none;color:var(--muted);transition:.18s}
+  .nav button:hover{background:var(--panel);color:var(--ink)}
+  .nav button:hover .ic{color:var(--aal-teal)}
+  .nav button.active{background:var(--grad-soft);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(22,217,227,.25)}
+  .nav button.active .ic{color:var(--aal-teal)}
+  .nav .num{margin-left:auto;font-size:10px;color:var(--muted);font-family:'Space Grotesk'}
+  .side-foot{margin-top:auto;padding-top:16px;border-top:1px solid var(--line)}
+  .cta-mini{display:block;text-align:center;background:var(--grad);color:#04121f;font-weight:700;padding:12px;border-radius:11px;text-decoration:none;font-size:13.5px;transition:.2s;box-shadow:var(--glow)}
+  .cta-mini:hover{transform:translateY(-2px)}
+
+  .main{flex:1;margin-left:var(--side-w);min-width:0}
+  .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;backdrop-filter:blur(12px);background:rgba(7,11,22,.72);border-bottom:1px solid var(--line);padding:12px 30px}
+  .crumb{font-size:12px;color:var(--muted)}
+  .crumb b{color:var(--ink-2);font-weight:600}
+  .menu-btn{display:none;background:var(--panel);border:1px solid var(--line);color:var(--ink);width:40px;height:40px;border-radius:10px;cursor:pointer}
+  .progress{margin-left:auto;display:flex;gap:5px;align-items:center}
+  .progress .dot{width:8px;height:8px;border-radius:50%;background:var(--line-2);transition:.25s;cursor:pointer}
+  .progress .dot.on{background:var(--aal-teal);box-shadow:0 0 8px var(--aal-teal)}
+  .progress .pct{font-size:11px;color:var(--muted);margin-left:6px;font-family:'Space Grotesk'}
+
+  .stage{padding:40px 30px 90px;max-width:1080px;margin:0 auto}
+  .view{display:none;animation:fade .45s ease}
+  .view.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--aal-teal);background:var(--grad-soft);padding:6px 12px;border-radius:999px;border:1px solid rgba(22,217,227,.2)}
+  .view h1{font-size:clamp(28px,4vw,44px);margin:18px 0 12px;font-weight:700}
+  .view .lead{font-size:17px;color:var(--ink-2);max-width:720px;margin:0 0 8px}
+  .section-gap{margin-top:46px}
+  .product-name{display:inline-flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:12.5px;letter-spacing:.2em;color:var(--ink);margin-top:18px;padding:7px 14px;border:1px solid var(--line-2);border-radius:999px;background:var(--panel)}
+  .product-name .pn-dot{width:8px;height:8px;border-radius:50%;background:var(--grad);box-shadow:0 0 8px var(--aal-teal)}
+  .presenter{margin:14px 0 0;font-size:14px;color:var(--ink-2);max-width:680px}
+  .presenter b{color:var(--ink)}
+  .presenter a{color:var(--aal-teal);text-decoration:none;border-bottom:1px solid rgba(22,217,227,.4)}
+  .hero-quote{margin-top:26px;padding:18px 22px;border-left:3px solid var(--aal-teal);background:var(--panel);border-radius:0 12px 12px 0;color:var(--ink-2);font-size:15px;max-width:680px}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:38px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px}
+  .stat .n{font-family:'Space Grotesk';font-size:30px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .l{font-size:12.5px;color:var(--ink-2);margin-top:4px;line-height:1.4}
+
+  .grid{display:grid;gap:16px}
+  .g-2{grid-template-columns:repeat(2,1fr)}
+  .g-3{grid-template-columns:repeat(3,1fr)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;transition:.2s}
+  .card:hover{border-color:var(--line-2);transform:translateY(-2px)}
+  .card h3{font-size:17px;margin:0 0 6px;display:flex;align-items:center;gap:9px}
+  .card .ic-circle{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--grad-soft);border:1px solid rgba(22,217,227,.2);flex:none}
+  .card .ic-circle svg{width:18px;height:18px;color:var(--aal-teal)}
+  .card p{color:var(--ink-2);font-size:14px;margin:6px 0 0}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink-2)}
+  .badge.high{color:var(--red);border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.08)}
+  .badge.med{color:var(--amber);border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.08)}
+  .badge.low{color:var(--muted);border-color:var(--line-2);background:var(--panel)}
+  .badge.green{color:var(--green);border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
+
+  /* chips / filters */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+  .chip{font-size:12.5px;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);cursor:pointer;transition:.18s;font-family:inherit}
+  .chip:hover{border-color:var(--aal-teal);color:var(--ink)}
+  .chip.active{background:var(--grad);color:#04121f;border-color:transparent;font-weight:600}
+
+  /* db card */
+  .db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+  .db{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+  .db .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .db h4{margin:0;font-size:15px}
+  .db .why{font-size:13px;color:var(--ink-2);margin:4px 0 10px}
+  .db .srcs{display:flex;flex-direction:column;gap:5px}
+  .db .srcs span{font-size:12px;color:var(--muted);padding-left:14px;position:relative}
+  .db .srcs span:before{content:'';width:5px;height:5px;border-radius:50%;background:var(--aal-teal);position:absolute;left:2px;top:8px}
+
+  /* plays accordion */
+  .plays{display:flex;flex-direction:column;gap:14px}
+  .play{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:.2s}
+  .play.open{border-color:rgba(22,217,227,.35);box-shadow:0 0 0 1px rgba(22,217,227,.15)}
+  .play-head{display:flex;align-items:center;gap:16px;padding:18px 22px;cursor:pointer;width:100%;text-align:left;background:none;border:0;color:var(--ink);font-family:inherit}
+  .play-head .pnum{width:40px;height:40px;border-radius:11px;background:var(--grad-soft);border:1px solid rgba(22,217,227,.25);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;color:var(--aal-teal);flex:none}
+  .play-head .ptitle{font-family:'Space Grotesk';font-weight:600;font-size:16px;flex:1;line-height:1.3}
+  .play-head .chev{width:20px;height:20px;color:var(--muted);transition:.25s;flex:none}
+  .play.open .chev{transform:rotate(180deg);color:var(--aal-teal)}
+  .play-body{max-height:0;overflow:hidden;transition:.35s ease;padding:0 22px}
+  .play.open .play-body{max-height:620px;padding:0 22px 22px}
+  .play-body p{margin:8px 0;font-size:14px;color:var(--ink-2)}
+  .play-body .h{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--aal-teal);font-weight:600;margin:12px 0 4px}
+
+  /* pipeline */
+  .pipe{display:flex;flex-direction:column;gap:0}
+  .pipe-step{position:relative;padding:0 0 26px 54px;border-left:2px solid var(--line);margin-left:14px}
+  .pipe-step:last-child{border-left-color:transparent;padding-bottom:0}
+  .pipe-step .node{position:absolute;left:-15px;top:0;width:28px;height:28px;border-radius:9px;background:var(--panel);border:2px solid var(--aal-teal);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:13px;color:var(--aal-teal)}
+  .pipe-step h4{margin:2px 0 4px;font-size:15px}
+  .pipe-step p{margin:0;font-size:13.5px;color:var(--ink-2)}
+
+  /* tech table */
+  .tbl{width:100%;border-collapse:collapse;font-size:13.5px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .tbl th,.tbl td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  .tbl th{background:var(--panel-2);color:var(--ink);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  .tbl tr:last-child td{border-bottom:0}
+  .tbl td:first-child{color:var(--aal-teal);font-weight:600;font-family:'Space Grotesk'}
+  .tbl tbody tr:hover{background:var(--panel)}
+
+  /* scoring */
+  .score-wrap{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start}
+  .gauge-box{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;text-align:center;position:sticky;top:90px}
+  .gauge{position:relative;width:220px;height:220px;margin:0 auto}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .track{fill:none;stroke:var(--line);stroke-width:14}
+  .gauge .bar{fill:none;stroke:url(#ggrad);stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)}
+  .gauge .center{position:absolute;inset:0;display:grid;place-content:center}
+  .gauge .score{font-family:'Space Grotesk';font-size:52px;font-weight:700;line-height:1}
+  .gauge .max{font-size:13px;color:var(--muted)}
+  .band-pill{margin-top:14px;font-family:'Space Grotesk';font-weight:600;font-size:14px;padding:7px 16px;border-radius:999px;display:inline-block}
+  .factor{margin-top:18px;text-align:left}
+  .frow{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:12.5px}
+  .frow .fname{width:118px;color:var(--ink-2)}
+  .frow .fbar{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+  .frow .ffi{height:100%;background:var(--grad);width:0;transition:width .5s}
+  .frow .fval{width:54px;text-align:right;font-family:'Space Grotesk';color:var(--ink);font-weight:600}
+  .factor-groups{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .fg{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+  .fg h4{display:flex;align-items:center;justify-content:space-between;font-size:13.5px;margin:0 0 10px}
+  .fg h4 .wt{font-family:'Space Grotesk';color:var(--aal-teal);font-size:12px}
+  .toggle{display:flex;align-items:center;gap:11px;padding:8px 0;cursor:pointer;user-select:none}
+  .toggle input{display:none}
+  .toggle .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--line-2);flex:none;display:grid;place-items:center;transition:.18s}
+  .toggle input:checked + .box{background:var(--aal-teal);border-color:var(--aal-teal)}
+  .toggle .box:after{content:'';width:8px;height:4px;border:2px solid #04121f;border-top:0;border-right:0;transform:rotate(-45deg) scale(0);transition:.15s;margin-top:-2px}
+  .toggle input:checked + .box:after{transform:rotate(-45deg) scale(1)}
+  .toggle .lbl{flex:1;font-size:12.5px;color:var(--ink-2);line-height:1.35}
+  .toggle input:checked ~ .lbl{color:var(--ink)}
+  .toggle .pts{font-family:'Space Grotesk';font-weight:700;font-size:13px;color:var(--green);min-width:34px;text-align:right}
+  .reset-btn{margin-top:6px;background:transparent;border:1px solid var(--line-2);color:var(--ink-2);padding:8px 14px;border-radius:9px;cursor:pointer;font-family:inherit;font-size:12.5px;transition:.18s}
+  .reset-btn:hover{border-color:var(--aal-teal);color:var(--ink)}
+
+  /* roadmap */
+  .road{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .phase{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
+  .phase:before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad)}
+  .phase .ph{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--aal-teal);font-weight:700}
+  .phase h4{margin:6px 0 4px;font-size:15px}
+  .phase .when{font-size:12px;color:var(--muted);margin-bottom:8px}
+  .phase ul{margin:0;padding-left:16px;font-size:12.5px;color:var(--ink-2)}
+  .phase li{margin-bottom:5px}
+  .phase .cost{margin-top:10px;font-family:'Space Grotesk';font-weight:700;font-size:12.5px;color:var(--green)}
+
+  /* toolkit */
+  .term-group{margin-bottom:20px}
+  .term-group h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--aal-teal);margin:0 0 10px}
+  .term-list{display:flex;flex-wrap:wrap;gap:7px}
+  .term{font-size:12px;font-family:'Space Grotesk';padding:5px 11px;border-radius:7px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink-2)}
+
+  .cta{margin-top:50px;text-align:center;padding:50px 30px;background:linear-gradient(135deg,rgba(0,158,253,.1),rgba(0,208,132,.12));border:1px solid rgba(0,217,252,.25);border-radius:20px}
+  .cta h2{font-size:clamp(24px,3.5vw,34px);margin:0 0 10px}
+  .cta p{color:var(--ink-2);max-width:560px;margin:0 auto 22px}
+  .btn{display:inline-flex;align-items:center;gap:9px;background:var(--grad);color:#04121f;font-weight:700;padding:14px 26px;border-radius:12px;text-decoration:none;font-size:15px;transition:.2s;box-shadow:var(--glow);border:0;cursor:pointer;font-family:inherit}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-2);box-shadow:none}
+
+  .pagenav{display:flex;justify-content:space-between;align-items:center;margin-top:40px;padding-top:22px;border-top:1px solid var(--line)}
+  .pagenav button{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);color:var(--ink-2);padding:11px 18px;border-radius:11px;cursor:pointer;font-family:inherit;font-size:13.5px;transition:.18s}
+  .pagenav button:hover:not(:disabled){border-color:var(--aal-teal);color:var(--ink)}
+  .pagenav button:disabled{opacity:.35;cursor:not-allowed}
+  .pagenav .lab{font-size:11px;color:var(--muted);display:block}
+  .pagenav .ttl{font-weight:600;color:var(--ink)}
+
+  @media(max-width:980px){
+    :root{--side-w:0px}
+    .sidebar{transform:translateX(-100%);transition:.3s;width:280px;box-shadow:var(--shadow)}
+    .sidebar.open{transform:none}
+    .main{margin-left:0}
+    .menu-btn{display:grid;place-items:center}
+    .stats{grid-template-columns:1fr}
+    .g-3,.g-2,.road{grid-template-columns:1fr}
+    .score-wrap{grid-template-columns:1fr}
+    .gauge-box{position:static}
+    .factor-groups{grid-template-columns:1fr}
+  }
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:35}
+  .overlay.show{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <a class="logo" href="https://www.appliedailabs.com" target="_blank" rel="noopener" style="text-decoration:none">
+        <svg viewBox="0 0 32 32" fill="none">
+          <circle cx="12.5" cy="16" r="8" stroke="#04121f" stroke-width="2.4"/>
+          <circle cx="19.5" cy="16" r="8" stroke="#04121f" stroke-width="2.4"/>
+          <circle cx="16" cy="16" r="2.7" fill="#04121f"/>
+        </svg>
+      </a>
+      <div>
+        <a href="https://www.appliedailabs.com" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+          <div class="name">Applied AI Labs<span>HUMAN CENTERED AI</span></div>
+        </a>
+        <div class="sub">Report for Sublime Laser</div>
+      </div>
+    </div>
+    <div class="nav-label">The Report</div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot">
+      <a class="cta-mini" href="https://www.appliedailabs.com" target="_blank" rel="noopener">Build This With Us →</a>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay" onclick="closeNav()"></div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button class="menu-btn" onclick="openNav()" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="crumb">Customer ID Report · <b id="crumbTitle">Executive Summary</b></div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="stage" id="stage">
+
+      <!-- VIEW 1: EXECUTIVE SUMMARY -->
+      <section class="view" data-title="Executive Summary">
+        <span class="eyebrow">◆ A Report by Applied AI Labs · Human Centered AI</span>
+        <div class="product-name"><span class="pn-dot"></span>CUSTOMER IDENTIFICATION REPORT</div>
+        <p class="presenter">A database research framework for finding customers for <b>Sublime Laser's</b> precision tubular medical-device components — prepared by <a href="https://www.appliedailabs.com" target="_blank" rel="noopener">Applied AI Labs</a>.</p>
+        <h1>Find the companies <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">building the devices</span> that need your tubes.</h1>
+        <p class="lead">A comprehensive strategy for discovering companies in the prototyping and small-volume production phases — through creative cross-referencing of government, industry, and commercial databases into a predictive lead-scoring system.</p>
+        <div class="hero-quote"><b>Key insight:</b> The most valuable prospects are companies in <b>early-stage development</b> (prototyping) or with <b>recent regulatory filings</b> indicating new product development. These companies need small-volume, high-precision manufacturing <i>before</i> scaling to mass production — and they're invisible to ordinary prospecting.</div>
+
+        <div class="stats">
+          <div class="stat"><div class="n">$22.4B</div><div class="l">Medical precision parts market by 2030 (5.78% CAGR)</div></div>
+          <div class="stat"><div class="n">8.3%</div><div class="l">Medical tubing CAGR (2025–2030), reaching $18.86B</div></div>
+          <div class="stat"><div class="n">$9.5B</div><div class="l">AI sales & marketing automation market by 2030</div></div>
+        </div>
+
+        <div class="section-gap">
+          <span class="eyebrow">The approach in brief</span>
+          <h2>Obvious sources meet non-obvious connections</h2>
+          <p class="lead">The framework layers <b>obvious data sources</b> (FDA registrations, clinical trials) with <b>non-obvious connections</b> (supply chain disruptions, investor portfolios, patent timelines) to predict exactly when a company will need a supplier like Sublime.</p>
+        </div>
+        <div class="grid g-3 section-gap">
+          <div class="card"><div class="ic-circle"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2-6 4 14 2-8h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>8 Database Categories</h3><p>FDA, clinical trials, patents, grants, business intel, industry, imports, academia.</p></div>
+          <div class="card"><div class="ic-circle"><svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="3" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="3" stroke="currentColor" stroke-width="2"/><path d="M6 9v6a3 3 0 0 0 3 3h6" stroke="currentColor" stroke-width="2"/></svg></div><h3>5 Creative Plays</h3><p>Counter-intuitive cross-database joins that surface hidden prospects.</p></div>
+          <div class="card"><div class="ic-circle"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18M7 14l3-4 3 3 4-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>0–100 Lead Score</h3><p>A weighted 4-factor model with Hot / Warm / Watch / Cold bands.</p></div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: DATABASE STRATEGY -->
+      <section class="view" data-title="Database Strategy">
+        <span class="eyebrow">02 · Primary Database Categories</span>
+        <h1>Eight categories of intelligence sources</h1>
+        <p class="lead">Each category serves a different signal — from "who's building a device right now" to "who has the budget and timing to buy." Filter by priority.</p>
+        <div class="chips" id="dbChips">
+          <button class="chip active" data-f="all">All Categories</button>
+          <button class="chip" data-f="high">High Priority</button>
+          <button class="chip" data-f="med">Medium Priority</button>
+          <button class="chip" data-f="low">Lower Priority</button>
+        </div>
+        <div class="db-grid" id="dbGrid"></div>
+
+        <div class="section-gap card" style="background:var(--grad-soft);border-color:rgba(0,217,252,.25)">
+          <h3 style="margin-top:0">🔑 Tubular-component product codes to target</h3>
+          <p style="color:var(--ink);margin-bottom:12px">Filter FDA databases by these codes to find the exact companies making devices that need laser-cut tubes:</p>
+          <div class="term-list">
+            <span class="term">DQZ · Catheter, Vascular</span>
+            <span class="term">MDS · Stent, Coronary</span>
+            <span class="term">FRN · Endoscope, Flexible</span>
+            <span class="term">KGO · Guidewire</span>
+            <span class="term">YOD · Needle, Biopsy</span>
+            <span class="term">PTO · Port, Implantable</span>
+            <span class="term">LZR · Laser System</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: CREATIVE PLAYS -->
+      <section class="view" data-title="Creative Plays">
+        <span class="eyebrow">03 · Non-Obvious Data Connections</span>
+        <h1>Five creative plays that surface hidden prospects</h1>
+        <p class="lead">The defensible value isn't in listing databases — it's in <b>joining them</b>. These five counter-intuitive connections reveal companies that keyword search will never find.</p>
+        <div class="plays section-gap" id="plays"></div>
+      </section>
+
+      <!-- VIEW 4: ARCHITECTURE -->
+      <section class="view" data-title="Architecture">
+        <span class="eyebrow">04 · Technical Implementation</span>
+        <h1>A five-stage pipeline to a lead dashboard</h1>
+        <p class="lead">A reference architecture for the development team — from data sources through normalization, scoring, and a sales-ready dashboard.</p>
+        <div class="pipe section-gap">
+          <div class="pipe-step"><div class="node">1</div><h4>Data Sources</h4><p>FDA APIs · ClinicalTrials.gov · Patents · SBIR · Import data — public + commercial feeds.</p></div>
+          <div class="pipe-step"><div class="node">2</div><h4>ETL Pipeline</h4><p>Web scrapers (Scrapy/Playwright), API connectors, data cleaning (pandas), deduplication via fuzzy record linkage.</p></div>
+          <div class="pipe-step"><div class="node">3</div><h4>Normalized Database</h4><p>PostgreSQL — companies, devices/products, events, contacts, with pgvector for semantic search.</p></div>
+          <div class="pipe-step"><div class="node">4</div><h4>Scoring Engine</h4><p>Rule-based weighted scoring + ML model (XGBoost) for conversion prediction, updating in real time on new events.</p></div>
+          <div class="pipe-step"><div class="node">5</div><h4>Lead Dashboard</h4><p>React frontend — lead list, company profiles, timeline visualization, outreach task management, email integration.</p></div>
+        </div>
+
+        <div class="section-gap">
+          <h2>Recommended tech stack</h2>
+          <table class="tbl">
+            <thead><tr><th>Component</th><th>Technology</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td>Backend</td><td>Python + FastAPI</td><td>Fast development, rich data-science ecosystem</td></tr>
+              <tr><td>Database</td><td>PostgreSQL 15+ (pgvector)</td><td>Relational integrity + vector similarity search</td></tr>
+              <tr><td>Scraping</td><td>Scrapy + Playwright</td><td>Static sites + JavaScript-heavy sites</td></tr>
+              <tr><td>Task Queue</td><td>Celery + Redis</td><td>Async scraping & scoring updates</td></tr>
+              <tr><td>NLP / ML</td><td>spaCy + scikit-learn + LangChain</td><td>Entity extraction, classification, LLM insights</td></tr>
+              <tr><td>Frontend</td><td>React + TypeScript + Tailwind</td><td>Modern, responsive, strongly typed</td></tr>
+              <tr><td>Hosting</td><td>AWS or Vercel + Supabase</td><td>Scalable cloud infrastructure</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VIEW 5: LEAD SCORING -->
+      <section class="view" data-title="Lead Scoring">
+        <span class="eyebrow">05 · Predictive Lead Scoring</span>
+        <h1>Every company, scored 0–100 on readiness</h1>
+        <p class="lead">Four weighted factors combine into a single score with clear action bands. Try it — toggle the signals a real prospect might have and watch their score react.</p>
+
+        <div class="score-wrap section-gap">
+          <div class="gauge-box">
+            <div class="gauge">
+              <svg width="220" height="220" viewBox="0 0 220 220">
+                <defs><linearGradient id="ggrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#34d399"/><stop offset="50%" stop-color="#16d9e3"/><stop offset="100%" stop-color="#009efd"/></linearGradient></defs>
+                <circle class="track" cx="110" cy="110" r="92"/>
+                <circle class="bar" id="gbar" cx="110" cy="110" r="92" stroke-dasharray="578" stroke-dashoffset="578"/>
+              </svg>
+              <div class="center"><div class="score" id="gscore">0</div><div class="max">/ 100</div></div>
+            </div>
+            <div class="band-pill" id="gpill" style="background:rgba(107,122,150,.2);color:var(--muted)">❄️ Cold</div>
+            <div class="factor" id="factorBars"></div>
+            <button class="reset-btn" onclick="resetScore()">Reset all</button>
+          </div>
+          <div>
+            <p style="color:var(--ink-2);font-size:14px;margin-top:0">Toggle the signals a prospect exhibits. Each factor caps at 100; the total applies the report's official weights (40 / 25 / 20 / 15).</p>
+            <div class="factor-groups" id="factorGroups"></div>
+          </div>
+        </div>
+
+        <div class="section-gap">
+          <h2>Scoring scale & actions</h2>
+          <table class="tbl">
+            <thead><tr><th>Score</th><th>Classification</th><th>Recommended Action</th><th>Cadence</th></tr></thead>
+            <tbody>
+              <tr><td>90–100</td><td>🔥 Hot Prospect</td><td>Immediate personalized outreach (call + email)</td><td>Daily monitoring</td></tr>
+              <tr><td>70–89</td><td>🟡 Warm Lead</td><td>Automated email sequence + LinkedIn</td><td>Weekly check-ins</td></tr>
+              <tr><td>50–69</td><td>📋 Watch List</td><td>Add to newsletter, quarterly check-in</td><td>Monthly monitoring</td></tr>
+              <tr><td>&lt; 50</td><td>❄️ Cold Lead</td><td>Minimal engagement, annual review</td><td>Quarterly scan</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VIEW 6: ROADMAP -->
+      <section class="view" data-title="Roadmap">
+        <span class="eyebrow">06 · Implementation Phases</span>
+        <h1>From manual quick wins to a full platform</h1>
+        <p class="lead">A four-phase rollout that validates the approach with cheap manual research before investing in automation.</p>
+        <div class="road section-gap">
+          <div class="phase"><div class="ph">Phase 1</div><h4>Quick Wins — Proof of Concept(s)</h4><div class="when">Weeks 2–3</div>
+            <ul><li>Test FDA 510(k) & SBIR search APIs</li><li>Build a 20–30 lead generator and agent qualifier</li><li>Run validation assessments and test outreach</li><li>Refine ideal customer profile and populate</li></ul>
+            <div class="cost">$1,000–$1,500</div></div>
+          <div class="phase"><div class="ph">Phase 2</div><h4>Semi-Automation</h4><div class="when">Weeks 3–8</div>
+            <ul><li>PostgreSQL schema + web scrapers</li><li>Basic lead scoring algorithm</li><li>FastAPI backend + React dashboard</li><li>Daily automated data refresh</li><li>SendGrid email sequences</li></ul>
+            <div class="cost">$15K–25K + tools</div></div>
+          <div class="phase"><div class="ph">Phase 3</div><h4>Full Platform</h4><div class="when">Months 2–4</div>
+            <ul><li>Paid APIs: Crunchbase, Panjiva, ZoomInfo</li><li>NLP component-similarity analysis</li><li>ML conversion prediction</li><li>Timeline visualization</li><li>CRM integration (HubSpot/Salesforce)</li></ul>
+            <div class="cost">$50K–80K + subscriptions</div></div>
+          <div class="phase"><div class="ph">Phase 4</div><h4>Optimize & Scale</h4><div class="when">Months 4–6</div>
+            <ul><li>A/B test outreach by score segment</li><li>Predictive churn modeling</li><li>International databases (EU, Asia)</li><li>Partner / referral tracking</li><li>Feedback loop into scoring</li></ul>
+            <div class="cost">$20K–30K ongoing</div></div>
+        </div>
+      </section>
+
+      <!-- VIEW 7: RECOMMENDATIONS -->
+      <section class="view" data-title="Recommendations">
+        <span class="eyebrow">07 · Strategic Recommendations</span>
+        <h1>Five moves to make this work</h1>
+        <p class="lead">Beyond the tool itself, these organizational moves determine whether the system actually generates revenue.</p>
+        <div class="grid g-2 section-gap">
+          <div class="card"><div class="ic-circle"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>1 · Start Small, Learn Fast</h3><p>Don't overhaul the CRM. Begin with HubSpot free + LinkedIn Sales Navigator + ChatGPT (~$85/mo). Upgrade only when you hit a growth target like "50+ active prospects."</p></div>
+          <div class="card"><div class="ic-circle"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 21v-1a8 8 0 0 1 16 0v1" stroke="currentColor" stroke-width="2"/></svg></div><h3>2 · Designate an AI Champion</h3><p>One person owns AI tool adoption — experiments daily, runs weekly 10-minute team huddles, and builds an internal library of "prompts that work for our industry."</p></div>
+          <div class="card"><div class="ic-circle"><svg viewBox="0 0 24 24" fill="none"><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20" stroke="currentColor" stroke-width="2"/></svg></div><h3>3 · Focus Emerging Industries First</h3><p>Medical is core, but aerospace, biotech, and EV offer <b>40%+ higher margins</b>, faster growth, and less competition. Build targeted campaigns there first.</p></div>
+          <div class="card"><div class="ic-circle"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4zM4 9h16M9 9v11" stroke="currentColor" stroke-width="2"/></svg></div><h3>4 · Build Content Moats</h3><p>Create industry-specific technical content (femtosecond vs. fiber, nitinol biocompatibility). It becomes a sales-enablement asset reps share to build credibility without heavy selling.</p></div>
+        </div>
+        <div class="card section-gap"><div class="ic-circle" style="width:34px;height:34px"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18M7 14l3-4 3 3 4-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>5 · Measure Everything</h3><p style="margin-top:8px">Set baselines now (sales cycle length, cost per qualified lead, win rate, pipeline value). Target after 90 days: <b>20–30%</b> speed-to-lead improvement, <b>15–25%</b> more qualified pipeline, <b>10–20%</b> better win rates. Track weekly: leads by source, lead quality, time-to-first-response, email opens, pipeline velocity.</p></div>
+      </section>
+
+      <!-- VIEW 8: TOOLKIT -->
+      <section class="view" data-title="Toolkit">
+        <span class="eyebrow">08 · Appendices & Toolkit</span>
+        <h1>Search terms, templates, metrics & budget</h1>
+        <p class="lead">The practical assets to operationalize the framework — keyword banks, outreach copy, compliance guardrails, and the all-in cost.</p>
+
+        <div class="section-gap">
+          <h2 style="font-size:20px">Appendix A · Keyword master list</h2>
+          <div class="g-2">
+            <div>
+              <div class="term-group"><h4>By Component Type</h4><div class="term-list"><span class="term">hypotube</span><span class="term">micro-tube</span><span class="term">thin-wall tube</span><span class="term">catheter shaft</span><span class="term">guidewire</span><span class="term">stent</span><span class="term">cannula</span><span class="term">trocar</span><span class="term">neurostimulation lead</span></div></div>
+              <div class="term-group"><h4>By Material</h4><div class="term-list"><span class="term">nitinol</span><span class="term">PEEK</span><span class="term">cobalt chrome L605</span><span class="term">stainless 316L</span><span class="term">titanium Ti-6Al-4V</span><span class="term">platinum iridium</span></div></div>
+            </div>
+            <div>
+              <div class="term-group"><h4>By Process</h4><div class="term-list"><span class="term">laser cutting</span><span class="term">femtosecond laser</span><span class="term">laser micromachining</span><span class="term">electropolishing</span><span class="term">passivation</span><span class="term">centerless grinding</span><span class="term">hydroforming</span></div></div>
+              <div class="term-group"><h4>By Application</h4><div class="term-list"><span class="term">interventional cardiology</span><span class="term">neurovascular</span><span class="term">orthopedic / spinal</span><span class="term">drug delivery</span><span class="term">minimally invasive surgery</span><span class="term">diagnostic imaging</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-gap">
+          <h2 style="font-size:20px">Appendix B · Sample outreach templates</h2>
+          <div class="plays" id="templates"></div>
+        </div>
+
+        <div class="section-gap">
+          <h2 style="font-size:20px">Appendix C · Compliance guardrails</h2>
+          <div class="grid g-2">
+            <div class="card"><h3 style="font-size:14px">Terms of Service</h3><p>Respect robots.txt, adhere to rate limits (~1 req/sec), never bypass paywalls. Use official APIs; cache to minimize redundant calls.</p></div>
+            <div class="card"><h3 style="font-size:14px">Data Privacy</h3><p>GDPR/CCPA: focus on company-level data. Don't store personal data without consent. Implement 2-year retention policies.</p></div>
+            <div class="card"><h3 style="font-size:14px">Anti-Spam (CAN-SPAM)</h3><p>Every email: unsubscribe link, physical address, accurate sender. Honor opt-outs within 10 business days.</p></div>
+            <div class="card"><h3 style="font-size:14px">Audit Trail</h3><p>Log all data sources & collection dates. Document transformation logic. Version-control all scraping scripts.</p></div>
+          </div>
+        </div>
+
+        <div class="section-gap">
+          <h2 style="font-size:20px">Appendix E · Investment summary</h2>
+          <table class="tbl">
+            <thead><tr><th>Item</th><th>Monthly</th><th>Quarterly</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>LinkedIn Sales Navigator</td><td>$65</td><td>$195</td><td>B2B prospecting & intent signals</td></tr>
+              <tr><td>HubSpot Sales Hub (2 users)</td><td>$90</td><td>$270</td><td>CRM foundation</td></tr>
+              <tr><td>ChatGPT Plus</td><td>$20</td><td>$60</td><td>Analysis, research, content</td></tr>
+              <tr><td>Apollo / Drift / 6sense (optional)</td><td>$0–300</td><td>$0–900</td><td>Add after validating quick wins</td></tr>
+              <tr><td><b>Minimal setup total</b></td><td><b>$175</b></td><td><b>$525</b></td><td>Expected 3–6 month ROI</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VIEW 9: NEXT STEPS -->
+      <section class="view" data-title="Next Steps">
+        <span class="eyebrow">09 · Next Steps</span>
+        <h1>From report to revenue</h1>
+        <p class="lead">The framework is complete. Execution is the only remaining variable — and it starts this week, for free.</p>
+        <div class="grid g-3 section-gap">
+          <div class="card"><span class="badge green">THIS WEEK</span><h3 style="margin-top:10px">Adopt workshop + AI champion</h3><p>Schedule a 1–2 hour AI adoption session with leadership and identify (and fund) your AI Champion.</p></div>
+          <div class="card"><span class="badge green">THIS MONTH</span><h3 style="margin-top:10px">Stand up the stack</h3><p>Implement HubSpot free + LinkedIn Sales Navigator. Build a top-20 target account list across vascular, biotech, EV.</p></div>
+          <div class="card"><span class="badge green">WEEKS 4–6</span><h3 style="margin-top:10px">First campaign</h3><p>Run your first targeted campaign. Create 3–5 case studies with AI writing tools. Import leads and enable scoring.</p></div>
+        </div>
+
+        <div class="cta section-gap">
+          <h2>Turn this research into a working system.</h2>
+          <p>Applied AI Labs can build the Sublime Prospector from this blueprint — starting with a two-week, zero-cost manual validation that proves the thesis before any software spend.</p>
+          <a class="btn" href="https://www.appliedailabs.com" target="_blank" rel="noopener">Start Phase 1 →</a>
+          <a class="btn ghost" href="https://www.appliedailabs.com" target="_blank" rel="noopener">Talk to Applied AI Labs →</a>
+        </div>
+      </section>
+
+      <!-- PAGENAV -->
+      <div class="pagenav">
+        <button id="prevBtn" onclick="nav(-1)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="lab">Previous</span><span class="ttl" id="prevTitle">—</span></span>
+        </button>
+        <button id="nextBtn" onclick="nav(1)">
+          <span style="text-align:right"><span class="lab">Next</span><span class="ttl" id="nextTitle">—</span></span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {id:'summary',title:'Executive Summary',ic:'M3 12h4l2-6 4 14 2-8h6'},
+  {id:'databases',title:'Database Strategy',ic:'M4 7c0 2 4 3 8 3s8-1 8-3-4-3-8-3-8 1-8 3Zm0 0v10c0 2 4 3 8 3s8-1 8-3V7M4 12c0 2 4 3 8 3s8-1 8-3'},
+  {id:'plays',title:'Creative Plays',ic:'M12 2l2.4 7.4H22l-6 4.6 2.3 7.4L12 17l-6.3 4.4L8 14 2 9.4h7.6L12 2Z'},
+  {id:'architecture',title:'Architecture',ic:'M3 9h18M3 15h18M9 3v18M15 3v18'},
+  {id:'scoring',title:'Lead Scoring',ic:'M3 3v18h18M7 14l3-4 3 3 4-6'},
+  {id:'roadmap',title:'Roadmap',ic:'M9 11l3 3 8-8M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9'},
+  {id:'recommendations',title:'Recommendations',ic:'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'},
+  {id:'toolkit',title:'Toolkit',ic:'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6ZM14 2v6h6'},
+  {id:'next',title:'Next Steps',ic:'M5 12h14M12 5l7 7-7 7'},
+];
+const navEl=document.getElementById('nav');
+SECTIONS.forEach((s,i)=>{const b=document.createElement('button');b.onclick=()=>showView(i);
+  b.innerHTML=`<svg class="ic" viewBox="0 0 24 24" fill="none"><path d="${s.ic}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${s.title}</span><span class="num">${String(i+1).padStart(2,'0')}</span>`;navEl.appendChild(b);});
+const progEl=document.getElementById('progress');
+SECTIONS.forEach((s,i)=>{const d=document.createElement('span');d.className='dot';d.onclick=()=>showView(i);progEl.appendChild(d);});
+const pct=document.createElement('span');pct.className='pct';progEl.appendChild(pct);
+let current=0;
+function showView(i){current=i;
+  document.querySelectorAll('.view').forEach((v,idx)=>v.classList.toggle('show',idx===i));
+  document.querySelectorAll('.nav button').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  document.querySelectorAll('.progress .dot').forEach((d,idx)=>d.classList.toggle('on',idx<=i));
+  pct.textContent=`${i+1}/${SECTIONS.length}`;
+  document.getElementById('crumbTitle').textContent=SECTIONS[i].title;
+  document.getElementById('prevTitle').textContent=i>0?SECTIONS[i-1].title:'—';
+  document.getElementById('nextTitle').textContent=i<SECTIONS.length-1?SECTIONS[i+1].title:'—';
+  document.getElementById('prevBtn').disabled=i===0;
+  document.getElementById('nextBtn').disabled=i===SECTIONS.length-1;
+  document.getElementById('stage').scrollIntoView({block:'start'});closeNav();}
+function nav(d){const n=current+d;if(n>=0&&n<SECTIONS.length)showView(n);}
+function openNav(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show');}
+function closeNav(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+/* DATABASES */
+const DBS=[
+  {n:'FDA Regulatory Databases',pri:'high',why:'Direct indicator of companies actively developing devices needing components.',srcs:['510(k) & PMA pre-market','Establishment Registration','Device Recalls','AccessGUDID (UDI)']},
+  {n:'Clinical Trial Databases',pri:'high',why:'Early intelligence on devices entering human testing — production scaling begins.',srcs:['ClinicalTrials.gov','EU Clinical Trials Register','WHO ICTRP']},
+  {n:'Import / Export Data',pri:'high',why:'Identify companies importing similar components — reshoring & supplier-switch candidates.',srcs:['Panjiva (S&P Global)','ImportGenius','USA Trade Online','Trade Atlas']},
+  {n:'Patent Databases',pri:'med',why:'Innovation pipeline — patents filed 12–24 months ago signal active R&D needing prototyping.',srcs:['USPTO Patent Search','Google Patents','WIPO PATENTSCOPE']},
+  {n:'Government Funding',pri:'med',why:'SBIR/STTR recipients are funded specifically for prototyping and seeking suppliers.',srcs:['SBIR/STTR Awards','NIH RePORTER','DOE & NSF Awards']},
+  {n:'Business Intelligence',pri:'med',why:'Financial health, funding rounds, and growth trajectories indicate budget capacity.',srcs:['Crunchbase','PitchBook','LinkedIn Sales Nav','ZoomInfo']},
+  {n:'Industry Resources',pri:'med',why:'Curated lists of active medical device companies with verified contacts.',srcs:['MD&M exhibitor lists','AdvaMed directory','MedTech Strategist','RAPS Regulatory Focus']},
+  {n:'Academic & Research',pri:'low',why:'Long-term pipeline — university spinouts and licensed technologies become future customers.',srcs:['AUTM Licensing Survey','University TTOs','NIH iEdison','LabPartnering.org']},
+];
+const priBadge={high:['high','HIGH'],med:['med','MEDIUM'],low:['low','LOWER']};
+function renderDB(f){const g=document.getElementById('dbGrid');g.innerHTML='';
+  DBS.filter(d=>f==='all'||d.pri===f).forEach(d=>{const el=document.createElement('div');el.className='db';
+    el.innerHTML=`<div class="top"><h4>${d.n}</h4><span class="badge ${priBadge[d.pri][0]}">${priBadge[d.pri][1]}</span></div><div class="why">${d.why}</div><div class="srcs">${d.srcs.map(s=>`<span>${s}</span>`).join('')}</div>`;g.appendChild(el);});}
+renderDB('all');
+document.querySelectorAll('#dbChips .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#dbChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');renderDB(c.dataset.f);});
+
+/* PLAYS */
+const PLAYS=[
+  {n:'01',t:'Development Timeline Scoring Model',body:[{h:'The idea',p:'Cross-reference multiple databases to predict exactly when a company needs prototyping services — building a pipeline tracker that scores companies by their position in the development lifecycle.'},{h:'The pipeline',p:'Patent Filed (T-24mo) → SBIR Phase I (T-18mo) → Prototype Development (T-12mo, target window) → Clinical Trial (T-6mo) → 510(k) Submission (T-0) → Market Launch (T+12mo).'},{h:'Implementation',p:'Highest priority = companies 12–18 months post-patent filing with recent SBIR Phase II awards. Weight the lead score by timeline position.'}]},
+  {n:'02',t:'Supply Chain Disruption Indicators',body:[{h:'The idea',p:'Monitor signals that a company is unhappy with its current supplier — and is therefore receptive to switching.'},{h:'Signals to track',p:'Import data showing supplier switches · job postings for "supply chain manager" or "quality engineer" · FDA warning letters to current suppliers · news of manufacturing delays · LinkedIn complaints about supply issues.'},{h:'Action',p:'Automated alerts when a target account shows 2+ disruption signals within 30 days.'}]},
+  {n:'03',t:'Investor Portfolio Synergies',body:[{h:'The idea',p:'VC firms\' portfolio companies often share suppliers based on investor recommendations — one customer can unlock a whole portfolio.'},{h:'Strategy',p:'Identify medtech VCs (Versant, OrbiMed, RA Capital) → map their entire portfolio → if one portfolio company becomes a customer, prioritize outreach to the rest. Track VC press releases for new investments.'}]},
+  {n:'04',t:'Regulatory Consultant Network Mapping',body:[{h:'The idea',p:'Regulatory consultants work with multiple device companies simultaneously — one relationship can yield many warm introductions.'},{h:'Approach',p:'Identify top consulting firms (Emergo, RQM+, Greenlight Guru) → track their case studies and client announcements → build them as referral partners → monitor their job postings (a signal of client growth). Sponsor their webinars for visibility among their clients.'}]},
+  {n:'05',t:'Component Similarity Analysis',body:[{h:'The idea',p:'Use NLP on patent texts and FDA submissions to find companies working with similar tubular geometries and materials to yours.'},{h:'Technical approach',p:'TF-IDF vectorization + cosine similarity on device/patent descriptions. Heavily weight materials (nitinol, PEEK, cobalt-chrome), processes (laser cutting, electropolishing), and geometries (hypotube, thin-wall, tapered).'},{h:'Outcome',p:'Surface companies with >80% technical similarity to your expertise — even if they never appear in a keyword search.'}]},
+];
+const playsEl=document.getElementById('plays');
+PLAYS.forEach(p=>{const d=document.createElement('div');d.className='play';
+  d.innerHTML=`<button class="play-head"><span class="pnum">${p.n}</span><span class="ptitle">${p.t}</span><svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="play-body">${p.body.map(b=>`<div class="h">${b.h}</div><p>${b.p}</p>`).join('')}</div>`;
+  d.querySelector('.play-head').onclick=()=>d.classList.toggle('open');playsEl.appendChild(d);});
+
+/* OUTREACH TEMPLATES */
+const TEMPLATES=[
+  {t:'Post-510(k) Submission',body:`<b>Subject:</b> Supporting [Device Name] Production Scaling<br><br>Hi [Name], congratulations on the recent 510(k) submission for [Device Name]. Moving from prototype to production is an exciting milestone.<br><br>At Sublime Laser, we specialize in precision tubular components for devices like yours — rapid iteration support during FDA review, ISO 13485 certified manufacturing, and scalable capacity from prototypes to 10K units/month.<br><br>Would you be open to a brief call next week?`},
+  {t:'Post-Funding Announcement',body:`<b>Subject:</b> Scaling Manufacturing After Your Series A<br><br>Hi [Name], congratulations on the Series A! This is the inflection point where manufacturing partnerships become critical.<br><br>We work with funded medtech startups to de-risk production scaling for precision tubular components (hypotubes, catheter shafts, stents). No minimum order quantities for prototyping; 2–3 week first articles; DFM feedback to reduce costs.<br><br>Do you have 15 minutes Thursday or Friday?`},
+  {t:'Clinical Trial Initiation',body:`<b>Subject:</b> Component Supply for [Trial Name]<br><br>Hi [Name], ensuring consistent component quality during trials is crucial for regulatory success. Sublime Laser provides lot traceability for clinical-unit components, rapid replacement if design iterations are needed, and seamless transition to commercial production post-trial.<br><br>Are you currently set for component supply through the trial phase?`},
+];
+const tEl=document.getElementById('templates');
+TEMPLATES.forEach((t,i)=>{const d=document.createElement('div');d.className='play';
+  d.innerHTML=`<button class="play-head"><span class="pnum" style="font-size:18px">✉</span><span class="ptitle">Template ${i+1} · ${t.t}</span><svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="play-body"><p style="color:var(--ink)">${t.body}</p></div>`;
+  d.querySelector('.play-head').onclick=()=>d.classList.toggle('open');tEl.appendChild(d);});
+
+/* SCORING DEMO (0-100, 4 weighted factors) */
+const FACTORS=[
+  {key:'immediate',name:'Immediate Need',wt:0.40,signals:[['Active clinical trial',30],['510(k) submitted <6mo ago',25],['Recent funding announcement',20],['Job postings for mfg roles',15]]},
+  {key:'budget',name:'Budget Capacity',wt:0.25,signals:[['Series B+ funding',25],['SBIR Phase II award',20],['Series A funding',15],['Profitable revenue (public)',10]]},
+  {key:'fit',name:'Fit Alignment',wt:0.20,signals:[['Explicit tubular-component mention',20],['Similar material (nitinol, PEEK)',15],['Same FDA product-code family',10],['General medical device (Class II+)',5]]},
+  {key:'timing',name:'Timing Probability',wt:0.15,signals:[['12–18 months post-patent',15],['Competitive / first-to-market pressure',10],['Seasonal demand pattern',5]]},
+];
+const fgEl=document.getElementById('factorGroups');
+const fbEl=document.getElementById('factorBars');
+FACTORS.forEach(f=>{
+  const g=document.createElement('div');g.className='fg';
+  g.innerHTML=`<h4>${f.name}<span class="wt">${Math.round(f.wt*100)}% weight</span></h4>`;
+  f.signals.forEach(([lbl,pts],i)=>{
+    const t=document.createElement('label');t.className='toggle';
+    t.innerHTML=`<input type="checkbox" data-fk="${f.key}" data-pts="${pts}"><span class="box"></span><span class="lbl">${lbl}</span><span class="pts">+${pts}</span>`;
+    t.querySelector('input').onchange=updateScore;g.appendChild(t);});
+  fgEl.appendChild(g);
+  const r=document.createElement('div');r.className='frow';
+  r.innerHTML=`<span class="fname">${f.name}</span><span class="fbar"><span class="ffi" id="bar-${f.key}"></span></span><span class="fval" id="val-${f.key}">0</span>`;
+  fbEl.appendChild(r);
+});
+const C=578;
+function updateScore(){
+  const scores={};
+  FACTORS.forEach(f=>{let s=0;
+    document.querySelectorAll(`input[data-fk="${f.key}"]`).forEach(c=>{if(c.checked)s+=+c.dataset.pts;});
+    scores[f.key]=Math.min(100,s);
+    document.getElementById('bar-'+f.key).style.width=scores[f.key]+'%';
+    document.getElementById('val-'+f.key).textContent=scores[f.key];
+  });
+  let total=0;FACTORS.forEach(f=>total+=scores[f.key]*f.wt);
+  total=Math.round(total);
+  document.getElementById('gscore').textContent=total;
+  document.getElementById('gbar').style.strokeDashoffset=C-(C*total/100);
+  let band,color;
+  if(total>=90){band='🔥 Hot Prospect — immediate outreach';color='rgba(248,113,113,.18)';}
+  else if(total>=70){band='🟡 Warm Lead — email sequence';color='rgba(251,191,36,.18)';}
+  else if(total>=50){band='📋 Watch List — quarterly check-in';color='rgba(22,217,227,.15)';}
+  else{band='❄️ Cold — annual review only';color='rgba(107,122,150,.2)';}
+  const pill=document.getElementById('gpill');pill.textContent=band;pill.style.background=color;pill.style.color='var(--ink)';
+}
+function resetScore(){document.querySelectorAll('.factor-groups input').forEach(c=>c.checked=false);updateScore();}
+
+showView(0);
+updateScore();
+</script>
+</body>
+</html>
