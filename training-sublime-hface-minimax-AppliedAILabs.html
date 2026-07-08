@@ -1,0 +1,2454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sublime Laser AI Training Hub</title>
+<style>
+  /* =========================================================
+     THEME VARIABLES  (light / dark) — inspired by sublimelaser.com
+     ========================================================= */
+  :root[data-theme="light"]{
+    --bg: #ffffff;
+    --bg-alt: #f5f7fa;
+    --bg-card: #ffffff;
+    --bg-elev: #f8fafc;
+    --text: #0d1b2a;
+    --text-muted: #486581;
+    --border: #d9e2ec;
+    --accent: #0b3d91;        /* deep navy — Sublime-style */
+    --accent-2: #1d6fd8;      /* brighter blue */
+    --accent-soft: #e6efff;
+    --good: #1f7a4d;
+    --good-bg: #e5f4ec;
+    --better: #b16a00;
+    --better-bg: #fdf2dd;
+    --best: #5a3aa6;
+    --best-bg: #ece5fb;
+    --warning: #b42318;
+    --warning-bg: #fee4e2;
+    --shadow: 0 2px 10px rgba(13,27,42,0.06);
+    --shadow-lg: 0 8px 24px rgba(13,27,42,0.10);
+    --code-bg: #0d1b2a;
+    --code-text: #e6edf3;
+  }
+  :root[data-theme="dark"]{
+    --bg: #0b1422;
+    --bg-alt: #0f1d31;
+    --bg-card: #14223a;
+    --bg-elev: #182c4a;
+    --text: #e6edf3;
+    --text-muted: #9bb3cc;
+    --border: #243a5c;
+    --accent: #4d8eff;
+    --accent-2: #74a8ff;
+    --accent-soft: #1a2a4a;
+    --good: #4ade80;
+    --good-bg: #0f2e22;
+    --better: #fbbf24;
+    --better-bg: #2e2510;
+    --best: #c4b5fd;
+    --best-bg: #221a3a;
+    --warning: #fca5a5;
+    --warning-bg: #3a1414;
+    --shadow: 0 2px 10px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+    --code-bg: #050a13;
+    --code-text: #e6edf3;
+  }
+
+  /* =========================================================
+     RESET / BASE
+     ========================================================= */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition:background-color .25s ease, color .25s ease;
+  }
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  ::selection{background:var(--accent);color:#fff;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+
+  /* =========================================================
+     LAYOUT
+     ========================================================= */
+  .app{display:flex;min-height:100vh;flex-direction:column;}
+
+  /* HEADER */
+  header.topbar{
+    background:var(--accent);
+    color:#fff;
+    padding:0;
+    box-shadow:var(--shadow);
+    position:sticky;top:0;z-index:100;
+  }
+  .topbar-inner{
+    max-width:1400px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-mark{
+    width:42px;height:42px;border-radius:8px;
+    background:linear-gradient(135deg,#fff 0%, #cfe0ff 100%);
+    color:var(--accent);font-weight:800;
+    display:grid;place-items:center;font-size:20px;border:2px solid #fff;
+  }
+  .brand-text h1{font-size:18px;font-weight:700;letter-spacing:.2px;}
+  .brand-text .sub{font-size:12px;opacity:.85;}
+
+  .topbar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .icon-btn{
+    background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 12px;border-radius:8px;font-size:13px;font-weight:500;
+    display:inline-flex;align-items:center;gap:6px;
+    transition:background .2s, transform .15s;
+  }
+  .icon-btn:hover{background:rgba(255,255,255,.28);}
+  .icon-btn:active{transform:scale(.97);}
+
+  /* TABS */
+  nav.tabs{
+    background:var(--bg-alt);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:70px;z-index:90;
+    overflow-x:auto;
+  }
+  .tabs-inner{
+    max-width:1400px;margin:0 auto;padding:0 24px;
+    display:flex;gap:4px;
+  }
+  .tab{
+    padding:14px 16px;font-size:14px;font-weight:500;
+    color:var(--text-muted);
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+    transition:color .2s, border-color .2s;
+  }
+  .tab:hover{color:var(--text);}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+
+  /* MAIN */
+  main{max-width:1400px;margin:0 auto;padding:32px 24px 64px;width:100%;flex:1;}
+  .section{display:none;animation:fadeIn .35s ease;}
+  .section.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  /* TYPOGRAPHY */
+  h2{font-size:28px;margin-bottom:8px;color:var(--text);font-weight:700;letter-spacing:-.3px;}
+  h3{font-size:20px;margin:28px 0 10px;font-weight:600;}
+  h4{font-size:16px;margin:18px 0 8px;font-weight:600;color:var(--accent);}
+  p,li{font-size:15px;color:var(--text);}
+  .lead{font-size:17px;color:var(--text-muted);margin-bottom:24px;max-width:760px;}
+  ul,ol{padding-left:22px;margin:10px 0;}
+  li{margin:6px 0;}
+
+  /* CARDS */
+  .card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px 22px;
+    margin:14px 0;
+    box-shadow:var(--shadow);
+  }
+  .grid{display:grid;gap:16px;}
+  .grid-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
+  .grid-3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+  .grid-4{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
+
+  /* CALLOUTS */
+  .callout{
+    border-left:4px solid var(--accent);
+    background:var(--accent-soft);
+    padding:14px 18px;border-radius:8px;
+    margin:18px 0;font-size:14.5px;
+  }
+  .callout.warn{border-color:var(--warning);background:var(--warning-bg);}
+  .callout strong{color:var(--accent);}
+
+  /* PROMPT BLOCKS */
+  .prompts-container{display:flex;flex-direction:column;gap:18px;margin-top:14px;}
+  .prompt-block{
+    border:1px solid var(--border);border-radius:10px;
+    background:var(--bg-elev);overflow:hidden;
+    transition:box-shadow .2s;
+  }
+  .prompt-block:hover{box-shadow:var(--shadow);}
+  .prompt-header{
+    padding:10px 16px;display:flex;justify-content:space-between;
+    align-items:center;gap:10px;font-weight:600;
+  }
+  .prompt-header.good{background:var(--good-bg);color:var(--good);border-bottom:2px solid var(--good);}
+  .prompt-header.better{background:var(--better-bg);color:var(--better);border-bottom:2px solid var(--better);}
+  .prompt-header.best{background:var(--best-bg);color:var(--best);border-bottom:2px solid var(--best);}
+  .badge{
+    display:inline-block;padding:3px 10px;border-radius:999px;
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  }
+  .badge.good{background:var(--good);color:#fff;}
+  .badge.better{background:var(--better);color:#fff;}
+  .badge.best{background:var(--best);color:#fff;}
+  .prompt-body{padding:14px 18px;}
+  .prompt-body .label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:600;margin-bottom:4px;}
+  .prompt-body .scenario{font-style:italic;color:var(--text-muted);margin-bottom:10px;font-size:14px;}
+  .prompt-body pre{
+    background:var(--code-bg);color:var(--code-text);
+    padding:14px 16px;border-radius:8px;
+    font-family:"SF Mono",Menlo,Consolas,monospace;
+    font-size:13.5px;line-height:1.55;
+    overflow-x:auto;white-space:pre-wrap;word-wrap:break-word;
+    border-left:3px solid var(--accent);
+  }
+  .prompt-actions{
+    padding:8px 16px 12px;display:flex;gap:8px;flex-wrap:wrap;
+    border-top:1px solid var(--border);background:var(--bg-card);
+  }
+  .btn{
+    background:var(--accent);color:#fff;
+    padding:7px 14px;border-radius:6px;font-size:13px;font-weight:500;
+    display:inline-flex;align-items:center;gap:6px;
+    transition:background .2s,transform .1s;
+  }
+  .btn:hover{background:var(--accent-2);}
+  .btn:active{transform:scale(.97);}
+  .btn.secondary{background:var(--bg-elev);color:var(--text);border:1px solid var(--border);}
+  .btn.secondary:hover{background:var(--accent-soft);}
+  .btn.copied{background:var(--good);}
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--text);color:var(--bg);padding:10px 18px;border-radius:8px;
+    font-size:14px;font-weight:500;opacity:0;pointer-events:none;
+    transition:opacity .25s, transform .25s;z-index:1000;box-shadow:var(--shadow-lg);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* CHATBOT CARD */
+  .bot-card{
+    background:var(--bg-card);border:1px solid var(--border);
+    border-radius:12px;padding:18px;
+    display:flex;flex-direction:column;gap:10px;
+    transition:transform .2s, box-shadow .2s, border-color .2s;
+  }
+  .bot-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--accent);} 
+  .bot-head{display:flex;align-items:center;gap:10px;}
+  .bot-logo{
+    width:40px;height:40px;border-radius:8px;
+    background:var(--accent-soft);color:var(--accent);
+    display:grid;place-items:center;font-size:20px;font-weight:700;
+  }
+  .bot-name{font-weight:700;font-size:16px;}
+  .bot-maker{font-size:12px;color:var(--text-muted);}
+  .bot-tag{
+    display:inline-block;padding:2px 8px;border-radius:4px;
+    background:var(--accent-soft);color:var(--accent);
+    font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;
+  }
+  .bot-desc{font-size:14px;color:var(--text);}
+  .bot-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+  .bot-meta .pill{
+    padding:3px 9px;border-radius:999px;background:var(--bg-elev);
+    border:1px solid var(--border);font-size:11.5px;color:var(--text-muted);
+  }
+  .bot-link{margin-top:auto;font-size:13px;}
+
+  /* NOTES */
+  .notes-area{
+    margin-top:18px;border:1px dashed var(--border);
+    border-radius:10px;padding:14px 16px;background:var(--bg-elev);
+  }
+  .notes-head{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:8px;gap:8px;flex-wrap:wrap;
+  }
+  .notes-head strong{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+  .notes-actions{display:flex;gap:6px;flex-wrap:wrap;}
+  .notes-area textarea{
+    width:100%;min-height:110px;resize:vertical;
+    background:var(--bg-card);color:var(--text);
+    border:1px solid var(--border);border-radius:6px;
+    padding:10px 12px;font-family:inherit;font-size:14px;line-height:1.5;
+  }
+  .notes-area textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent);}
+  .notes-status{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+  /* GLOSSARY */
+  .glossary-search{
+    width:100%;max-width:420px;padding:10px 14px;
+    border:1px solid var(--border);border-radius:8px;
+    background:var(--bg-card);color:var(--text);font-size:14px;margin-bottom:16px;
+  }
+  .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;}
+  .glossary-item{
+    background:var(--bg-card);border:1px solid var(--border);
+    border-radius:8px;padding:14px 16px;
+    transition:border-color .2s;
+  }
+  .glossary-item:hover{border-color:var(--accent);}
+  .glossary-term{font-weight:700;color:var(--accent);font-size:14.5px;margin-bottom:4px;}
+  .glossary-def{font-size:13.5px;color:var(--text);}
+
+  /* REFERENCES */
+  .ref-list{list-style:none;padding:0;}
+  .ref-list li{
+    padding:10px 0;border-bottom:1px solid var(--border);
+    font-size:14px;
+  }
+  .ref-list li:last-child{border-bottom:none;}
+  .ref-source{font-weight:600;color:var(--text);}
+  .ref-desc{display:block;color:var(--text-muted);font-size:13px;margin-top:2px;}
+
+  /* TABLE */
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--bg-card);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+  th{background:var(--bg-elev);font-weight:600;color:var(--text);font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:var(--bg-elev);}
+
+  /* COMPARISON */
+  .compare{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0;
+  }
+  @media (max-width:680px){.compare{grid-template-columns:1fr;}}
+  .compare-card{
+    border:1px solid var(--border);border-radius:10px;padding:16px;
+    background:var(--bg-card);
+  }
+  .compare-card h4{margin-top:0;color:var(--accent);}
+
+  /* LISTS / STEPS */
+  .steps{counter-reset:step;list-style:none;padding:0;}
+  .steps li{
+    counter-increment:step;position:relative;padding:14px 16px 14px 50px;
+    background:var(--bg-card);border:1px solid var(--border);
+    border-radius:8px;margin:8px 0;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:14px;top:14px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:#fff;font-weight:700;
+    display:grid;place-items:center;font-size:13px;
+  }
+
+  /* FOOTER */
+  footer{
+    background:var(--bg-alt);border-top:1px solid var(--border);
+    padding:22px 24px;text-align:center;color:var(--text-muted);
+    font-size:13px;
+  }
+  footer a{color:var(--accent);font-weight:600;}
+  footer .project-line{font-size:13.5px;}
+
+  /* MOBILE */
+  @media (max-width:780px){
+    .topbar-inner{padding:10px 14px;}
+    .brand-text h1{font-size:15px;}
+    .brand-text .sub{font-size:11px;}
+    nav.tabs{top:64px;}
+    .tabs-inner{padding:0 14px;}
+    main{padding:22px 14px 48px;}
+    h2{font-size:22px;}
+    h3{font-size:17px;}
+  }
+
+  /* TINY BUTTON */
+  .tiny-btn{
+    padding:4px 10px;font-size:12px;border-radius:5px;
+    background:var(--bg-elev);border:1px solid var(--border);
+    color:var(--text);transition:background .2s,color .2s;
+  }
+  .tiny-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- =========================================================
+       HEADER
+       ========================================================= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">SL</div>
+        <div class="brand-text">
+          <h1>Sublime Laser AI Training Hub</h1>
+          <div class="sub">Internal Training System · Sublime Laser, Inc.</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="exportAllNotesBtn" title="Export all notes">
+          ⬇ Export Notes
+        </button>
+        <button class="icon-btn" id="importAllNotesBtn" title="Import notes from a file">
+          ⬆ Import Notes
+        </button>
+        <input type="file" id="importAllNotesInput" accept="application/json" style="display:none" />
+        <button class="icon-btn" id="themeToggle" title="Toggle dark mode">
+          <span id="themeIcon">🌙</span> <span id="themeLabel">Dark Mode</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================
+       TABS
+       ========================================================= -->
+  <nav class="tabs" aria-label="Course sections">
+    <div class="tabs-inner" id="tabBar">
+      <button class="tab active" data-target="welcome">Welcome</button>
+      <button class="tab" data-target="basics">AI Basics</button>
+      <button class="tab" data-target="interface">Bot Interfaces</button>
+      <button class="tab" data-target="chatbots">Chatbot Directory</button>
+      <button class="tab" data-target="prompting">Prompting Skills</button>
+      <button class="tab" data-target="sales">Sales Prompts</button>
+      <button class="tab" data-target="shop">Shop Floor Prompts</button>
+      <button class="tab" data-target="glossary">Glossary</button>
+      <button class="tab" data-target="references">References</button>
+    </div>
+  </nav>
+
+  <!-- =========================================================
+       MAIN
+       ========================================================= -->
+  <main>
+
+    <!-- ===========================
+         WELCOME
+         =========================== -->
+    <section class="section active" id="welcome">
+      <h2>Welcome to the Sublime Laser AI Training Hub</h2>
+      <p class="lead">
+        A practical, role-based introduction to generative AI for our sales team,
+        our shop floor technicians, and everyone in between. The goal of this
+        program is <strong>not</strong> to make everyone an engineer. The goal is to
+        help every Sublime Laser team member use AI confidently to do their job
+        better — serving our medical device customers faster, with sharper
+        communication, cleaner organization, and tighter execution.
+      </p>
+
+      <div class="callout">
+        <strong>How to use this hub:</strong> Work through the tabs from left to right
+        the first time. After that, jump directly to the prompt libraries
+        (<em>Sales</em> or <em>Shop Floor</em>) any time you need a starting point.
+        Every section has its own notepad below it — your notes stay on your
+        machine, and you can export or import them anytime.
+      </div>
+
+      <h3>What you'll be able to do after this course</h3>
+      <div class="grid grid-3">
+        <div class="card">
+          <h4>🧠 Speak the language</h4>
+          <p>Explain to a colleague — or a customer — what an LLM actually is, why it sometimes "hallucinates," and why that matters when you ask it about part tolerances or anodized finishes.</p>
+        </div>
+        <div class="card">
+          <h4>🛠 Pick the right tool</h4>
+          <p>Differentiate ChatGPT, Claude, Gemini, Copilot, Perplexity, and emerging open-source assistants, and know which one to reach for on a given task.</p>
+        </div>
+        <div class="card">
+          <h4>✍️ Prompt well</h4>
+          <p>Write clear, structured prompts that produce useful, repeatable output for sales outreach, customer service, quoting, and shop floor planning.</p>
+        </div>
+      </div>
+
+      <h3>Course structure</h3>
+      <ol class="steps">
+        <li><strong>AI Basics</strong> — What LLMs are, how they are built, and why they "make stuff up."</li>
+        <li><strong>Bot Interfaces</strong> — What a chat bot interface is and what makes one different from another.</li>
+        <li><strong>Chatbot Directory</strong> — Links and descriptions of major and emerging chatbots.</li>
+        <li><strong>Prompting Skills</strong> — Strategies that consistently produce better output.</li>
+        <li><strong>Sales Prompts</strong> — Good / Better / Best prompts for outreach, prospecting, and customer experience.</li>
+        <li><strong>Shop Floor Prompts</strong> — Good / Better / Best prompts for technicians, organization, and efficiency.</li>
+        <li><strong>Glossary</strong> — 30+ terms you'll see across AI tools, in plain English.</li>
+        <li><strong>References</strong> — Where to learn more when you're ready to go deeper.</li>
+      </ol>
+
+      <!-- Notes Section -->
+      <div class="notes-area" data-section="welcome">
+        <div class="notes-head">
+          <strong>📝 Your notes — Welcome</strong>
+          <div class="notes-actions">
+            <button class="tiny-btn" data-action="copy">Copy</button>
+            <button class="tiny-btn" data-action="export">Export</button>
+            <button class="tiny-btn" data-action="import">Import</button>
+            <button class="tiny-btn" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <textarea placeholder="Jot down what you want to remember, questions you have, or ideas to bring back to the team..."></textarea>
+        <div class="notes-status">Saved automatically in this browser.</div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         AI BASICS
+         =========================== -->
+    <section class="section" id="basics">
+      <h2>1. AI Basics — What LLMs Are & How to Think About Them</h2>
+      <p class="lead">
+        This section is the foundation. You don't need a computer science
+        degree — you need an accurate mental model so that you know when to
+        trust the AI, when to verify it, and when not to use it at all.
+      </p>
+
+      <h3>What is an LLM?</h3>
+      <p>
+        <strong>LLM</strong> stands for <em>Large Language Model</em>. It's a type of
+        artificial intelligence that has been trained on enormous amounts of text
+        (books, articles, websites, code, scientific papers) so that it can
+        predict the most likely next word in a sequence.
+      </p>
+      <p>
+        That's it. At their core, today's generative AI systems — ChatGPT, Claude,
+        Gemini, Copilot, and the rest — are extremely sophisticated
+        <em>next-word predictors</em>. The "magic" comes from doing that prediction
+        at massive scale, across billions of parameters, on a training corpus that
+        includes much of the public internet.
+      </p>
+
+      <div class="callout">
+        <strong>A useful mental model:</strong> Think of an LLM as an extremely
+        well-read colleague who has skimmed millions of documents and can talk
+        fluently about almost anything — but who also occasionally invents
+        plausible-sounding nonsense with complete confidence. You would always
+        fact-check that colleague before quoting them to a customer.
+      </div>
+
+      <h3>How are LLMs built?</h3>
+      <p>Modern LLMs are built in three rough stages:</p>
+      <ol class="steps">
+        <li><strong>Pre-training</strong> — The model reads a huge amount of text and learns statistical patterns of language. This is where the model forms its general "knowledge." This stage costs millions of dollars and weeks of GPU time.</li>
+        <li><strong>Fine-tuning</strong> — The model is further trained on curated, high-quality examples (often conversations, instructions, or domain material) so it learns to follow instructions and respond helpfully.</li>
+        <li><strong>Alignment / RLHF</strong> — Human reviewers rank model outputs. The model is then trained to prefer the kinds of responses humans rated higher. This is where "tone" and "safety" come from.</li>
+      </ol>
+      <p>
+        Most public chatbots you use are an LLM wrapped in a chat interface,
+        sometimes connected to extra tools: a web search tool, a code interpreter,
+        image generation, or connectors to your email and calendar.
+      </p>
+
+      <h3>Why do LLMs "make stuff up"?</h3>
+      <div class="compare">
+        <div class="compare-card">
+          <h4>The technical reason</h4>
+          <p>LLMs generate text by predicting the most statistically likely next token. They do not have a built-in database of facts. They do not "know" that something is true. They know which tokens tend to follow other tokens in their training data.</p>
+          <p>That means if there isn't strong signal in the training data, the model will confidently fill in the gaps with the most plausible <em>pattern</em> — not the most plausible <em>fact</em>. We call these invented-but-confident statements <strong>hallucinations.</strong></p>
+        </div>
+        <div class="compare-card">
+          <h4>The practical implications</h4>
+          <p><strong>Always verify</strong> any specific number, regulation, drawing spec, or material property before you put it in a customer-facing document. Treat AI output like a draft from a new intern — useful, often right, but not authoritative.</p>
+          <p>This is especially important in <strong>medical device</strong> contexts, where Sublime Laser operates. Standards, biocompatibility claims, and FDA language must be exact. AI is a starting point, not the source of truth.</p>
+        </div>
+      </div>
+
+      <h3>AI is more than just a tool</h3>
+      <p>
+        A common framing is to call AI "just another tool," like a calculator or
+        a CNC machine. That's accurate, but it leaves out the most useful shift:
+      </p>
+      <ul>
+        <li><strong>A calculator only does math.</strong> You tell it exactly what to compute.</li>
+        <li><strong>A CNC machine only does what its program says.</strong> The G-code is the contract.</li>
+        <li><strong>An LLM can interpret intent.</strong> You describe what you want in natural language and it figures out the steps.</li>
+      </ul>
+      <p>
+        That makes AI more like a <strong>collaborator</strong> than a tool. You
+        collaborate with it the way you'd collaborate with a person: you give it
+        context, you ask good questions, you push back when it's wrong, and you
+        always own the final decision.
+      </p>
+
+      <div class="callout warn">
+        <strong>Trust boundary:</strong> Generative AI is best used for
+        <em>drafting, summarizing, brainstorming, organizing, and explaining</em>.
+        Treat it as a colleague, not as an oracle, and confirm anything that
+        touches part drawings, ISO/ASTM specifications, regulatory claims, or
+        customer commitments.
+      </div>
+
+      <!-- Notes -->
+      <div class="notes-area" data-section="basics">
+        <div class="notes-head">
+          <strong>📝 Your notes — AI Basics</strong>
+          <div class="notes-actions">
+            <button class="tiny-btn" data-action="copy">Copy</button>
+            <button class="tiny-btn" data-action="export">Export</button>
+            <button class="tiny-btn" data-action="import">Import</button>
+            <button class="tiny-btn" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <textarea placeholder="What surprised you? What questions do you still have?"></textarea>
+        <div class="notes-status">Saved automatically in this browser.</div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         BOT INTERFACES
+         =========================== -->
+    <section class="section" id="interface">
+      <h2>2. AI Chat Bot Interfaces — What's Actually Happening</h2>
+      <p class="lead">
+        Every "AI chatbot" you use is doing roughly the same thing under the
+        hood: sending your text to a large language model and showing you its
+        reply. The differences you experience — speed, tone, depth, accuracy,
+        integrations — come from <em>which model</em>, <em>how it's wrapped</em>,
+        and <em>what tools it has access to</em>.
+      </p>
+
+      <h3>The anatomy of a chatbot interface</h3>
+      <p>Most chat interfaces, regardless of vendor, share the same parts:</p>
+      <div class="grid grid-3">
+        <div class="card">
+          <h4>💬 Input box</h4>
+          <p>Where you type. Some bots also accept voice, image, file, or video input (uploaded files, screenshots, photos of parts, PDFs of drawings).</p>
+        </div>
+        <div class="card">
+          <h4>🧠 The model</h4>
+          <p>The LLM doing the work. Different vendors use different models with different training, different "personalities," and different strengths. This is the biggest driver of output quality.</p>
+        </div>
+        <div class="card">
+          <h4>🛠 Tools & data</h4>
+          <p>Many bots can call external tools: web search, code execution, image generation, calendar access, file retrieval, even email or document databases. The wrapper decides what the model can reach.</p>
+        </div>
+        <div class="card">
+          <h4>📚 Memory / context</h4>
+          <p>Within a single chat, the bot remembers what you said earlier. Across chats, most bots start blank (for privacy). Some — Premium tiers, assistants like Le Chat, or agentic products — remember across sessions.</p>
+        </div>
+        <div class="card">
+          <h4>🎛 Controls</h4>
+          <p>Model selector, "thinking / reasoning" toggle, temperature, web-search on/off, custom instructions, custom GPTs/Projects, etc. These let you shape the response.</p>
+        </div>
+        <div class="card">
+          <h4>🪪 Persona & policy</h4>
+          <p>Vendor-specific behavior: tone, refusals, citation style, formatting defaults. Two bots running the same underlying model can feel very different because of this layer.</p>
+        </div>
+      </div>
+
+      <h3>Why some chatbots are different from others</h3>
+      <p>If I ask ten chatbots "what is the kerf width of a femtosecond laser on nitinol?," I'll get ten slightly different answers, some specific, some hand-wavy, some wrong. Here's why:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Difference</th><th>What it changes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Underlying model</strong></td><td>The "brain." Different models know different things, reason differently, and have different context windows (how much text they can hold in one conversation).</td></tr>
+            <tr><td><strong>Training data & cutoff</strong></td><td>A model trained on data through 2024 doesn't know events of 2025. Some bots get fresh data via live web search; others don't.</td></tr>
+            <tr><td><strong>Tuning / personality</strong></td><td>One model may be cautious and precise; another may be friendly and verbose — even running the same base model.</td></tr>
+            <tr><td><strong>Tools & integrations</strong></td><td>A bot with web search can answer current questions; one without can only use what it was trained on. A bot with image generation can produce visuals; one without can't.</td></tr>
+            <tr><td><strong>Domain specialization</strong></td><td>Some bots are tuned for coding, some for research, some for creative writing, some for enterprise document Q&A.</td></tr>
+            <tr><td><strong>Deployment</strong></td><td>Public cloud vs. self-hosted vs. on-device (smaller models, like on your phone or laptop) changes speed, cost, and what data leaves your machine.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Practical takeaway:</strong> Pick the bot for the job. ChatGPT
+        is the all-rounder. Claude tends to be the best writer and careful
+        reader. Gemini is best if you live in Google Workspace. Copilot is best
+        if you live in Microsoft 365. Perplexity is best for cited research.
+        Open-source / local bots matter when data privacy is critical.
+      </div>
+
+      <h3>What "agentic" means</h3>
+      <p>
+        You'll see the word <strong>agentic</strong> more and more. A chatbot
+        answers questions. An <em>agent</em> takes actions: it can read a file,
+        search a database, send an email, run code, call an API, and chain
+        multiple steps together without asking you at every turn. The newest
+        wave of products — Gemini Spark, OpenClaw, Claude's computer-use
+        features, ChatGPT's Agent mode — are all variations on this idea.
+      </p>
+
+      <!-- Notes -->
+      <div class="notes-area" data-section="interface">
+        <div class="notes-head">
+          <strong>📝 Your notes — Bot Interfaces</strong>
+          <div class="notes-actions">
+            <button class="tiny-btn" data-action="copy">Copy</button>
+            <button class="tiny-btn" data-action="export">Export</button>
+            <button class="tiny-btn" data-action="import">Import</button>
+            <button class="tiny-btn" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <textarea placeholder="Which bot do you already use the most? Where could you swap it for a better-suited one?"></textarea>
+        <div class="notes-status">Saved automatically in this browser.</div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         CHATBOT DIRECTORY
+         =========================== -->
+    <section class="section" id="chatbots">
+      <h2>3. Chatbot Directory — The Major & Emerging Players</h2>
+      <p class="lead">
+        A practical map of the chatbots you're most likely to encounter in
+        2026, what each one is best at, and where to find it. The list is
+        deliberately split into <strong>Major</strong> (widely adopted) and
+        <strong>Emerging</strong> (rising fast, including open source).
+      </p>
+
+      <h3>The Major Chatbots</h3>
+      <div class="grid grid-2">
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🟢</div>
+            <div>
+              <div class="bot-name">ChatGPT</div>
+              <div class="bot-maker">OpenAI · Models: GPT-5.5 family</div>
+            </div>
+          </div>
+          <span class="bot-tag">All-rounder</span>
+          <p class="bot-desc">The most widely used consumer chatbot. Strongest ecosystem: voice mode, image generation, custom GPTs, Deep Research, and an Agent mode for multi-step tasks.</p>
+          <div class="bot-meta">
+            <span class="pill">Free tier</span>
+            <span class="pill">Plus $20/mo</span>
+            <span class="pill">1M context</span>
+            <span class="pill">Voice, image, code</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://chatgpt.com" target="_blank" rel="noopener">chatgpt.com</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🟧</div>
+            <div>
+              <div class="bot-name">Claude</div>
+              <div class="bot-maker">Anthropic · Models: Sonnet 4.6, Opus 4.6</div>
+            </div>
+          </div>
+          <span class="bot-tag">Writer & analyst</span>
+          <p class="bot-desc">Best at long-form writing, careful reasoning, and analyzing long PDFs. Quieter, more cautious personality. Claude Code is a popular coding agent.</p>
+          <div class="bot-meta">
+            <span class="pill">Free tier</span>
+            <span class="pill">Pro $20/mo</span>
+            <span class="pill">~1M context</span>
+            <span class="pill">Artifacts</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🔵</div>
+            <div>
+              <div class="bot-name">Google Gemini</div>
+              <div class="bot-maker">Google · Models: Gemini 2.5 / 3 family</div>
+            </div>
+          </div>
+          <span class="bot-tag">Workspace integration</span>
+          <p class="bot-desc">Native integration with Gmail, Docs, Drive, Calendar — it can search and act across Google Workspace. Strongest free tier. The default for Google-centric teams.</p>
+          <div class="bot-meta">
+            <span class="pill">Generous free tier</span>
+            <span class="pill">Advanced $19.99/mo</span>
+            <span class="pill">Multimodal</span>
+            <span class="pill">1–2M context</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🟦</div>
+            <div>
+              <div class="bot-name">Microsoft Copilot</div>
+              <div class="bot-maker">Microsoft · Powered by GPT-5.5 + Microsoft stack</div>
+            </div>
+          </div>
+          <span class="bot-tag">Microsoft 365</span>
+          <p class="bot-desc">Built into Word, Excel, PowerPoint, Outlook, and Teams. Reads your emails and files via Microsoft Graph. Excellent if you live in Microsoft 365; less interesting as a standalone chat.</p>
+          <div class="bot-meta">
+            <span class="pill">Free chat</span>
+            <span class="pill">M365 Copilot $30/user/mo</span>
+            <span class="pill">Vision / screen share</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://copilot.microsoft.com" target="_blank" rel="noopener">copilot.microsoft.com</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🟪</div>
+            <div>
+              <div class="bot-name">Perplexity</div>
+              <div class="bot-maker">Perplexity AI · Multi-model routing</div>
+            </div>
+          </div>
+          <span class="bot-tag">Cited research</span>
+          <p class="bot-desc">An AI search engine. Every answer ships with clickable source citations. Best in class when you need fresh, verifiable information — pricing, specs, current events.</p>
+          <div class="bot-meta">
+            <span class="pill">Free (5 Pro/day)</span>
+            <span class="pill">Pro $20/mo</span>
+            <span class="pill">Multi-model</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://www.perplexity.ai" target="_blank" rel="noopener">perplexity.ai</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">⚫</div>
+            <div>
+              <div class="bot-name">Grok</div>
+              <div class="bot-maker">xAI · Model: Grok 4.3</div>
+            </div>
+          </div>
+          <span class="bot-tag">Real-time & X-native</span>
+          <p class="bot-desc">Native access to live X (Twitter) data and an "Imagine" image/video generator. Personality is more candid than the others. Useful when you want fast takes on current sentiment.</p>
+          <div class="bot-meta">
+            <span class="pill">Free tier</span>
+            <span class="pill">SuperGrok $30/mo</span>
+            <span class="pill">Real-time web</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://x.com/i/grok" target="_blank" rel="noopener">x.com/i/grok</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🟦</div>
+            <div>
+              <div class="bot-name">Meta AI</div>
+              <div class="bot-maker">Meta · Integrated across Instagram, WhatsApp, Facebook</div>
+            </div>
+          </div>
+          <span class="bot-tag">Social + media generation</span>
+          <p class="bot-desc">Bundled into Meta's family of apps. Image and (now) video generation in one chat. Useful for quick creative generation tied to social workflows.</p>
+          <div class="bot-meta">
+            <span class="pill">Free</span>
+            <span class="pill">Built into Meta apps</span>
+            <span class="pill">Image & video</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://www.meta.ai" target="_blank" rel="noopener">meta.ai</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🟥</div>
+            <div>
+              <div class="bot-name">Le Chat (Mistral)</div>
+              <div class="bot-maker">Mistral AI · EU-hosted, strong on privacy</div>
+            </div>
+          </div>
+          <span class="bot-tag">Privacy + connectors</span>
+          <p class="bot-desc">European data residency by default. Connectors let you pull in your own documents and tools. A good option when data sovereignty matters.</p>
+          <div class="bot-meta">
+            <span class="pill">Free</span>
+            <span class="pill">Pro $14.99/mo</span>
+            <span class="pill">EU-hosted</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://chat.mistral.ai" target="_blank" rel="noopener">chat.mistral.ai</a></div>
+        </div>
+
+      </div>
+
+      <h3>Emerging & Open-Source</h3>
+      <div class="grid grid-2">
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🌐</div>
+            <div>
+              <div class="bot-name">DeepSeek</div>
+              <div class="bot-maker">DeepSeek · Open-weight R1 reasoning model</div>
+            </div>
+          </div>
+          <span class="bot-tag">Open-source power</span>
+          <p class="bot-desc">Strong open-source reasoning model. Free to use, can be self-hosted. Useful for technical/coding work where you want to inspect or deploy the model yourself.</p>
+          <div class="bot-meta">
+            <span class="pill">Free</span>
+            <span class="pill">Open weights</span>
+            <span class="pill">Self-hostable</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://chat.deepseek.com" target="_blank" rel="noopener">chat.deepseek.com</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🪶</div>
+            <div>
+              <div class="bot-name">Google Gemini Spark</div>
+              <div class="bot-maker">Google · Always-on agent on Gemini 3.5</div>
+            </div>
+          </div>
+          <span class="bot-tag">Autonomous agent</span>
+          <p class="bot-desc">A persistent, always-on AI agent. Schedules recurring workflows, uses Google Connected Apps, and runs Skills. Represents Google's entry into the "agent" paradigm.</p>
+          <div class="bot-meta">
+            <span class="pill">Google I/O 2026</span>
+            <span class="pill">Persistent memory</span>
+            <span class="pill">Proactive tasks</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🧰</div>
+            <div>
+              <div class="bot-name">OpenClaw</div>
+              <div class="bot-maker">Open-source · Self-hosted AI agent</div>
+            </div>
+          </div>
+          <span class="bot-tag">Local agent platform</span>
+          <p class="bot-desc">An open-source AI agent you can self-host. Strong community, plugin ecosystem, runs locally for privacy. Best when you want the agent on your own hardware.</p>
+          <div class="bot-meta">
+            <span class="pill">Self-hosted</span>
+            <span class="pill">Plugin ecosystem</span>
+            <span class="pill">Privacy-first</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener">github.com/openclaw</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🧪</div>
+            <div>
+              <div class="bot-name">Kimi (Moonshot AI)</div>
+              <div class="bot-maker">Moonshot · Open-source, long-context, agent swarm</div>
+            </div>
+          </div>
+          <span class="bot-tag">Long-context agent</span>
+          <p class="bot-desc">Kimi K2 family — open-source, native multimodal, with an "agent swarm" mode that splits complex tasks across parallel sub-agents. Especially strong for coding and visual reasoning.</p>
+          <div class="bot-meta">
+            <span class="pill">Open weights</span>
+            <span class="pill">Native multimodal</span>
+            <span class="pill">Agent swarm</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://kimi.moonshot.cn" target="_blank" rel="noopener">kimi.moonshot.cn</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🏗</div>
+            <div>
+              <div class="bot-name">Command A+ (Cohere)</div>
+              <div class="bot-maker">Cohere · Open-weight, enterprise-focused</div>
+            </div>
+          </div>
+          <span class="bot-tag">Sovereign AI</span>
+          <p class="bot-desc">Open-weight enterprise model from Cohere. Designed for on-prem deployment (runs on as little as 2 H100s). Strong on multilingual and document RAG workflows.</p>
+          <div class="bot-meta">
+            <span class="pill">Apache 2.0</span>
+            <span class="pill">On-prem friendly</span>
+            <span class="pill">48 languages</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://cohere.com" target="_blank" rel="noopener">cohere.com</a></div>
+        </div>
+
+        <div class="bot-card">
+          <div class="bot-head">
+            <div class="bot-logo">🖥</div>
+            <div>
+              <div class="bot-name">Vercel Eve</div>
+              <div class="bot-maker">Open-source framework for agents</div>
+            </div>
+          </div>
+          <span class="bot-tag">Agent framework</span>
+          <p class="bot-desc">Not a chatbot — an open-source framework for building agents. Each agent is a directory of files mapped to capabilities. Durable execution, sandboxes, human-in-the-loop approvals.</p>
+          <div class="bot-meta">
+            <span class="pill">Apache 2.0</span>
+            <span class="pill">Developer framework</span>
+            <span class="pill">Durable workflows</span>
+          </div>
+          <div class="bot-link">👉 <a href="https://github.com/vercel/eve" target="_blank" rel="noopener">github.com/vercel/eve</a></div>
+        </div>
+
+      </div>
+
+      <div class="callout">
+        <strong>How to choose:</strong> For sales and shop-floor work at
+        Sublime Laser, a sensible default stack is <em>ChatGPT</em> for general
+        drafting, <em>Claude</em> for careful long-document work (long RFQs,
+        specs, supplier docs), and <em>Perplexity</em> for any current-event or
+        external fact-checking. Avoid putting customer-protected drawings or
+        part data into free, public tiers.
+      </div>
+
+      <!-- Notes -->
+      <div class="notes-area" data-section="chatbots">
+        <div class="notes-head">
+          <strong>📝 Your notes — Chatbot Directory</strong>
+          <div class="notes-actions">
+            <button class="tiny-btn" data-action="copy">Copy</button>
+            <button class="tiny-btn" data-action="export">Export</button>
+            <button class="tiny-btn" data-action="import">Import</button>
+            <button class="tiny-btn" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <textarea placeholder="Which of these have you already tried? Which should we pilot?"></textarea>
+        <div class="notes-status">Saved automatically in this browser.</div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         PROMPTING SKILLS
+         =========================== -->
+    <section class="section" id="prompting">
+      <h2>4. Prompting Skills — Strategies That Consistently Work</h2>
+      <p class="lead">
+        The biggest performance jump you'll get from AI isn't choosing a model —
+        it's writing better prompts. The principles below work across every
+        major chatbot.
+      </p>
+
+      <h3>The five universal rules</h3>
+      <ol class="steps">
+        <li><strong>Be specific about what you want.</strong> "Write me a follow-up email" is vague. "Write a 6-line follow-up email to a neurovascular R&D engineer who asked for a quote 10 days ago and went quiet" is a prompt.</li>
+        <li><strong>Give the model context.</strong> Tell it who you are, who the audience is, what the situation is, and what tone you want. The more relevant context, the less it has to guess.</li>
+        <li><strong>Specify the format.</strong> Ask for "a table with three columns," "five bullet points," or "a 4-line LinkedIn message." Output format drives output quality.</li>
+        <li><strong>Show, don't just tell.</strong> Include an example of what good looks like (few-shot prompting). It anchors the model's tone, length, and style.</li>
+        <li><strong>Iterate.</strong> Treat the first response as a draft. Tell the bot what to change: "Make it shorter," "More technical," "Less salesy," "Convert to a numbered list."</li>
+      </ol>
+
+      <h3>The Good / Better / Best framework</h3>
+      <p>
+        Every prompt in this course uses a <strong>Good / Better / Best</strong>
+        structure so you can see what makes each tier better:
+      </p>
+
+      <div class="grid grid-3">
+        <div class="card" style="border-top:4px solid var(--good);">
+          <h4 style="color:var(--good);">🟢 Good — the baseline</h4>
+          <p>A plain, generic prompt. It usually works, but the output is generic too. Useful when speed matters more than nuance.</p>
+        </div>
+        <div class="card" style="border-top:4px solid var(--better);">
+          <h4 style="color:var(--better);">🟡 Better — with context</h4>
+          <p>Adds who you are, who it's for, and the goal. Significantly improves relevance and tone.</p>
+        </div>
+        <div class="card" style="border-top:4px solid var(--best);">
+          <h4 style="color:var(--best);">🟣 Best — fully specified</h4>
+          <p>Defines role, audience, constraints, format, length, and style. Includes an example or persona. Produces output you can often use with light editing.</p>
+        </div>
+      </div>
+
+      <h3>Handy prompting patterns</h3>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>🎭 Role prompt</h4>
+          <p>"Act as a senior medical device manufacturing engineer with 20 years of laser machining experience. Now review this email I wrote..."</p>
+        </div>
+        <div class="card">
+          <h4>🪜 Chain-of-thought</h4>
+          <p>"Think step by step before giving your final answer." Forces the model to reason before responding, improving accuracy on multi-step problems.</p>
+        </div>
+        <div class="card">
+          <h4>🧪 Few-shot</h4>
+          <p>"Here are two example follow-up emails in our tone. Now write a third for this new situation." Gives the model a style anchor.</p>
+        </div>
+        <div class="card">
+          <h4>📋 Rubric</h4>
+          <p>"Score your draft 1–5 on tone, clarity, and persuasion, then rewrite to improve any score under 4." Self-critique improves quality.</p>
+        </div>
+        <div class="card">
+          <h4>🪞 Format lock</h4>
+          <p>"Respond only with valid JSON in this shape: {subject, body, cta}." Forces structured output you can paste into other tools.</p>
+        </div>
+        <div class="card">
+          <h4>🛑 Negative constraints</h4>
+          <p>"Do not use technical jargon. Do not mention specific tolerances." Tells the model what to avoid, narrowing its range.</p>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <strong>The most underrated rule:</strong> AI will confidently make things
+        up. Add a sentence like
+        <em>"If you're not sure, say 'I'm not sure' rather than guessing"</em>
+        to almost any factual prompt — it cuts hallucinations dramatically.
+      </div>
+
+      <!-- Notes -->
+      <div class="notes-area" data-section="prompting">
+        <div class="notes-head">
+          <strong>📝 Your notes — Prompting Skills</strong>
+          <div class="notes-actions">
+            <button class="tiny-btn" data-action="copy">Copy</button>
+            <button class="tiny-btn" data-action="export">Export</button>
+            <button class="tiny-btn" data-action="import">Import</button>
+            <button class="tiny-btn" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <textarea placeholder="Which pattern do you want to try first? Any prompts you already use that could be upgraded?"></textarea>
+        <div class="notes-status">Saved automatically in this browser.</div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         SALES PROMPTS
+         =========================== -->
+    <section class="section" id="sales">
+      <h2>5. Sales Prompts — Outreach, Prospecting & Customer Experience</h2>
+      <p class="lead">
+        A library of <strong>Good / Better / Best</strong> prompts our sales team
+        can use to draft faster, personalize more, and respond with consistent
+        quality. Each prompt has a one-click <em>Copy</em> button so you can
+        paste it directly into ChatGPT, Claude, Gemini, or Copilot.
+      </p>
+
+      <h3>1. Personalized cold outreach email</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Outreach</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Scenario: We just identified a new R&D lead at a neurovascular device company who might need precision laser-machined hypotubes.</div>
+            <div class="label">Prompt</div>
+            <pre>Write a cold outreach email to a medical device R&D engineer introducing Sublime Laser's femtosecond tube machining services.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Outreach</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Same scenario, but now you give the model context, a target persona, and a goal.</div>
+            <div class="label">Prompt</div>
+            <pre>Write a cold outreach email to a senior R&D mechanical engineer at a mid-sized neurovascular device company. The engineer has 10+ years of experience and has likely sourced precision laser-machined nitinol and stainless-steel hypotubes in the past.
+
+Goal: book a 20-minute intro call to discuss a possible new project. We are Sublime Laser — we specialize in femtosecond and fiber laser machining of small-diameter medical tubing, with fast turnaround (parts in days, not weeks).
+
+Tone: professional, direct, no hard sell. Keep it under 150 words. End with a single, low-friction call-to-action.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Outreach</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Same scenario, now with role, persona, example style, and a self-critique step.</div>
+            <div class="label">Prompt</div>
+            <pre>Act as a senior sales rep at Sublime Laser, a 20+ year specialist in precision laser machining of small-diameter medical tubing (nitinol, stainless steel, precious metals, ceramic).
+
+Write a cold outreach email to {{name}}, a {{title}} at {{company}}, a {{company size}} medical device company working in {{therapy area}} (e.g. neurovascular, peripheral vascular, structural heart).
+
+Known facts about the recipient: {{paste 2–3 lines from their LinkedIn or recent press release}}.
+
+Our value props:
+- Femtosecond and fiber laser machining for tubes 0.008"–0.500" OD
+- 12–30 micron kerf, 12+ micron feature size
+- Femto vaporizes material with virtually no HAZ — ideal for nitinol and thin-wall stainless
+- Typical turnaround: days, not weeks; on-site "rent-a-laser" iteration available
+
+Tone: peer-to-peer engineer speak. No marketing fluff. Reference one specific material or capability that fits {{therapy area}}.
+
+Format:
+- Subject line (<= 60 chars)
+- Opening line that references {{name}} or {{company}} specifically (not generic)
+- 3 short paragraphs max
+- Single call-to-action: a 20-minute call, with 2 specific time windows
+
+Length: <= 160 words for the body. After the draft, give yourself a 1–5 score on personalization and clarity, and rewrite once if either is under 4.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>2. Following up on a quote that went quiet</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Follow-up</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">You sent a quote 10 days ago and got silence. You're afraid to sound pushy.</div>
+            <div class="label">Prompt</div>
+            <pre>Write a follow-up email to a customer who hasn't responded to a quote.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Follow-up</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Now you tell the model the situation, the customer's profile, and the desired tone.</div>
+            <div class="label">Prompt</div>
+            <pre>Write a polite, low-pressure follow-up email to a senior R&D engineer at a mid-sized medical device company. We sent them a quote for laser-machined nitinol hypotubes 10 days ago and haven't heard back.
+
+Tone: respectful, helpful, not pushy. Acknowledge they're busy. Don't guilt-trip. Keep it under 120 words. Offer two specific, easy next steps (e.g. a 15-minute debrief, or sending a revised quote if scope changed).</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Follow-up</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best version: full role, full format, an example of the kind of voice we want.</div>
+            <div class="label">Prompt</div>
+            <pre>Act as a sales engineer at Sublime Laser. Write the second follow-up email (the "still here, no pressure" email) for this situation:
+
+- Quote sent on {{date}}, 10 days ago, no response
+- Recipient: {{name}}, {{title}}, {{company}}
+- Quote scope: {{paste a 2-line summary — e.g. "5 part numbers, nitinol hypotubes, 25 proto units, femtosecond machining"}}
+- Internal note: {{optional, e.g. "they mentioned a Q2 budget freeze"}}
+
+We've already sent one polite follow-up. This is the second and final automated nudge — after this, we'd shift to LinkedIn or a phone attempt.
+
+Voice example we like:
+"Hey {{first name}} — wanted to float this back to the top of your inbox in case it got buried. No need to respond if the timing's off; just flag me when it's relevant and I'll re-cut the quote. Either way, I'll assume the project is on hold until I hear otherwise."
+
+Constraints:
+- <= 130 words
+- No exclamation points
+- No "just circling back" / "just touching base" clichés
+- End with two specific, easy next steps
+- Subject line <= 60 chars
+- After drafting, score yourself 1–5 on tone (warm but not needy) and rewrite once if under 4.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>3. Prospecting research summary</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Prospecting</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">You're about to call a new prospect and want a quick briefing.</div>
+            <div class="label">Prompt</div>
+            <pre>Research {{company}} and tell me what they do.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Prospecting</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">You tell the model what YOU do, so the briefing frames the prospect through your lens.</div>
+            <div class="label">Prompt</div>
+            <pre>I sell precision laser machining of small-diameter medical tubing (nitinol, stainless steel, precious metals) to R&D teams in the medical device industry. Write me a 1-page brief on {{company}}.
+
+Focus on:
+- What they make and what therapy area
+- Recent FDA submissions or approvals in the last 24 months
+- Any news about manufacturing partners, supply chain, or capacity
+- Anything suggesting they'd need small-diameter precision tubing
+
+If you don't have recent information, say so. Don't invent.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Prospecting</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best version: ask for the briefing in a structured, reusable format you can drop into your CRM.</div>
+            <div class="label">Prompt</div>
+            <pre>Research {{company}} and produce a sales-readiness briefing I can paste into our CRM.
+
+Use this exact structure (Markdown):
+
+## {{company}} — sales brief ({{date}})
+**Therapy area:** 
+**Stage:** (seed / growth / commercial / public)
+**Relevant products / components:** 
+**Recent milestones (last 24 months):** 
+- [date] — [milestone, with source URL]
+
+**Signals of fit for Sublime Laser:**
+- (Why their components might require precision laser-machined small-diameter tubing. Think: stents, hypotubes, marker bands, needle components, delivery system shafts.)
+
+**Risks / reasons NOT to pursue:**
+- (E.g. they have in-house laser capability, vertical integration, recent layoff, etc.)
+
+**Suggested next action:**
+- (One specific move: intro email to X, request sample of Y, etc.)
+
+Rules:
+- If you don't know or can't verify, write "unknown — needs manual check."
+- Cite a source URL for every claim.
+- Do not speculate beyond what sources support.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>4. Responding to a customer service issue</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Customer experience</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">A long-time customer emailed upset that a recent delivery was 3 days late and one batch had a burr on the cut end.</div>
+            <div class="label">Prompt</div>
+            <pre>Write a response to an unhappy customer.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Customer experience</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Now you give the specifics and the desired tone.</div>
+            <div class="label">Prompt</div>
+            <pre>Write a customer response email for this situation:
+- Long-time customer (5+ years). They're polite but frustrated.
+- Their last order shipped 3 days late.
+- One of three batches had a burr visible on the cut end of the hypotube.
+- We are doing a free re-cut on the burr'd batch and offering a 5% credit on the late PO.
+
+Tone: own it. No excuses. No defensiveness. Specific, factual, solution-focused. Keep under 180 words.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Customer experience</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best: role, full situation, tone example, format, and a self-review step.</div>
+            <div class="label">Prompt</div>
+            <pre>You are {{rep name}}, account lead at Sublime Laser. Write the response email to {{customer contact}} at {{customer company}}.
+
+Situation:
+- Their last PO (#{{po}}) shipped 3 days late vs. our committed date.
+- One of the three part numbers ({{part number}}) came back with visible burr on the cut end — caught during their incoming inspection.
+- Internal RCA is in progress; we won't have a final root cause for ~5 business days.
+
+Our commitments in this email:
+1. Acknowledge the issue in the first sentence. No "we apologize for any inconvenience."
+2. Re-cut of the burr'd batch, on us, express-shipped this week.
+3. 5% credit on the late PO.
+4. A 30-minute call this week to walk through what we'll change to prevent recurrence.
+
+Tone reference (write in this register):
+"{{first name}} — you're right to flag this. The late shipment on PO #{{po}} is on us, and the burr on {{part number}} shouldn't have left our floor. We're re-cutting that batch at no charge and shipping it to you by {{date}}. I've also authorized a 5% credit on the PO. Let's get 30 minutes on the calendar this week so I can walk you through what we're changing internally — I'd like your input. Here are two windows: {{option 1}} or {{option 2}}. — {{rep name}}"
+
+Constraints:
+- <= 200 words
+- No marketing language. Speak peer-to-peer.
+- No exclamation points.
+- After drafting, score yourself 1–5 on accountability and warmth. Rewrite once if either is under 4.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>5. Turning a meeting transcript into action</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Customer experience</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">You took rough notes during a customer call. Turn them into a follow-up.</div>
+            <div class="label">Prompt</div>
+            <pre>{{paste rough notes here}}
+
+Summarize these meeting notes.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Customer experience</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Now define what kind of summary you want and who you're sending it to.</div>
+            <div class="label">Prompt</div>
+            <pre>{{paste rough notes here}}
+
+From these notes, produce:
+1. A 3-bullet "key takeaways" section.
+2. A list of action items, each with an owner and a date.
+3. A short follow-up email to the customer that confirms decisions and lists next steps.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Customer experience</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best version: ask for everything in one pass, in a structured format, ready to paste into CRM.</div>
+            <div class="label">Prompt</div>
+            <pre>You are a sales operations assistant at Sublime Laser. Process these meeting notes ({{paste notes}}) and produce three deliverables in this order:
+
+### 1. Decision log
+A table with columns: Decision | Owner | Target Date | Why it matters
+
+### 2. Open questions
+A bulleted list of unresolved questions, each tagged with who needs to answer (us / them).
+
+### 3. Customer follow-up email
+Format:
+- Subject line
+- Greeting
+- Short paragraph confirming what was decided
+- Bullet list of next steps (with dates and owners)
+- Closing + signature
+Tone: peer-to-peer engineer, no fluff. <= 180 words. Write as {{rep name}}.
+
+Constraints:
+- Only put facts in the email that appear in the notes.
+- For anything ambiguous, write "(confirm with customer)" rather than guessing.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="callout">
+        <strong>Reminder:</strong> These prompts are starting points. Replace
+        every <code>{{placeholder}}</code> with real before sending. And —
+        always read the AI's draft out loud before you send it. If a sentence
+        doesn't sound like you, rewrite it.
+      </div>
+
+      <!-- Notes -->
+      <div class="notes-area" data-section="sales">
+        <div class="notes-head">
+          <strong>📝 Your notes — Sales Prompts</strong>
+          <div class="notes-actions">
+            <button class="tiny-btn" data-action="copy">Copy</button>
+            <button class="tiny-btn" data-action="export">Export</button>
+            <button class="tiny-btn" data-action="import">Import</button>
+            <button class="tiny-btn" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <textarea placeholder="Which prompt will you try first? What would you tweak to match Sublime's voice?"></textarea>
+        <div class="notes-status">Saved automatically in this browser.</div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         SHOP FLOOR PROMPTS
+         =========================== -->
+    <section class="section" id="shop">
+      <h2>6. Shop Floor Prompts — Organization, Efficiency & Problem-Solving</h2>
+      <p class="lead">
+        A library of <strong>Good / Better / Best</strong> prompts our shop
+        floor technicians and production team can use to organize work faster,
+        document issues cleanly, troubleshoot, and reduce downtime. Copy any
+        prompt with a single click and paste it into your preferred chatbot.
+      </p>
+
+      <h3>1. Daily shift hand-off summary</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Organization</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">You're handing off your station at end of shift. You have rough notes from the day.</div>
+            <div class="label">Prompt</div>
+            <pre>{{paste rough shift notes}}
+
+Summarize my shift notes for the next technician.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Organization</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Now you tell the model what the next technician needs to know.</div>
+            <div class="label">Prompt</div>
+            <pre>{{paste rough shift notes}}
+
+Reformat these into a clean shift hand-off note for the technician taking over my station. Cover:
+1. What's still in progress (jobs, parts, settings)
+2. Anything I noticed that needs follow-up tomorrow (machine quirks, material issues)
+3. Materials or tooling running low
+4. Any customer-impacting risks
+
+Use plain, direct language. No filler. Bullet points.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Organization</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best: produce a hand-off in a structure that matches how our shop actually runs.</div>
+            <div class="label">Prompt</div>
+            <pre>You are a shop floor technician writing a shift hand-off at Sublime Laser. Process these notes ({{paste notes}}) and produce a structured hand-off doc:
+
+## Status board
+For each open job on my station (femto / fiber), give:
+- Part number
+- Job quantity vs. completed
+- Machine being used (e.g. "femto #2")
+- Last parameter set used (if mentioned)
+- Where I stopped / what was left to do
+
+## Open issues
+List anything unusual — kerf drift, Material not feeding, indicator on a specific axis, coolant level, etc. Rank each as: 🟢 monitor / 🟡 investigate / 🔴 address immediately.
+
+## Inventory flags
+Anything I'm running low on: tubing stock, gas, lens cleaning supplies, debris bags.
+
+## Hand-off notes
+3–5 short sentences. What I wish I'd known at the start of this shift. Voice: senior tech talking to a peer.
+
+## If the next shift isn't familiar
+Add a 2-sentence "if you've never run this part before" primer (material, expected cycle time, common gotchas).
+
+Rules:
+- Use only facts in the notes. If something isn't mentioned, write "not recorded."
+- Keep it scannable. Headers + bullets. No paragraphs longer than 2 lines.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>2. Documenting a process problem / NCR</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Quality / Efficiency</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">You noticed a quality issue — a batch of hypotubes came off with HAZ larger than spec — and you need to log it cleanly.</div>
+            <div class="label">Prompt</div>
+            <pre>{{paste rough observations about the issue}}
+
+Write up a non-conformance report.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Quality / Efficiency</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Now you give the model the standard sections a NCR needs.</div>
+            <div class="label">Prompt</div>
+            <pre>{{paste rough observations}}
+
+Turn these notes into a Non-Conformance Report draft. Include:
+1. Part number and PO
+2. Machine used
+3. Quantity affected out of total lot
+4. What the spec was vs. what we measured
+5. Suspected root cause(s)
+6. Immediate containment action taken
+7. Recommended next steps
+
+Use objective, factual language. No speculation beyond what's in the notes.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Quality / Efficiency</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best version: full medical-device NCR structure, ready for QA review.</div>
+            <div class="label">Prompt</div>
+            <pre>You are a quality engineer at Sublime Laser drafting an NCR (non-conformance report) for a medical device customer. Process these notes ({{paste notes}}) into the following template. If a field is missing from the notes, write "needs verification" rather than invent.
+
+## NCR — {{auto-number}}
+
+**Date observed:** 
+**Reported by:** 
+**Part number:** 
+**Customer / PO:** 
+**Lot / job number:** 
+**Machine(s) used:** 
+**Quantity affected / total lot:**
+
+### Description of non-conformance
+2–4 sentences. What was made vs. what was specified. Cite the spec / drawing note where possible.
+
+### Immediate containment
+What we did right away to stop more bad parts from being made.
+
+### Suspected root cause(s)
+List 2–3 plausible causes, each tied to a fact in the notes.
+
+### Risk to customer
+One sentence: would the customer catch this in their incoming inspection, or could it pass through?
+
+### Recommended corrective action
+2–4 bullet points.
+
+### Recommended preventive action
+2–4 bullet points (process change, training, sensing, etc.)
+
+Rules:
+- Honest about uncertainty. We want to surface unknowns, not bury them.
+- Tone: factual, internal technical document. No spin.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>3. Troubleshooting a machine issue</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Efficiency</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Femto machine is producing a wider kerf than usual and you don't know why.</div>
+            <div class="label">Prompt</div>
+            <pre>Why is my femtosecond laser kerf getting wider?</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Efficiency</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Now you give the symptoms with concrete numbers.</div>
+            <div class="label">Prompt</div>
+            <pre>I'm running a femtosecond laser on 0.125" OD nitinol tube with a 0.005" wall. The kerf has drifted from ~18 microns to ~26 microns over the last 60 parts. Ambient humidity ~40%. Lens last cleaned 3 days ago.
+
+List the most likely root causes in order of likelihood, what I should check first, and what cheap corrective actions to try before opening a service ticket.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Efficiency</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best: ask for a structured, ranked diagnostic tree you can actually walk through.</div>
+            <div class="label">Prompt</div>
+            <pre>You are an experienced femtosecond laser field engineer. Help me diagnose a kerf-width drift on our tube-cutting cell.
+
+Symptoms:
+- Kerf measured 18 microns yesterday, ~26 microns today, on 0.125" OD nitinol, 0.005" wall
+- Power and pulse parameters unchanged in recipe
+- Lens last cleaned 3 days ago; ~14 hours of cutting since
+- Assist gas change ~20 hours ago
+- Ambient: 40% RH, 21°C
+- No error codes on the laser; cut quality (edge straightness) looks OK at the entry side, slight taper at exit
+
+Walk me through a ranked diagnostic tree, with:
+1. The hypothesis
+2. A single physical check or measurement to confirm or rule it out
+3. Cost: free / 5 min / requires service call
+
+After the diagnostic tree, give me a "try these in order" 4-step plan that doesn't require opening the laser head. Be explicit about when to stop and escalate.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>4. Optimizing job setup time</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Efficiency</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">You suspect job setup between part numbers is eating too much of the day.</div>
+            <div class="label">Prompt</div>
+            <pre>How can I reduce setup time on my laser machine?</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Efficiency</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">You give the model details about your actual setup workflow.</div>
+            <div class="label">Prompt</div>
+            <pre>I run a fiber laser cutting small-diameter medical tubing. Current setup between part numbers takes 20–35 minutes. Most of that is:
+- Loading the recipe from the library
+- Re-zeroing the tube
+- Re-doing the focus offset
+- Re-measuring kerf on a test cut
+
+Suggest the highest-leverage changes I can make to consistently get setup under 15 minutes, focusing on low-cost shop improvements (fixture standards, naming conventions, checklists — not capital equipment).</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Efficiency</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best: ask for an actual checklist and a measurement plan so you can track improvement.</div>
+            <div class="label">Prompt</div>
+            <pre>You are a lean manufacturing consultant who specializes in short-run medical device manufacturing. Help me reduce setup time on a fiber laser tube-cutting cell.
+
+Current state:
+- 20–35 min changeover between part numbers
+- 3 cells, 1 operator per cell
+- ~6 part numbers per shift, mostly lower-volume R&D/prototype runs (5–50 units)
+- Recipe library is in {{system}}; focus offset is set by eye + test cut
+- Fixtures are custom-built per part
+- We measure setup time on a whiteboard, not systematically
+
+Produce:
+1. A ranked list of the top 5 setup-time killers specific to my setup
+2. A one-page "standard setup checklist" I can adapt and laminate per cell
+3. A simple measurement plan: what to track, how to track it, what numbers would tell us we're winning
+4. Three changes I could trial this week without buying anything
+
+Constraints:
+- Do not suggest new capital equipment.
+- Plain language — this is for a cell operator, not an engineer in a conference room.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>5. Organizing weekly 5S / continuous improvement</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Organization</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">You want a quick 5S walk-through checklist for your cell.</div>
+            <div class="label">Prompt</div>
+            <pre>Give me a 5S checklist for a laser machining cell.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Organization</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Now you tell the model what your cell and shift look like.</div>
+            <div class="label">Prompt</div>
+            <pre>I'm a production supervisor at a small medical device laser machining shop with 3 femto/fiber cells, 4 technicians, and 2 shifts. Build me a 5S walk-through I can use weekly — one short, focused check per cell — that takes under 10 minutes per cell.
+
+Specifically adapted for laser machining of small medical tubing: think fixtures, lens cleanliness, gas lines, swarf / debris, calibration tools, ESD/FOD risks.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Organization</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best: produce something with a clear action-tracking format.</div>
+            <div class="label">Prompt</div>
+            <pre>You are a continuous-improvement lead at a medical device contract manufacturer running femto and fiber laser cells. Build me a weekly 5S walk-through that I can run with my shift lead in under 10 minutes per cell.
+
+Deliverables:
+
+### 1. The walk-through checklist
+A short, scannable checklist per cell, grouped by the 5 S's:
+- **Sort**
+- **Set in order**
+- **Shine**
+- **Standardize**
+- **Sustain**
+
+Customized for laser-machining of small medical tubing, so include items like: lens cleanliness schedule, debris/swarf disposal, fixture storage, gas line labeling, calibration tool location.
+
+### 2. The scoring template
+For each cell, total possible = 100. Each "no" = 5 points lost. Bucket score into 🟢 / 🟡 / 🔴.
+
+### 3. The action log format
+A simple table: Issue | Cell | Owner | Due date | Status. I want it printable.
+
+### 4. Two-minute tail
+A 2-minute conversation script the supervisor can use at end of walk to recognize one thing done well.
+
+Format:
+- Markdown, scannable.
+- Plain English. A tech who hates paperwork should be able to use this without hating it.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>6. Explaining a process choice to a customer</h3>
+      <div class="prompts-container">
+
+        <div class="prompt-block">
+          <div class="prompt-header good">
+            <span><span class="badge good">Good</span> Baseline</span>
+            <span>Customer experience</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Your customer is asking why you recommended femtosecond over fiber for their nitinol stent tubing.</div>
+            <div class="label">Prompt</div>
+            <pre>Explain why femtosecond is better than fiber for nitinol stent tubing.</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header better">
+            <span><span class="badge better">Better</span> With context</span>
+            <span>Customer experience</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Now you tell the model who the customer is and what they already know.</div>
+            <div class="label">Prompt</div>
+            <pre>Write a short technical explanation of why femtosecond laser machining is preferred over fiber laser machining for nitinol hypotubes used in neurovascular stent delivery systems.
+
+Audience: R&D engineer at a medical device company. They understand laser machining basics but may not know the trade-offs. Keep it under 300 words, with a short comparison table at the end (rows: heat-affected zone, kerf width, edge quality, cycle time, cost-per-part).</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-header best">
+            <span><span class="badge best">Best</span> Fully specified</span>
+            <span>Customer experience</span>
+          </div>
+          <div class="prompt-body">
+            <div class="scenario">Best: full role, persona, format, and grounding in our real capabilities.</div>
+            <div class="label">Prompt</div>
+            <pre>You are {{rep name}}, a sales engineer at Sublime Laser. Write a customer-facing technical explanation that I can email to {{customer contact}} at {{customer company}}.
+
+Topic: why we recommended femtosecond over fiber for their {{part type}} — specifically {{paste 2–3 lines about the part}}.
+
+Their background: R&D engineer, familiar with medical device manufacturing and laser machining, but not necessarily day-to-day femto vs. fiber trade-offs. They asked the question because they want to understand our process choice before approving the quote.
+
+Key facts you should use (do not invent beyond these):
+- Femtosecond vaporizes material with a near-zero heat-affected zone (HAZ), critical for nitinol's superelastic / shape-memory properties
+- Fiber lasers melt material, creating a measurable HAZ — fine for many stainless / precious-metal jobs, not ideal for nitinol where microstructural change matters
+- Femto kerf: 12–30 microns. Fiber kerf: 20–40 microns. Femto gives tighter feature size (~12 microns minimum)
+- Femto cycle time is longer; fiber is faster and cheaper for high-volume stainless
+- Femto is well-suited for {{their therapy area / part type}}; fiber could be considered for {{a related but less precision-critical part}}
+
+Format:
+- Open with a 1-sentence direct answer to their question.
+- 2 short paragraphs explaining the trade-off in their context.
+- A small comparison table (femto vs. fiber on HAZ, kerf, feature size, edge quality, cycle).
+- Close with a one-line offer: "happy to walk through this on a 20-minute call."
+
+Constraints:
+- <= 350 words total
+- No marketing language
+- One table only
+- Sound like a peer engineer, not a brochure</pre>
+          </div>
+          <div class="prompt-actions">
+            <button class="btn copy-btn">📋 Copy prompt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Notes -->
+      <div class="notes-area" data-section="shop">
+        <div class="notes-head">
+          <strong>📝 Your notes — Shop Floor Prompts</strong>
+          <div class="notes-actions">
+            <button class="tiny-btn" data-action="copy">Copy</button>
+            <button class="tiny-btn" data-action="export">Export</button>
+            <button class="tiny-btn" data-action="import">Import</button>
+            <button class="tiny-btn" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <textarea placeholder="Which prompt would solve a problem you actually have this week?"></textarea>
+        <div class="notes-status">Saved automatically in this browser.</div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         GLOSSARY
+         =========================== -->
+    <section class="section" id="glossary">
+      <h2>7. Glossary — 30 Common AI Terms in Plain English</h2>
+      <p class="lead">
+        Search-friendly list of terms you'll see across AI tools, vendor
+        websites, and articles. Updated for 2026.
+      </p>
+
+      <input type="search" class="glossary-search" id="glossarySearch" placeholder="Filter terms... (e.g. 'token', 'RAG', 'agent')" />
+
+      <div class="glossary-grid" id="glossaryGrid"></div>
+
+      <!-- Notes -->
+      <div class="notes-area" data-section="glossary">
+        <div class="notes-head">
+          <strong>📝 Your notes — Glossary</strong>
+          <div class="notes-actions">
+            <button class="tiny-btn" data-action="copy">Copy</button>
+            <button class="tiny-btn" data-action="export">Export</button>
+            <button class="tiny-btn" data-action="import">Import</button>
+            <button class="tiny-btn" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <textarea placeholder="Terms you want to remember or look up later..."></textarea>
+        <div class="notes-status">Saved automatically in this browser.</div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         REFERENCES
+         =========================== -->
+    <section class="section" id="references">
+      <h2>8. References — Where to Learn More</h2>
+      <p class="lead">
+        Curated starting points for when you want to go deeper. Each link is
+        followed by a short description so you know what you're clicking
+        into.
+      </p>
+
+      <h3>Foundational reading</h3>
+      <ul class="ref-list">
+        <li>
+          <span class="ref-source"><a href="https://www.anthropic.com/news/core-views-on-ai-safety" target="_blank" rel="noopener">Anthropic — "Core Views on AI Safety"</a></span>
+          <span class="ref-desc">A clear, non-technical explanation from one of the major AI labs on how they think about model behavior and risks.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://hai.stanford.edu/ai-index/2026-ai-index-report" target="_blank" rel="noopener">Stanford HAI — AI Index Report 2026</a></span>
+          <span class="ref-desc">The annual "state of AI" report. Independent data on capability, adoption, investment, and policy.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://openai.com/research/" target="_blank" rel="noopener">OpenAI Research</a></span>
+          <span class="ref-desc">Underlying research papers behind GPT-5.x and ChatGPT. Many readable summaries if you want the model-level detail.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://www.deepmind.com/blog" target="_blank" rel="noopener">Google DeepMind Blog</a></span>
+          <span class="ref-desc">Research posts behind the Gemini family and Google's agentic capabilities.</span>
+        </li>
+      </ul>
+
+      <h3>Vendor & product documentation</h3>
+      <ul class="ref-list">
+        <li>
+          <span class="ref-source"><a href="https://help.openai.com/" target="_blank" rel="noopener">OpenAI Help Center</a></span>
+          <span class="ref-desc">Official documentation for ChatGPT features, custom GPTs, and the API.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://docs.anthropic.com/" target="_blank" rel="noopener">Anthropic Documentation</a></span>
+          <span class="ref-desc">Claude features, Claude Code, and the API. Good prompting guide here too.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://support.google.com/gemini" target="_blank" rel="noopener">Google Gemini Help</a></span>
+          <span class="ref-desc">How to use Gemini, Workspace integration, and the Gemini app features.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://learn.microsoft.com/copilot/" target="_blank" rel="noopener">Microsoft Copilot Learn</a></span>
+          <span class="ref-desc">Microsoft's official Copilot training and feature docs, including M365 integration.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://docs.perplexity.ai/guides" target="_blank" rel="noopener">Perplexity AI Guides</a></span>
+          <span class="ref-desc">How to use Perplexity for cited research and how its multi-model routing works.</span>
+        </li>
+      </ul>
+
+      <h3>Practical prompting & workflow</h3>
+      <ul class="ref-list">
+        <li>
+          <span class="ref-source"><a href="https://www.promptingguide.ai/" target="_blank" rel="noopener">Prompting Guide</a></span>
+          <span class="ref-desc">A free, well-organized reference on prompting techniques. Updated regularly.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://www.deeplearning.ai/short-courses/" target="_blank" rel="noopener">DeepLearning.AI Short Courses</a></span>
+          <span class="ref-desc">Practical, short (1–2 hour) courses on prompting, agents, RAG, and evaluation.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://huggingface.co/learn" target="_blank" rel="noopener">Hugging Face Learn</a></span>
+          <span class="ref-desc">Hands-on courses on LLMs, open-source models, and deployment. Some technical content.</span>
+        </li>
+      </ul>
+
+      <h3>Ethics, safety, and policy</h3>
+      <ul class="ref-list">
+        <li>
+          <span class="ref-source"><a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener">NIST AI Risk Management Framework</a></span>
+          <span class="ref-desc">Free, vendor-neutral framework for managing AI risk in business. Useful baseline even if we're not in a regulated industry.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-and-machine-learning-software-medical-device" target="_blank" rel="noopener">FDA — AI/ML in Medical Devices</a></span>
+          <span class="ref-desc">Regulatory overview from the FDA. Relevant for our medical device customer context.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://www.iso.org/standard/81230.html" target="_blank" rel="noopener">ISO/IEC 42001 — AI Management System</a></span>
+          <span class="ref-desc">The first international standard for AI management systems. Helpful if customers ask about our internal AI use.</span>
+        </li>
+      </ul>
+
+      <h3>Sublime Laser resources</h3>
+      <ul class="ref-list">
+        <li>
+          <span class="ref-source"><a href="https://www.sublimelaser.com" target="_blank" rel="noopener">Sublime Laser — Capabilities & Specs</a></span>
+          <span class="ref-desc">Reference page for the actual laser specs and materials we machine. Use these facts when filling in prompt placeholders.</span>
+        </li>
+        <li>
+          <span class="ref-source"><a href="https://www.appliedailabs.com" target="_blank" rel="noopener">Applied AI Labs</a></span>
+          <span class="ref-desc">The team that built this training hub. Email them with feature requests or new prompt ideas for the next revision.</span>
+        </li>
+      </ul>
+
+      <!-- Notes -->
+      <div class="notes-area" data-section="references">
+        <div class="notes-head">
+          <strong>📝 Your notes — References</strong>
+          <div class="notes-actions">
+            <button class="tiny-btn" data-action="copy">Copy</button>
+            <button class="tiny-btn" data-action="export">Export</button>
+            <button class="tiny-btn" data-action="import">Import</button>
+            <button class="tiny-btn" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <textarea placeholder="Which references do you want to come back to?"></textarea>
+        <div class="notes-status">Saved automatically in this browser.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+  <footer>
+    <div class="project-line">
+      <strong>Sublime Laser AI Training Hub</strong> · An
+      <a href="https://www.appliedailabs.com" target="_blank" rel="noopener">Applied AI Labs</a>
+      Project
+    </div>
+    <div style="margin-top:6px;font-size:12px;">
+      © Sublime Laser, Inc. · For internal training use · Always verify AI
+      output against Sublime's actual capabilities and customer documents
+      before sending externally.
+    </div>
+  </footer>
+
+</div>
+
+<!-- Toast for copy feedback -->
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<!-- =========================================================
+     SCRIPTS
+     ========================================================= -->
+<script>
+/* =========================================================
+   GLOSSARY DATA
+   ========================================================= */
+const glossary = [
+  { term:"Agent / Agentic AI", def:"An AI system that can take multi-step actions on its own — reading files, calling APIs, sending emails — rather than just answering questions. Examples: ChatGPT Agent mode, Gemini Spark, OpenClaw, Vercel Eve." },
+  { term:"Alignment", def:"The process of training a model so its behavior matches human intent and values. RLHF (Reinforcement Learning from Human Feedback) is the most common alignment technique." },
+  { term:"API", def:"Application Programming Interface. A way for one piece of software to talk to another. Most LLMs are usable via an API, which is how companies integrate AI into their own tools." },
+  { term:"Chatbot", def:"Any software that lets you 'chat' with it in natural language. Modern ones are typically backed by an LLM and may have memory, tools, and integrations." },
+  { term:"Context Window", def:"How much text (measured in 'tokens') a model can consider in a single conversation. Larger windows let you paste longer documents or have longer chats." },
+  { term:"Embedding", def:"A numerical representation of text (or images, audio) that captures its meaning. Used for search, recommendations, and RAG." },
+  { term:"Fine-tuning", def:"Additional training on a smaller, curated dataset to specialize a model for a specific task or style." },
+  { term:"Generative AI", def:"AI that generates new content — text, images, code, audio, video — rather than just classifying or scoring existing content." },
+  { term:"Hallucination", def:"When an LLM confidently generates information that isn't true or supported. The single most important word to internalize when using AI for any factual task." },
+  { term:"Inference", def:"The act of running a trained model to produce an output. Inference is what happens every time you send a chat to ChatGPT." },
+  { term:"LLM", def:"Large Language Model. A model trained on huge amounts of text to predict and generate natural language. The base of ChatGPT, Claude, Gemini, etc." },
+  { term:"MCP", def:"Model Context Protocol. An open standard for connecting AI models to tools and data sources, popularized by Anthropic. Lets any model talk to any compatible data source." },
+  { term:"Memory", def:"A model's ability to remember earlier parts of a conversation (short-term) or facts across sessions (long-term). Memory is one of the main differentiators between products." },
+  { term:"Mixture of Experts (MoE)", def:"A model architecture where only part of the model is 'active' for any given token. Lets huge models run more cheaply. Used by Nemotron, Command A+, Kimi K2, and others." },
+  { term:"Multimodal", def:"A model that can understand more than one type of input — text, images, audio, video. Most leading chatbots in 2026 are multimodal." },
+  { term:"Open Source / Open Weights", def:"Models whose parameters (weights) are publicly released, so anyone can run, study, or fine-tune them. Examples: DeepSeek, Kimi K2, Command A+, NVIDIA Nemotron." },
+  { term:"Parameter", def:"A number inside a model that's learned during training. Larger models have more parameters; GPT-3-class models have hundreds of billions." },
+  { term:"Pre-training", def:"The first, very expensive training phase where the model learns language by reading huge amounts of text. Foundation of every modern LLM." },
+  { term:"Prompt", def:"The text you send to an LLM. Includes your instructions, context, examples, and any data the model should work with." },
+  { term:"Prompt Engineering", def:"The practice of writing prompts that reliably produce high-quality output. The single biggest lever for getting more from AI tools." },
+  { term:"RAG", def:"Retrieval-Augmented Generation. A pattern where the model retrieves relevant documents (e.g. your company's PDFs) and uses them as context for its answer. Great for scaling custom knowledge without retraining." },
+  { term:"Reasoning Model", def:"A model trained to 'think' step-by-step before answering. Generally more accurate on math, logic, and multi-step problems; typically slower and more expensive." },
+  { term:"RLHF", def:"Reinforcement Learning from Human Feedback. The most common alignment technique — humans rank model outputs, and the model is trained to prefer higher-ranked ones." },
+  { term:"System Prompt", def:"The hidden instructions that tell the model how to behave (personality, rules, available tools). Usually invisible to the end user." },
+  { term:"Temperature", def:"A setting that controls how 'creative' vs. 'focused' the model is. Low temperature = more predictable; high temperature = more varied." },
+  { term:"Token", def:"The basic unit of text the model processes — usually a word or sub-word chunk. Pricing and context windows are measured in tokens (roughly, 1 token ≈ 0.75 English words)." },
+  { term:"Tool Use", def:"The ability of a model to call external functions (search, code execution, file retrieval) during a conversation." },
+  { term:"Vector Database", def:"A database that stores embeddings for fast similarity search. The storage backbone of most RAG systems." },
+  { term:"Voice Mode", def:"A chat interface where you speak and the model speaks back, instead of typing. ChatGPT, Gemini, and Copilot all offer this." },
+  { term:"Web Search Tool", def:"A tool the model can call to fetch current information from the internet, used to answer questions beyond training data." },
+];
+
+/* =========================================================
+   RENDER GLOSSARY
+   ========================================================= */
+function renderGlossary(filter=""){
+  const grid = document.getElementById("glossaryGrid");
+  grid.innerHTML = "";
+  const f = filter.trim().toLowerCase();
+  const matches = glossary.filter(g =>
+    !f ||
+    g.term.toLowerCase().includes(f) ||
+    g.def.toLowerCase().includes(f)
+  );
+  if(!matches.length){
+    grid.innerHTML = `<div style="color:var(--text-muted);padding:20px;">No terms match "${escapeHtml(filter)}".</div>`;
+    return;
+  }
+  matches.forEach(g => {
+    const div = document.createElement("div");
+    div.className = "glossary-item";
+    div.innerHTML = `<div class="glossary-term">${escapeHtml(g.term)}</div><div class="glossary-def">${escapeHtml(g.def)}</div>`;
+    grid.appendChild(div);
+  });
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+document.getElementById("glossarySearch").addEventListener("input", e => {
+  renderGlossary(e.target.value);
+});
+
+/* =========================================================
+   TAB NAVIGATION
+   ========================================================= */
+const tabs = document.querySelectorAll(".tab");
+const sections = document.querySelectorAll(".section");
+tabs.forEach(t => t.addEventListener("click", () => {
+  const target = t.dataset.target;
+  tabs.forEach(x => x.classList.remove("active"));
+  sections.forEach(s => s.classList.remove("active"));
+  t.classList.add("active");
+  document.getElementById(target).classList.add("active");
+  window.scrollTo({top:0, behavior:"smooth"});
+}));
+
+/* =========================================================
+   THEME TOGGLE
+   ========================================================= */
+const themeBtn = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+const themeLabel = document.getElementById("themeLabel");
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  if(theme === "dark"){
+    themeIcon.textContent = "☀️";
+    themeLabel.textContent = "Light Mode";
+  } else {
+    themeIcon.textContent = "🌙";
+    themeLabel.textContent = "Dark Mode";
+  }
+  try{ localStorage.setItem("sl_ai_theme", theme); }catch(e){}
+}
+themeBtn.addEventListener("click", () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  applyTheme(cur === "dark" ? "light" : "dark");
+});
+try{
+  const stored = localStorage.getItem("sl_ai_theme");
+  if(stored) applyTheme(stored);
+}catch(e){}
+
+/* =========================================================
+   COPY TO CLIPBOARD (PROMPT BUTTONS)
+   ========================================================= */
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> t.classList.remove("show"), 1800);
+}
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(e){
+    // Fallback
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand && document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  }
+}
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest(".copy-btn");
+  if(!btn) return;
+  const pre = btn.closest(".prompt-block").querySelector("pre");
+  if(!pre) return;
+  const ok = await copyText(pre.innerText);
+  if(ok){
+    btn.classList.add("copied");
+    const orig = btn.innerHTML;
+    btn.innerHTML = "✓ Copied";
+    showToast("Prompt copied to clipboard");
+    setTimeout(()=> { btn.classList.remove("copied"); btn.innerHTML = orig; }, 1600);
+  } else {
+    showToast("Copy failed — long-press to copy manually");
+  }
+});
+
+/* =========================================================
+   NOTES SYSTEM (per section, in-memory + JSON export/import)
+   ========================================================= */
+const notesState = {};
+const noteEls = document.querySelectorAll(".notes-area");
+noteEls.forEach(area => {
+  const section = area.dataset.section;
+  const ta = area.querySelector("textarea");
+  const status = area.querySelector(".notes-status");
+  // load
+  try{
+    const raw = sessionStorage.getItem("sl_ai_notes_" + section);
+    if(raw){ ta.value = raw; status.textContent = "Restored from this session."; setTimeout(()=> status.textContent = "Saved automatically in this browser.", 2500); }
+  }catch(e){}
+  // autosave on input
+  ta.addEventListener("input", () => {
+    try{
+      sessionStorage.setItem("sl_ai_notes_" + section, ta.value);
+      status.textContent = "Saved · " + new Date().toLocaleTimeString();
+    }catch(e){}
+  });
+
+  area.querySelectorAll(".tiny-btn").forEach(b => {
+    b.addEventListener("click", async () => {
+      const action = b.dataset.action;
+      if(action === "copy"){
+        const ok = await copyText(ta.value);
+        showToast(ok ? "Notes copied" : "Copy failed");
+      } else if(action === "export"){
+        exportSection(section);
+      } else if(action === "import"){
+        importSection(section);
+      } else if(action === "clear"){
+        if(confirm("Clear notes for this section?")){
+          ta.value = "";
+          try{ sessionStorage.removeItem("sl_ai_notes_" + section); }catch(e){}
+          status.textContent = "Cleared.";
+          setTimeout(()=> status.textContent = "Saved automatically in this browser.", 1800);
+        }
+      }
+    });
+  });
+});
+
+function buildExportObj(){
+  const obj = {
+    system: "Sublime Laser AI Training Hub",
+    exportedAt: new Date().toISOString(),
+    notes: {}
+  };
+  noteEls.forEach(area => {
+    obj.notes[area.dataset.section] = area.querySelector("textarea").value || "";
+  });
+  return obj;
+}
+function applyImportObj(obj){
+  if(!obj || typeof obj !== "object" || !obj.notes) throw new Error("Invalid file");
+  Object.keys(obj.notes).forEach(section => {
+    const area = document.querySelector('.notes-area[data-section="'+section+'"]');
+    if(!area) return;
+    const ta = area.querySelector("textarea");
+    ta.value = obj.notes[section] || "";
+    try{ sessionStorage.setItem("sl_ai_notes_" + section, ta.value); }catch(e){}
+  });
+}
+function downloadJson(filename, data){
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function exportSection(section){
+  const obj = { system:"Sublime Laser AI Training Hub", exportedAt:new Date().toISOString(), section, notes:{ [section]: "" } };
+  const area = document.querySelector('.notes-area[data-section="'+section+'"]');
+  obj.notes[section] = area.querySelector("textarea").value || "";
+  downloadJson(`sublime-ai-notes-${section}.json`, obj);
+  showToast(`Notes exported (${section})`);
+}
+function importSection(section){
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = "application/json";
+  input.addEventListener("change", () => {
+    const f = input.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const obj = JSON.parse(r.result);
+        applyImportObj(obj);
+        showToast("Notes imported");
+      }catch(e){
+        showToast("Import failed — invalid file");
+      }
+    };
+    r.readAsText(f);
+  });
+  input.click();
+}
+
+// Global export / import (header buttons)
+document.getElementById("exportAllNotesBtn").addEventListener("click", () => {
+  const obj = buildExportObj();
+  const ts = new Date().toISOString().replace(/[:.]/g,"-").slice(0,19);
+  downloadJson(`sublime-ai-notes-all-${ts}.json`, obj);
+  showToast("All notes exported");
+});
+document.getElementById("importAllNotesInput").addEventListener("change", (e) => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const obj = JSON.parse(r.result);
+      applyImportObj(obj);
+      showToast("All notes imported");
+    }catch(err){
+      showToast("Import failed — invalid file");
+    }
+    e.target.value = ""; // reset
+  };
+  r.readAsText(f);
+});
+document.getElementById("importAllNotesBtn").addEventListener("click", () => {
+  document.getElementById("importAllNotesInput").click();
+});
+
+/* =========================================================
+   INIT
+   ========================================================= */
+renderGlossary();
+
+// slight UX: open any tab from URL hash
+function openFromHash(){
+  const h = location.hash.replace("#","");
+  if(!h) return;
+  const tab = document.querySelector(`.tab[data-target="${h}"]`);
+  if(tab) tab.click();
+}
+window.addEventListener("hashchange", openFromHash);
+openFromHash();
+</script>
+
+</body>
+</html>
