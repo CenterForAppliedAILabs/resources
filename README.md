@@ -2,6 +2,8 @@
 
 A static site that indexes and links to AI-generated content files hosted on GitHub Pages.
 
+> **⚠️ Workflow note:** This project currently pushes changes to the `working` branch. The live site is published from `main`, so changes pushed to `working` must be merged into `main` (via a pull request) before they go live. The GitHub Actions workflow that regenerates the index only runs on pushes to `main`.
+
 ## How It Works
 
 Four components keep the site up to date:
