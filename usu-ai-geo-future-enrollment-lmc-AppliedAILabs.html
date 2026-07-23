@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://d3js.org https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; connect-src 'self' https: data:;">
+  <title>AI, GEO, and the Future of Enrollment</title>
+  <!-- CDN Libraries for rich visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Bodoni+Moda:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0f0f14;
+      --bg-card: #1a1a24;
+      --bg-card-hover: #22222e;
+      --text-primary: #f5f5f7;
+      --text-secondary: #9ca3af;
+      --accent: #8b5cf6;
+      --accent-secondary: #06b6d4;
+      --gradient-start: #8b5cf6;
+      --gradient-end: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --font-headline: 'Libre Bodoni', 'Bodoni Moda', Georgia, serif;
+      --font-body: 'Space Grotesk', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+.banner {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
+  background: #0f0f14; /* matches your theme */
+}
+
+
+    .banner-placeholder {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    h1, h2, h3 { font-family: var(--font-headline); }
+    h1 { 
+      font-size: 2.75rem; 
+      font-weight: 700;
+      margin-bottom: 1.5rem; 
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    h2 { 
+      font-size: 1.5rem; 
+      font-weight: 600;
+      margin: 2.5rem 0 1rem; 
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent);
+    }
+    h3 { font-size: 1.2rem; font-weight: 500; margin: 1.5rem 0 0.75rem; color: var(--accent-secondary); }
+    p { margin-bottom: 1.25rem; color: var(--text-secondary); }
+    ul, ol { margin: 1rem 0 1.5rem 1.5rem; color: var(--text-secondary); }
+    li { margin-bottom: 0.6rem; }
+    strong { color: var(--text-primary); font-weight: 600; }
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: var(--bg-card);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 0 0.75rem 0.75rem 0;
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+    }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      text-align: center;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+    .stat-value { font-family: var(--font-headline); font-size: 2rem; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem; }
+    .chart-container { background: var(--bg-card); border-radius: 1rem; padding: 1.5rem; margin: 1.5rem 0; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      color: white;
+      padding: 0.875rem 1.5rem;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin: 2rem 0;
+    }
+    .btn-primary:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+      border-top: 1px solid var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; border-radius: 0.75rem; overflow: hidden; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--bg-card); }
+    th { background: var(--bg-card); color: var(--accent); font-weight: 600; }
+    tr:hover td { background: var(--bg-card-hover); }
+    code { background: var(--bg-card); padding: 0.2rem 0.5rem; border-radius: 0.375rem; font-family: var(--font-mono); font-size: 0.9em; color: var(--accent-secondary); }
+    pre { background: var(--bg-card); padding: 1.25rem; border-radius: 0.75rem; overflow-x: auto; margin: 1.5rem 0; font-family: var(--font-mono); }
+    a { color: var(--accent-secondary); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--accent); text-decoration: underline; }
+    .tag { display: inline-block; background: rgba(139, 92, 246, 0.2); color: var(--accent); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; margin-right: 0.5rem; }
+    .highlight { background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1)); border-radius: 0.5rem; padding: 1rem; margin: 1rem 0; }
+    .citation { color: var(--accent-secondary); font-weight: 600; margin-left: 0.15rem; }
+    .source-caption { font-size: 0.7rem; color: #6b7280; margin-top: 0.75rem; font-style: italic; padding-top: 0.5rem; border-top: 1px solid rgba(107, 114, 128, 0.2); }
+    .source-caption a { color: #9ca3af; font-size: 0.7rem; }
+    .source-caption a:hover { color: var(--accent-secondary); }
+    
+    /* Fallback: ensure content is visible if animations fail to run */
+    /* These are DEFAULT values (no !important) so anime.js CAN override them */
+    .anime-stagger, .anime-text, [class*="anime-"], .header-card, .infographic-container,
+    .card, .stat-card, .stat-grid, .chart-wrapper, .comparison-grid, .model-card {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* ============ MOBILE RESPONSIVE STYLES ============ */
+    @media (max-width: 768px) {
+      .container { padding: 1.5rem 1rem; }
+      h1 { font-size: 1.75rem; line-height: 1.3; word-wrap: break-word; }
+      h2 { font-size: 1.25rem; }
+      h3 { font-size: 1.1rem; }
+      .banner { height: 180px; }
+      .banner-placeholder { height: 140px; font-size: 1.5rem; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .stat-card { padding: 1rem; }
+      .stat-value { font-size: 1.5rem; }
+      .stat-label { font-size: 0.75rem; }
+      .card { padding: 1rem; margin: 1rem 0; }
+      .chart-container { padding: 1rem; }
+      table { font-size: 0.85rem; }
+      th, td { padding: 0.5rem; }
+      .btn-primary { width: 100%; justify-content: center; padding: 1rem; }
+      pre { font-size: 0.8rem; padding: 1rem; }
+      .highlight { padding: 0.75rem; }
+      blockquote { padding: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 1rem 0.75rem; }
+      h1 { font-size: 1.5rem; }
+      .stat-grid { grid-template-columns: 1fr; }
+      .stat-value { font-size: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <img src="https://storage.googleapis.com/llm-council-uploads-pl/generated-images/0e3G3kGeGiUujuCwcTgalAu54Ev2/deep-research-banner/1778687340513-nzqbqoo.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=firebase-app-hosting-compute%40test-1-413314.iam.gserviceaccount.com%2F20260513%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260513T154901Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&X-Goog-Signature=d6ccae69ea74a7a8fc93d1c829c1ee77d9b46710826d353064585da859e40be5c1e78f0e92dba4cf100d6b0731929d29c5f1e25c8ef92f38e5cd54cb67a055194dca9a00473a7d2b7f816d3d3779b87f63b80459ab1a24e70afdba94eb3c46e201febce35b8998585bb30aa656807aac91fa54696464957934b31f4d3c96511d87a1db52c9eedc5b343e3fd49f91d6aaf0b2ad9f425e2020fd7e3223cdd2ab73561c662a400ee0b689129b64e54bd1990c296c73b391fa4c90f9a24572954fe4a5395942e04c02cbf954ad5ba35f9cadf6b2eabef29716a2ec3824a01170bc793440e38e11fb9621f335db96a475458105a60ae3b1c9a3f7ccec46031639d80b" alt="Research Banner" class="banner" />
+  <div class="container">
+   <h1>
+  AI, GEO, and the Future of Enrollment<br>
+  <span style="font-size:0.55em; font-weight:400;">
+    For USU BOD by Applied AI Labs
+  </span>
+</h1>
+
+    <style>
+  :root {
+    --theme-accent-1: #06b6d4;
+    --theme-accent-2: #10b981;
+    --theme-accent-3: #3b82f6;
+    --table-border: rgba(255, 255, 255, 0.1);
+  }
+  .theme-text { color: var(--theme-accent-1); }
+  .highlight-box {
+    background: linear-gradient(145deg, rgba(6, 182, 212, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+    border-left: 4px solid var(--theme-accent-1);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+  }
+  .data-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+  .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--table-border); }
+  .data-table th { color: var(--theme-accent-1); font-weight: 600; }
+  .data-table tr:hover { background: rgba(255,255,255,0.02); }
+  .stat-card { background: linear-gradient(180deg, rgba(30, 30, 40, 0.8) 0%, rgba(20, 20, 28, 0.8) 100%); border: 1px solid rgba(6, 182, 212, 0.2); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(6, 182, 212, 0.15); }
+  .stat-value { color: var(--theme-accent-1); font-size: 2.5rem; font-weight: 700; }
+  .stat-label { color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tag { background: rgba(6, 182, 212, 0.15); color: var(--theme-accent-1); padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px solid rgba(6, 182, 212, 0.3); }
+  .source-caption { font-size: 0.75rem; color: #6b7280; margin-top: 1rem; font-style: italic; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem; }
+  .source-caption a { color: var(--theme-accent-2); text-decoration: none; }
+  .source-caption a:hover { text-decoration: underline; }
+  .chart-container { position: relative; height: 300px; width: 100%; margin: 2rem 0; }
+  #d3-hero { width: 100%; height: 350px; background: radial-gradient(circle at center, #1a1a24 0%, #0f0f14 100%); border-radius: 12px; border: 1px solid var(--table-border); margin-bottom: 2.5rem; cursor: grab; overflow: hidden; }
+  #d3-hero:active { cursor: grabbing; }
+</style>
+
+<div class="card">
+  <h2 class="theme-text">The Generative Knowledge Network</h2>
+  <p>The traditional linear search funnel has collapsed. Generative AI models now actively pull, synthesize, and structure disparate institutional data points to deliver immediate answers to prospective students. The interactive graph below visualizes this new reality: an Answer Engine (center) actively extracting verified data entities from an optimized university structure.</p>
+  <div id="d3-hero"></div>
+  <div class="source-caption">Visualization: AI Information Extraction Graph mapping a generative query to structured institutional data endpoints.</div>
+</div>
+
+<div class="card">
+  <h2>The AI Paradigm Shift in Student Search</h2>
+  <p>The mechanisms by which prospective students discover, evaluate, and ultimately select colleges and universities have shifted away from traditional, linear search behaviors. Today, conversational, AI-driven discovery processes dominate the higher education landscape. Large language models (LLMs) such as ChatGPT, Google's AI Overviews, Bing Copilot, and Perplexity are actively replacing traditional search engine results pages (SERPs).</p>
+  <p>This macro-level digital marketing shift requires institutional enrollment teams to fundamentally restructure brand visibility, moving away from simple link-generation toward deep semantic authority. The integration of AI into search answers specific psychological needs: 62% of prospects prioritize the speed and convenience AI provides in synthesizing complex tuition and programmatic information into cohesive, instantly readable summaries.</p>
+  
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-value anime-number" data-val="50" data-percent="true">0%</div>
+      <div class="stat-label">Use AI Search Weekly</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value anime-number" data-val="79" data-percent="true">0%</div>
+      <div class="stat-label">Read AI Overviews First</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value anime-number" data-val="80" data-percent="true">0%</div>
+      <div class="stat-label">Stealth Applicants</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value anime-number" data-val="36" data-percent="true">0%</div>
+      <div class="stat-label">Drop Missing Schools</div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="chart-ai-usage"></canvas>
+  </div>
+
+  <div class="source-caption">Sources: <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGFQCDJs93lHY2I7pV5nGVX2X9xDOyVtZx8-_xpL_tyPm3xXVyZ-qjd9vZgfZRWjEXcO44ng57OfF58swaLrOYDR5zGA-2iaO-Xno_nL3sxnMEM0E_5bJbwrPzlMqZY0oGQrs0WMLdPPVxOUrR0YKd4HLLKeMyrKQZICvhjg4Vai_qN8SMqlQIT5b0SEQgHDGG2erJk72UgwYjTjKU7CviJoWg_mPk=" target="_blank">upcea.edu</a>, <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFpw1jb7bOPhTo7fGP8aPxJSVXXVBGeJiF9AMYouQIMhS5xs0M7atoge5ztWYcuApem6yvx94X3yQ2cp77Xm1oBqNOab9nWgCQHNP5VO5-7eZzTPRsIlYRYnp6Qq1Bjv48SXiq1jM7FFf-5PCPAg0iA5fAx7rzHJLPf1rZWaIIiI5-KE1iWyWQP-fTj61D1jfGgpg==" target="_blank">georgetown.edu</a>, <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGu5hAEvfH-CiYS7PwJkK7LmKd3cOC_GRi2yjd_vN7pWFb99mtbImfrPk54d2kOhJ2xO_r00LScMtz0e5wvpG-N35KFXIL88dnkNl4mzUha92BBy8zVWwPrrEIhqdqZiIrCxdqPsl1I4uKkuToN_pEZwZeZvA==" target="_blank">manaferra.com</a></div>
+</div>
+
+<div class="card">
+  <h2>The "Stealth Applicant" Phenomenon</h2>
+  <p>The reliance on zero-click generative search engines has dramatically exacerbated the "stealth applicant" phenomenon. Traditional enrollment marketing relied heavily on generating top-of-funnel leads—a student filling out an inquiry form in exchange for a digital brochure. Today, up to 80% of prospective students remain entirely unknown to an institution until they submit a formal, completed application.</p>
+  <p>Because AI engines deliver comprehensive answers directly within a conversational chat interface, students can vet, compare, and narrow their program shortlists without ever stepping foot on a university's proprietary domain. Consequently, if a university's programmatic data is not accurately represented within the LLM's training data, or accessible via real-time web retrieval, the institution faces catastrophic visibility failure.</p>
+  <div class="highlight-box">
+    <strong>Critical Risk Factor:</strong> 18% of prospective students have actively removed an institution from consideration based on an AI-generated response. If an LLM hallucinates an inaccurate tuition figure or incorrectly states a program lacks accreditation due to poorly structured web data, the lead is lost invisibly.
+  </div>
+  <div class="source-caption">Sources: <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEHZWdZEww2CeVfIMiNLUaDJChdC7a8LDMtPdx1uwLUV8-9D8LzjS4xxekGSO5ntFs-4oaPHs3kUOgLCj2Re4Xc9kuWLhtOHF_UTh2pt7yVwKFiGiVD71g6D6HsBkCuLJJLngogJ664gMvItbJBvrhQNXrDT_A1qM3TlXQ26xT4N08R2eTWi3LPMmjUcXeAEbQ=" target="_blank">eab.com</a>, <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH4ELLvGqC2Ua5RnT6E0g0InlNc0EaqKwBZtszF2ZiqPGzOYyH0dFbDbSuKfBj9SEL1Bmz0d5jvUCkKKv1SHnlIXre7NoqW6G6oUDwkt2i8lax5_oP4ONyD-YsndCfvaxD-Nmncy8mq" target="_blank">upcea.edu</a></div>
+</div>
+
+<div class="card">
+  <h2>Redefining Search: The Transition to GEO & AEO</h2>
+  <p>The advent of generative AI necessitates a fundamental reevaluation of Search Engine Optimization. While traditional SEO maintains technical baseline health, methodologies for content structuring must evolve into Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO).</p>
+  <p>Traditional SEO optimized for "head terms" (e.g., "nursing degree") and drove users to long-form landing pages via hyperlinked blue links. GEO optimizes content so generative AI engines can ingest, understand, and feature the information directly in conversational, long-tail responses. Answer Engine Optimization (AEO) goes a step further, meticulously structuring admissions, tuition, and outcome pages so that AI can pull explicit numerical facts.</p>
+  
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Optimization Feature</th>
+        <th>Traditional SEO</th>
+        <th>Generative Engine Optimization (GEO)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Primary Goal</strong></td>
+        <td>Rank on SERPs to drive link clicks.</td>
+        <td>Be explicitly cited in AI conversational answers.</td>
+      </tr>
+      <tr>
+        <td><strong>Query Strategy</strong></td>
+        <td>High-volume, short-tail keywords.</td>
+        <td>Conversational, long-tail, semantic intent.</td>
+      </tr>
+      <tr>
+        <td><strong>Content Architecture</strong></td>
+        <td>Long-form narratives to increase time-on-page.</td>
+        <td>Answer-first formatting, data tables, Schema markup.</td>
+      </tr>
+      <tr>
+        <td><strong>Authority Signals</strong></td>
+        <td>Backlinks and PageRank metrics.</td>
+        <td>Accuracy, E-E-A-T, and data consistency.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>The framework of E-E-A-T (Experience, Expertise, Authoritativeness, and Trustworthiness) remains foundational. Generative models prioritize information backed by authoritative verification. Vague marketing assertions are ignored; concrete facts (e.g., "98% NCLEX pass rate") are elevated and cited.</p>
+  <div class="source-caption">Sources: <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQERncDcv-POWN8Qd0aSGzEItWoSjPvHuVjylZqBBAjiNwyjDRjU1nrt9RDv6ynKfVEb8cEpYbRgWQfuDf5KxNOoo08eac5Uh35a-5c9q4BJtLuu_xHrEDc5ViU69yE0TevZXSrBuaZkKVzPjo4Ouqow_UoVxdzD1-mVACPQKDSNJyThlpi8XiFKJJQMwVvCDaxbr5Fm" target="_blank">rivetica.com</a>, <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEi-B38XQqAvTXMQfdbHEPEoYJj9eAZk6dZ5JQYbDmpWNxtrpgigX27SCxh2eEUL4sHrEQO2j_-pkW4pEWRhSoCFMW1HB0pDrwfvD0I_CPz7WuKYRhu69op7uPbMomm-S4oUT9T-fJWzGdZ5fn1Q6B7TCzm4CubprE7LVwjWRTPA44nl-aHosTxtA5QThuzNhCFs9ROaa8C7Uo=" target="_blank">higher-education-marketing.com</a></div>
+</div>
+
+<div class="card">
+  <h2>Transforming Lead Capture & The Authenticity Imperative</h2>
+  <p>As organic website traffic transitions to highly qualified, high-intent visitors who have already used AI for preliminary vetting, institutions must rethink lead capture. Lead databases are now built through integrations with 24/7 AI-powered chatbots and predictive CRM analytics that score prospects based on interaction velocity.</p>
+  <p>However, an over-reliance on automation triggers backlash. A surge in AI-generated content has generated a profound desire among Gen Z for human connection. While AI manages discovery and initial capture, authentic human engagement drives the final enrollment decision. Platforms connecting prospects directly with student ambassadors are critical to mitigating the anxiety associated with college choice.</p>
+
+  <div class="chart-container">
+    <canvas id="chart-trust-metrics"></canvas>
+  </div>
+  
+  <div class="source-caption">Sources: <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGRKIcXJqQvPXfzExMt7ck8KtOwUSq_ThU1gajVEfaeX8mvGelGfTrLU0TjEUH-0QCUgVuAuqEz1-gXjGW3sZNHSjCkctJI4_R_lKT7Hr4r3YevKAK-wZ9qKZe263VgAV0to9oHE_3fgLXmP90Wycz-AHV6Q9hYfSKUHlodHaSkcIx1GJPGdkPlLfwjDOoHY_Cgq1E6fwDSkFk3cUC_RPDe4g4wOUX6" target="_blank">unibuddy.com</a>, <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEvTnV5RFh0WRJNktqwRTI0Ax9SHN7U2zAkoK_Qum4BnyTsix7wv5OijUPZawqikFdCdlIox-tf6bIolxc89aDvgy6OjHFPAcnos5ARfJgVY2iR9tZphDd2efNMmBKlbZf0nxlRXJ2c5tsspZ3VtMRbJpiUSH1f" target="_blank">higheredjobs.com</a></div>
+</div>
+
+<div class="card">
+  <h2>Strategic Advantage for Small Nursing Schools</h2>
+  <p>Small nursing schools operate under immense pressure: specialized accreditation requirements, intense local clinical competition, and restricted marketing budgets compared to state university behemoths. However, the shift to GEO presents a massive structural advantage.</p>
+  <p>In legacy Pay-Per-Click (PPC) and SEO environments, the largest financial budgets dominated SERP real estate. Generative AI fundamentally disrupts this by prioritizing the <em>specificity, helpfulness, and structural clarity</em> of the answer over domain authority alone. A small nursing school that effectively implements explicit AEO formatting for a niche query—such as highly specific local clinical placement protocols or exact monthly payment plans—can consistently out-position a large, generalized university within an AI summary.</p>
+  <div class="source-caption">Sources: <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHpgZc225kGw3Ix9AQE0_HiFaI0XH3AJ90JbmcvBABGCJNw_q5pgGamNwK9Mc-ZdT43J2PlO9qMpP6laESSsxCRRB5JdWi6ml-c-unWlv8SdwMPxlxcd38E7ScLwADS45vhy1I3ntda5T13HP7mwOKLoSbucQZp8Inuid5czJuSbgLM_7ZGfqCGidt9LcikcfTTcRXNSoU-msUvFCj-R0lw-w==" target="_blank">medium.com</a></div>
+</div>
+
+<div class="card">
+  <h2>Case Study: United States University (USU)</h2>
+  <p>United States University (USU) exemplifies an institution perfectly positioned to capitalize on GEO. With approximately 86% of its active student base enrolled as degree-seeking nursing professionals, its core value proposition is highly specialized. To capture AI-driven leads, USU must ensure its core differentiators—primarily extreme affordability and logistical flexibility—are structured specifically for LLM extraction.</p>
+  
+  <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; margin: 2rem 0;">
+    <div style="flex: 1; min-width: 250px;">
+      <canvas id="chart-usu-demographic"></canvas>
+    </div>
+    <div style="flex: 1.5; min-width: 300px;">
+      <h3>Optimizing Affordability Data for AEO</h3>
+      <p>USU operates on a highly distinct monthly payment plan model. If this data is buried in PDFs, AI engines will ignore it. It must be explicitly formatted in HTML tables and JSON-LD schema.</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Nursing Program</th>
+            <th>Monthly Tuition Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>RN to BSN</td>
+            <td><strong>$325 / month</strong></td>
+          </tr>
+          <tr>
+            <td>Post Master's Non-FNP</td>
+            <td><strong>$399 / month</strong></td>
+          </tr>
+          <tr>
+            <td>Master of Science in Nursing (MSN)</td>
+            <td><strong>$415 / month</strong></td>
+          </tr>
+          <tr>
+            <td>MSN-FNP & DNP Programs</td>
+            <td><strong>$450 / month</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p>Beyond affordability, USU must optimize for geographical constraints. Online programs like the Family Nurse Practitioner (FNP) allow students to complete clinical hours locally. By deploying targeted content clusters (e.g., <em>"Can I do FNP clinicals in my home city?"</em>), USU ensures AI conversational agents have precise answers ready for complex logistical queries.</p>
+  <div class="source-caption">Sources: <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEsMKA0g9h4AxN2U_JpA-vMqtQv27PMdYcSwMuLsKQvCT8yOltWtile_-Xys2JOj_WZr72OM_9Z20uJh9CtRmTlAHrmijcMZVIKEP71Cd0pDubiar-mWDh19ueQW_PJJYaxxdDTwf8TZFsTIL7ow_9E-aHOXAeb_2Z-_9DYjHEavcdXTJZz21JaPg==" target="_blank">aspu.com</a>, <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGneKFOpRHSTs1WXSPHUTvEDItJc_MG65gN4B4r7D1axjcSy2ejEVzPgO1W8dLrE8PiGbvqH-2UZGZkKABo0SByBuDFpRq1dTDmXLyvCQLIcQSSUMDVT1mDczI0_lwlqsEibmsnTrC0uA9Wwd28azCBW7fc_SaIq3QZt5WPEzXfzvJnf965iZn43Byk5aIyx-vU3MspB-Flk3vpjb-TIR3is4yqgtMl6jlpvVRbFW4WwHbEbu_ynC9akuhNAAqOBfuWGbo=" target="_blank">cloudfront.net</a></div>
+</div>
+
+<div class="card">
+  <h2>5-Step Implementation Framework for AI-Ready SEO</h2>
+  <p>Transitioning a university's digital presence to capture generative search leads requires a methodical transformation of data architecture and content strategy.</p>
+  
+  <div style="margin-top: 1.5rem;">
+    <h3 style="color: var(--text-primary); font-size: 1.1rem;"><span class="tag">Step 1</span> Conduct a Search Experience Optimization Audit</h3>
+    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Input top 20 target queries (e.g., "affordable RN to BSN online") into ChatGPT, Perplexity, and AI Overviews. Document whether the institution is cited, ignored, or subject to hallucinated data to establish a baseline.</p>
+
+    <h3 style="color: var(--text-primary); font-size: 1.1rem;"><span class="tag">Step 2</span> Transition to Intent-Based Content Clusters</h3>
+    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Abandon keyword-stuffing. Reorganize site architecture around semantic clusters matching the decision journey: high-intent program pages first, followed by comparative consideration content (e.g., "DNP vs Ph.D. in Nursing").</p>
+
+    <h3 style="color: var(--text-primary); font-size: 1.1rem;"><span class="tag">Step 3</span> Implement AEO Formatting & Schema</h3>
+    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Restructure key programmatic landing pages with <strong>answer-first architecture</strong>. Begin with a concise, 50-word summary addressing degree type, cost, duration, and accreditation. Utilize rigorous HTML tables for tuition and implement <code>EducationalOccupationalProgram</code> Schema.org markup.</p>
+
+    <h3 style="color: var(--text-primary); font-size: 1.1rem;"><span class="tag">Step 4</span> Automate Intelligent Lead Capture</h3>
+    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Deploy sophisticated on-site conversational AI to instantly answer administrative queries. Integrate these tools directly with predictive CRM software to score inbound stealth leads based on their depth of site interaction.</p>
+
+    <h3 style="color: var(--text-primary); font-size: 1.1rem;"><span class="tag">Step 5</span> Foster Human Authenticity and E-E-A-T</h3>
+    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Counterbalance automation with human verifiability. Feature highly visible alumni outcomes, explicitly state NCLEX pass rates, and embed peer-to-peer connection portals where prospects can message current student ambassadors.</p>
+  </div>
+  <div class="source-caption">Sources: <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGOzoldlBnE6y0Pso9zsZcWzKa_rwScBQcHWVVOQa9H1LjEDjonWO9sTv0u_-whN1qJdRJbC9y5hk-1hhqnJktwzwYLEqWlU9Revk4zl4xHH-_FMBrxekcXledf2K6Xn5HiwA9beMrsVaUX7GuibNFFs1pepqhGJG5O0cvuxNKc6xeMVX6E897VQgJOKfk4WfQ536GanmvyBwQmr28rkMp2EGiYZvzSBPCN" target="_blank">highereducationmarketinginstitute.com</a>, <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFMXb3u6E8J1EnCZubGsCL0k7JiZ6urmGY2DTtnAlS1BSRxs0Dc0bBdwNHoYSjnX-zQ8gj76UZW5CZp4uPq93fn2oQsCV2TfOMa45txi3kVzEYxiqTZ_e23S0CEGGB7mFUOFduwv35nG6WT8c-brO8xoQ==" target="_blank">thinkorion.com</a></div>
+</div>
+
+<div class="card">
+  <h2>Next 12-Month Outlook: Multimodal & Predictive Trajectories</h2>
+  <p>Looking toward the immediate future, higher education enrollment will be further transformed by the integration of multimodal and predictive search capabilities. Generative models will no longer rely solely on text ingestion; they will increasingly parse video, audio, and visual data. For nursing schools, this mandates the optimization of campus tour videos, localized clinical facility imagery, and faculty podcast transcripts for AI interpretation.</p>
+  <p>Simultaneously, predictive algorithms will proactively match candidates with educational paths based on their queried career aspirations. The imperative for centralized data governance within universities has never been higher. Conflicting information across departmental silos (e.g., disparate tuition figures across financial aid and admissions pages) will cause search AI to instantly flag the institution as untrustworthy, resulting in immediate deranking in generated outputs. Institutions must streamline digital ecosystems to provide singular, immutable sources of truth for both human and artificial visitors.</p>
+  <div class="source-caption">Sources: <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQES2VhYYNJDOyxPMgidOc0GPSVq_QA1PPf5pW7Y0wwqPTDCK0hpDIDwd9XrognSArWqpoqckyDbxz20pP55JJeXWcW-4I8b10GKHhc07_apaSgYkRrJdN7iGbKwSsBF5nyP4kKT4lOQN7OoOLsXW2-cjvu5l4jB_RwkfkUWNEHiqLkd0dcC" target="_blank">educationdynamics.com</a>, <a href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHdlOZcwsczRai6f_0boBGM5Bl23zqySqzBP9zSC14mR-tkDk1M2MUdnO49O6UQHabinl14BKmfDxpyV7Oa6oz7vn_HwafiiE21-VQ4LZeeK_f8pMRZgGTdzGEXAajC293sKPcPEKJMrIy1zqA8dXv1XTcRCOJLLITtZz1nRougUYwxDa2S" target="_blank">archeredu.com</a></div>
+</div>
+
+<script>
+  // Chart.js Configuration
+  document.addEventListener('DOMContentLoaded', function() {
+    Chart.defaults.color = '#9ca3af';
+    Chart.defaults.font.family = 'Space Grotesk, system-ui, sans-serif';
+    
+    const aiUsageCtx = document.getElementById('chart-ai-usage');
+    if(aiUsageCtx) {
+      new Chart(aiUsageCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Pre-2025 AI Usage', 'Late 2025 AI Usage (High School)'],
+          datasets: [{
+            label: 'Percentage of Prospective Students',
+            data: [26, 46],
+            backgroundColor: ['#3b82f6', '#06b6d4'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, max: 100, ticks: { callback: function(value){return value + '%'}} } }
+        }
+      });
+    }
+
+    const trustCtx = document.getElementById('chart-trust-metrics');
+    if(trustCtx) {
+      new Chart(trustCtx, {
+        type: 'bar',
+        data: {
+          labels: ['University Website', 'AI Output Citation', 'Student Ambassadors'],
+          datasets: [{
+            label: 'Trust & Influence Rate (%)',
+            data: [77, 56, 92],
+            backgroundColor: ['#3b82f6', '#06b6d4', '#10b981'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { x: { beginAtZero: true, max: 100 } }
+        }
+      });
+    }
+
+    const usuCtx = document.getElementById('chart-usu-demographic');
+    if(usuCtx) {
+      new Chart(usuCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Nursing Professionals', 'Other Programs'],
+          datasets: [{
+            data: [86, 14],
+            backgroundColor: ['#06b6d4', '#1a1a24'],
+            borderColor: ['#06b6d4', '#3b82f6'],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '75%',
+          plugins: { legend: { position: 'bottom', labels: { color: '#f5f5f7' } } }
+        }
+      });
+    }
+
+    // Anime.js Numbers
+    document.querySelectorAll('.anime-number').forEach(el => {
+      let target = parseFloat(el.dataset.val);
+      let isPercent = el.dataset.percent === 'true';
+      let obj = { val: 0 };
+      let observer = new IntersectionObserver(entries => {
+        if(entries[0].isIntersecting) {
+          anime({
+            targets: obj,
+            val: target,
+            round: 1,
+            duration: 2500,
+            easing: 'easeOutQuart',
+            update: () => { el.textContent = obj.val + (isPercent ? '%' : ''); }
+          });
+          observer.disconnect();
+        }
+      }, { threshold: 0.5 });
+      observer.observe(el);
+    });
+
+    // D3.js Network Graph
+    const d3Container = document.getElementById('d3-hero');
+    if (d3Container && typeof d3 !== 'undefined') {
+      const width = d3Container.clientWidth;
+      const height = d3Container.clientHeight;
+      
+      const data = {
+        nodes: [
+          { id: "AI Answer Engine", group: 1, radius: 25 },
+          { id: "University Node", group: 2, radius: 20 },
+          { id: "Structured Pricing ($325/mo)", group: 3, radius: 15 },
+          { id: "Local Clinicals", group: 3, radius: 15 },
+          { id: "Accreditation Data", group: 3, radius: 15 },
+          { id: "100% Online Modality", group: 3, radius: 15 }
+        ],
+        links: [
+          { source: "AI Answer Engine", target: "University Node", value: 2 },
+          { source: "University Node", target: "Structured Pricing ($325/mo)", value: 1 },
+          { source: "University Node", target: "Local Clinicals", value: 1 },
+          { source: "University Node", target: "Accreditation Data", value: 1 },
+          { source: "University Node", target: "100% Online Modality", value: 1 }
+        ]
+      };
+
+      const svg = d3.select("#d3-hero").append("svg")
+        .attr("viewBox", [0, 0, width, height])
+        .style("width", "100%")
+        .style("height", "100%");
+
+      const simulation = d3.forceSimulation(data.nodes)
+        .force("link", d3.forceLink(data.links).id(d => d.id).distance(100))
+        .force("charge", d3.forceManyBody().strength(-300))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collide", d3.forceCollide().radius(d => d.radius + 10));
+
+      // Draw links
+      const link = svg.append("g")
+        .attr("stroke", "rgba(6, 182, 212, 0.4)")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("line")
+        .data(data.links)
+        .join("line")
+        .attr("stroke-width", 2);
+
+      // Draw nodes
+      const node = svg.append("g")
+        .selectAll("circle")
+        .data(data.nodes)
+        .join("circle")
+        .attr("r", d => d.radius)
+        .attr("fill", d => d.group === 1 ? "#10b981" : d.group === 2 ? "#3b82f6" : "#06b6d4")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .call(drag(simulation));
+
+      // Add labels
+      const label = svg.append("g")
+        .selectAll("text")
+        .data(data.nodes)
+        .join("text")
+        .text(d => d.id)
+        .attr("font-size", "12px")
+        .attr("fill", "#f5f5f7")
+        .attr("dx", d => d.radius + 5)
+        .attr("dy", 4);
+
+      simulation.on("tick", () => {
+        link
+          .attr("x1", d => Math.max(d.source.radius, Math.min(width - d.source.radius, d.source.x)))
+          .attr("y1", d => Math.max(d.source.radius, Math.min(height - d.source.radius, d.source.y)))
+          .attr("x2", d => Math.max(d.target.radius, Math.min(width - d.target.radius, d.target.x)))
+          .attr("y2", d => Math.max(d.target.radius, Math.min(height - d.target.radius, d.target.y)));
+
+        node
+          .attr("cx", d => d.x = Math.max(d.radius, Math.min(width - d.radius, d.x)))
+          .attr("cy", d => d.y = Math.max(d.radius, Math.min(height - d.radius, d.y)));
+          
+        label
+          .attr("x", d => d.x)
+          .attr("y", d => d.y);
+      });
+
+      function drag(simulation) {
+        function dragstarted(event) {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          event.subject.fx = event.subject.x;
+          event.subject.fy = event.subject.y;
+        }
+        function dragged(event) {
+          event.subject.fx = event.x;
+          event.subject.fy = event.y;
+        }
+        function dragended(event) {
+          if (!event.active) simulation.alphaTarget(0);
+          event.subject.fx = null;
+          event.subject.fy = null;
+        }
+        return d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended);
+      }
+    }
+  });
+</script>
+
+  </div>
+ <div class="footer">
+  AI Generated by 
+  <a href="https://www.appliedailabs.com" target="_blank">Applied AI Labs</a>
+  • Powered by Gemini Deep Research <br>
+  Always Check References
+</div>
+
+  <script>
+    (() => {
+      const container = document.querySelector('.container');
+      if (!container) return;
+
+      // Linkify citation tokens like [cite: 3, 4] into clickable superscripts
+      // Important: Do NOT rewrite container.innerHTML (it nukes charts/animations)
+      // Instead, walk text nodes so we preserve canvases and scripts.
+      const citationPattern = /\[cite:\s*([^\]]+)\]/gi;
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      let node = walker.nextNode();
+      while (node) {
+        // Skip text inside script/style to avoid breaking code blocks
+        const parentTag = (node.parentElement?.tagName || '').toUpperCase();
+        if (parentTag !== 'SCRIPT' && parentTag !== 'STYLE') {
+          textNodes.push(node);
+        }
+        node = walker.nextNode();
+      }
+
+      textNodes.forEach((textNode) => {
+        const original = textNode.nodeValue || '';
+        if (!citationPattern.test(original)) return;
+        citationPattern.lastIndex = 0; // Reset regex state
+
+        const span = document.createElement('span');
+        span.innerHTML = original.replace(citationPattern, (_match, ids) => {
+          const links = ids
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean)
+            .map((id) => `<sup class="citation"><a href="#source-${id}">[${id}]</a></sup>`);
+          return links.join(' ');
+        });
+
+        const frag = document.createDocumentFragment();
+        Array.from(span.childNodes).forEach((child) => frag.appendChild(child));
+        textNode.replaceWith(frag);
+      });
+
+      // Auto-tag numbered reference list items with anchors (e.g., 1., 2.)
+      Array.from(container.querySelectorAll('li')).forEach((li) => {
+        const match = li.textContent?.trim().match(/^(\d+)\.\s/);
+        if (match && !li.id) {
+          li.id = `source-${match[1]}`;
+        }
+      });
+
+      // Handle View Full Research Report button click
+      const reportBtn = document.getElementById('viewReportBtn');
+      if (reportBtn) {
+        reportBtn.addEventListener('click', () => {
+          try {
+            // Try postMessage to parent window
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({ type: 'showFullReport' }, '*');
+            } else if (window.top && window.top !== window) {
+              window.top.postMessage({ type: 'showFullReport' }, '*');
+            }
+          } catch (e) {
+            console.log('Could not send message to parent');
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
