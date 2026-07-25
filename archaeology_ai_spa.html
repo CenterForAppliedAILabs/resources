@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI in Archaeology - Interactive Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .font-serif {
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // SVG Icons as components
+        const ChevronRight = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+        );
+
+        const Menu = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        );
+
+        const X = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        );
+
+        function ArchaeologyAISPA() {
+            const [activeSection, setActiveSection] = useState('intro');
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+            const sections = [
+                { id: 'intro', label: 'Introduction', number: '0' },
+                { id: 'discovery', label: 'Site Discovery & Remote Sensing', number: '1' },
+                { id: 'texts', label: 'Ancient Text Decipherment', number: '2' },
+                { id: 'artifacts', label: 'Artifact Analysis', number: '3' },
+                { id: 'reconstruction', label: 'Digital Reconstruction', number: '4' },
+                { id: 'challenges', label: 'Challenges & Ethics', number: '5' },
+                { id: 'conclusion', label: 'Conclusion', number: '6' },
+                { id: 'references', label: 'References', number: '7' },
+            ];
+
+            const renderContent = () => {
+                switch (activeSection) {
+                    case 'intro':
+                        return (
+                            <div className="space-y-6">
+                                <h2 className="text-4xl font-serif font-bold text-slate-900 mb-8">
+                                    Introduction
+                                </h2>
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    Artificial intelligence (AI) is fundamentally transforming the field of archaeology, offering unprecedented opportunities to discover, analyze, and understand ancient civilizations. While archaeology has traditionally relied on excavation, field surveys, and manual analysis of artifacts, AI technologies such as machine learning, computer vision, satellite imagery analysis, and geospatial mapping are accelerating discoveries and enabling researchers to process vastly larger datasets with greater accuracy and efficiency.
+                                </p>
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    This report examines how AI is reshaping archaeological practice across multiple domains, from the discovery of hidden sites to the decipherment of ancient texts and the classification of artifacts.
+                                </p>
+                                <div className="bg-amber-50 border-l-4 border-amber-600 p-6 rounded-r my-8">
+                                    <p className="text-slate-700 italic">
+                                        The integration of AI into archaeology represents what many researchers describe as an 'experimental phase' of extraordinary promise. Modern satellites generate petabytes of Earth observation data annually, providing researchers with detailed images of landscapes around the globe.
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    
+                    case 'discovery':
+                        return (
+                            <div className="space-y-8">
+                                <h2 className="text-4xl font-serif font-bold text-slate-900 mb-8">
+                                    Site Discovery and Remote Sensing
+                                </h2>
+                                
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        Satellite Imagery and Detection Algorithms
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700 mb-4">
+                                        One of the most transformative applications of AI in archaeology is the identification of previously unknown archaeological sites through satellite imagery analysis. AI algorithms can analyze satellite images to detect potential archaeological sites hidden beneath dense forests, deserts, and other challenging environments.
+                                    </p>
+                                    <div className="bg-teal-50 p-6 rounded border-l-4 border-teal-600 mb-6">
+                                        <h4 className="font-bold text-slate-900 mb-2">Case Study: Nazca Geoglyphs</h4>
+                                        <p className="text-slate-700">
+                                            Researchers deployed an AI system to analyze satellite imagery of the Nazca region in Peru and discovered <span className="font-semibold">303 new figurative geoglyphs in just six months</span>—a task that would have required years using traditional methods.
+                                        </p>
+                                    </div>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        LiDAR Technology and Deep Learning
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700 mb-4">
+                                        Among the most significant recent advances in archaeological AI is the combination of Light Detection and Ranging (LiDAR) technology with deep learning algorithms. LiDAR devices mounted on aircraft shoot billions of laser bursts downward and measure the reflected returns, creating detailed three-dimensional maps of landscapes beneath forest canopies.
+                                    </p>
+                                    <div className="bg-teal-50 p-6 rounded border-l-4 border-teal-600 mb-6">
+                                        <h4 className="font-bold text-slate-900 mb-3">Major Discoveries in Maya Archaeology</h4>
+                                        <ul className="space-y-3 text-slate-700">
+                                            <li className="flex gap-3">
+                                                <span className="text-amber-600 font-bold">•</span>
+                                                <span><strong>60,000+</strong> previously unknown Maya archaeological sites discovered beneath tropical forests of the Yucatan Peninsula</span>
+                                            </li>
+                                            <li className="flex gap-3">
+                                                <span className="text-amber-600 font-bold">•</span>
+                                                <span><strong>61,000</strong> Maya structures mapped beneath the Guatemalan jungle</span>
+                                            </li>
+                                            <li className="flex gap-3">
+                                                <span className="text-amber-600 font-bold">•</span>
+                                                <span><strong>110,000</strong> buildings identified in the central Maya lowlands of southern Mexico and northern Guatemala</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        A 2023 study led by researchers at Tulane University demonstrated how LiDAR can reveal previously unknown settlement patterns and infrastructure organization that reshape our understanding of ancient Maya society and urbanism.
+                                    </p>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        Predictive Site Location Modeling
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        Machine learning models assess variables such as soil composition, proximity to water sources, historical records, and elevation data to suggest promising excavation sites. This predictive capability allows archaeologists to direct limited excavation resources more strategically. Research in Mesopotamia used AI to identify new areas of interest with <strong>80% accuracy</strong>, offering potential insights into lost civilizations.
+                                    </p>
+                                </section>
+                            </div>
+                        );
+                    
+                    case 'texts':
+                        return (
+                            <div className="space-y-8">
+                                <h2 className="text-4xl font-serif font-bold text-slate-900 mb-8">
+                                    Ancient Text Decipherment
+                                </h2>
+                                
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        The Herculaneum Scrolls: A Breakthrough Achievement
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700 mb-4">
+                                        Perhaps the most celebrated recent example of AI's impact on archaeology is the successful decipherment of charred Herculaneum scrolls. These ancient papyri were buried under volcanic ash during the A.D. 79 eruption of Mount Vesuvius and were so severely carbonized that scholars feared the ancient library was lost forever for over 2,000 years.
+                                    </p>
+                                    
+                                    <div className="bg-amber-50 p-8 rounded border-l-4 border-amber-600 mb-6">
+                                        <h4 className="font-bold text-slate-900 mb-4 text-xl">The Vesuvius Challenge Timeline</h4>
+                                        <div className="space-y-4">
+                                            <div className="flex gap-4">
+                                                <div className="text-amber-600 font-bold text-sm min-w-24">March 2023</div>
+                                                <div className="text-slate-700">Launch of the Vesuvius Challenge with $1M+ in prizes. Release of 3D X-ray scans and AI software for public access.</div>
+                                            </div>
+                                            <div className="flex gap-4">
+                                                <div className="text-amber-600 font-bold text-sm min-w-24">October 2023</div>
+                                                <div className="text-slate-700"><strong>Luke Farritor</strong> (21, University of Nebraska) decodes the first word: "ΠΟΡΦΥΡΑϹ" (purple)</div>
+                                            </div>
+                                            <div className="flex gap-4">
+                                                <div className="text-amber-600 font-bold text-sm min-w-24">December 2023</div>
+                                                <div className="text-slate-700">Team of Farritor, Nader, and Schilliger combines approaches, revealing 2,000+ characters</div>
+                                            </div>
+                                            <div className="flex gap-4">
+                                                <div className="text-amber-600 font-bold text-sm min-w-24">February 2024</div>
+                                                <div className="text-slate-700">Team awarded the <strong>$700,000 Grand Prize</strong> for decoding ~5% of the first scroll</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        The deciphered text appears to be a previously unread philosophical tract, probably by Philodemus, discussing the nature of pleasure in Epicurean philosophy. This represents the <strong>first entirely new work from classical antiquity</strong> to be recovered in modern times through advanced technology.
+                                    </p>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        DeepMind's Ithaca and Greek Inscription Restoration
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700 mb-4">
+                                        DeepMind's Ithaca is a cutting-edge deep learning tool trained on a massive dataset of Greek inscriptions. It can restore damaged Greek texts with approximately <strong>62% accuracy</strong> and date inscriptions within 30 years of their true age.
+                                    </p>
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        Researchers have also made significant progress in understanding the Indus script, a Bronze Age writing system that has puzzled scholars for decades. AI algorithms are being employed to analyze patterns in the script and advance decipherment efforts.
+                                    </p>
+                                </section>
+                            </div>
+                        );
+                    
+                    case 'artifacts':
+                        return (
+                            <div className="space-y-8">
+                                <h2 className="text-4xl font-serif font-bold text-slate-900 mb-8">
+                                    Artifact Analysis and Classification
+                                </h2>
+                                
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        Pottery Classification and Artifact Recognition
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700 mb-4">
+                                        Convolutional Neural Networks (CNNs) have proven particularly effective for artifact classification tasks. The Arch-I-Scan project at the University of Leicester exemplifies this application, using image recognition and machine learning to automatically identify and record pottery fragment details.
+                                    </p>
+                                    <div className="bg-teal-50 p-6 rounded border-l-4 border-teal-600 mb-6">
+                                        <h4 className="font-bold text-slate-900 mb-2">How Arch-I-Scan Works</h4>
+                                        <p className="text-slate-700 mb-3">The system analyzes photographs from handheld devices and classifies artifacts by:</p>
+                                        <ul className="list-disc list-inside text-slate-700 space-y-1">
+                                            <li>Size and proportions</li>
+                                            <li>Shape and form</li>
+                                            <li>Design and decoration patterns</li>
+                                            <li>Surface texture</li>
+                                        </ul>
+                                    </div>
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        Research in France on medieval pottery demonstrated classification accuracies reaching approximately <strong>95%</strong> when using CNNs, compared to unsatisfying results with traditional image classification methods.
+                                    </p>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        Computer Vision and Artifact Preservation
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700 mb-4">
+                                        PyPotteryLens represents a recent advancement in this field—an open-source deep learning framework that combines YOLO (You Only Look Once) for image recognition with custom EfficientNetV2 classifiers. The system requires no programming skills and includes an interactive visualization framework for validation.
+                                    </p>
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        By automating the inventory and cataloging of artifacts, AI reduces the time and labor required for what would traditionally be a tedious and time-consuming manual process.
+                                    </p>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        Artifact Reconstruction and Dating
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        Advanced machine learning techniques enable artifact reconstruction and dating. Researchers have used attention-based neural networks to extract geometric and semantic features of fragmentary materials—such as terracotta warrior fragments—to assist in reconstruction and restoration tasks.
+                                    </p>
+                                </section>
+                            </div>
+                        );
+                    
+                    case 'reconstruction':
+                        return (
+                            <div className="space-y-6">
+                                <h2 className="text-4xl font-serif font-bold text-slate-900 mb-8">
+                                    Digital Reconstruction and Visualization
+                                </h2>
+                                
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    AI is revolutionizing how archaeologists reconstruct and visualize ancient sites and structures. By analyzing archaeological data, historical records, and artistic representations, AI algorithms can create immersive 3D visualizations of how ancient sites appeared in their prime.
+                                </p>
+
+                                <div className="bg-amber-50 border-l-4 border-amber-600 p-6 rounded-r my-8">
+                                    <p className="text-slate-700 mb-3">
+                                        <strong>Example:</strong> A 16th-century church in Peru was reconstructed from dozens of layered images, creating a virtual reality replica without requiring physical restoration.
+                                    </p>
+                                </div>
+
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    This approach is particularly useful when physical restoration is not feasible due to deterioration, inaccessibility, or conservation concerns. When combined with Virtual Reality (VR) technology, these AI-generated 3D models provide immersive gateways to the past, enabling virtual excavations and hypothesis testing.
+                                </p>
+
+                                <h3 className="text-2xl font-serif font-bold text-slate-900 mt-8 mb-4">
+                                    Public Engagement and Educational Impact
+                                </h3>
+
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    These virtual experiences make archaeological work accessible to broader audiences and can inspire future generations to pursue careers in the field. The Historica project represents an ambitious application of these principles, using AI to build a digital map of human history by combining different data types to portray civilization's progression.
+                                </p>
+
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    Such projects demonstrate the potential for AI to synthesize vast amounts of archaeological and historical information into coherent narratives of human development and cultural evolution.
+                                </p>
+                            </div>
+                        );
+                    
+                    case 'challenges':
+                        return (
+                            <div className="space-y-8">
+                                <h2 className="text-4xl font-serif font-bold text-slate-900 mb-8">
+                                    Challenges and Ethical Considerations
+                                </h2>
+                                
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        The Complexity of Archaeological Knowledge
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700 mb-4">
+                                        While AI offers tremendous potential, important limitations must be acknowledged. Archaeological interpretation is not purely a technical problem but requires deep contextual understanding, cultural sensitivity, and interpretive judgment developed through years of fieldwork and study.
+                                    </p>
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        Archaeologists emphasize that successful work depends on integrating algorithmic analysis with expert archaeological judgment. AI excels at specific technical tasks, but the full pipeline of archaeological research involves interconnected steps, each representing its own specialized subfield of knowledge.
+                                    </p>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        Data Quality and Training Dataset Limitations
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700 mb-4">
+                                        The effectiveness of machine learning models depends critically on the quality and comprehensiveness of training data. Archaeological datasets can be:
+                                    </p>
+                                    <ul className="list-disc list-inside text-slate-700 text-lg space-y-2 mb-4">
+                                        <li>Fragmentary and incomplete</li>
+                                        <li>Geographically limited</li>
+                                        <li>Unevenly documented across regions</li>
+                                        <li>Narrow in range of materials and contexts</li>
+                                    </ul>
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        A narrow range of materials and circumstances in existing training datasets may prevent AI models from adequately addressing the enormous variety of environments and archaeological contexts found around the world.
+                                    </p>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">
+                                        Ethical and Cultural Heritage Concerns
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-slate-700 mb-4">
+                                        The application of AI to archaeological research raises broader ethical questions about cultural heritage management, community engagement, and knowledge ownership. In many regions, archaeological work involves collaboration with indigenous communities and local stakeholders who may have distinct perspectives on how their heritage should be studied and interpreted.
+                                    </p>
+                                    <p className="text-lg leading-relaxed text-slate-700">
+                                        Some archaeologists argue that preservation in place may sometimes be preferable to excavation, and decisions about which sites to investigate should consider the views of descendant communities and contemporary stakeholders, not only algorithmic predictions.
+                                    </p>
+                                </section>
+                            </div>
+                        );
+                    
+                    case 'conclusion':
+                        return (
+                            <div className="space-y-6">
+                                <h2 className="text-4xl font-serif font-bold text-slate-900 mb-8">
+                                    Conclusion and Future Directions
+                                </h2>
+                                
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    Artificial intelligence is fundamentally transforming archaeology by accelerating discoveries, enabling analysis of vast datasets, and solving problems that have challenged researchers for decades. From the discovery of tens of thousands of previously unknown Maya settlements to the successful decipherment of 2,000-year-old charred scrolls, AI demonstrates extraordinary potential to unlock secrets of ancient civilizations.
+                                </p>
+
+                                <div className="bg-teal-50 border-l-4 border-teal-600 p-6 rounded-r my-8">
+                                    <p className="text-slate-700 italic">
+                                        The most promising direction for the field involves collaborative partnerships between AI technologies and experienced archaeologists, rather than AI replacing human expertise and judgment.
+                                    </p>
+                                </div>
+
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    The success of the Vesuvius Challenge, for instance, depended on a 'blend of competition and cooperation' that leveraged both the power of machine learning algorithms and the creative problem-solving of human researchers.
+                                </p>
+
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    As AI technology continues to advance and become more accessible, it holds the potential to enhance every area of archaeological inquiry. For student archaeologists entering the field today, understanding AI applications is becoming essential. The future of archaeology will involve not only traditional skills of fieldwork, stratigraphy, and material culture analysis, but also facility with computational tools, statistical methods, and algorithm design.
+                                </p>
+
+                                <p className="text-lg leading-relaxed text-slate-700">
+                                    However, this technological transformation should not diminish the fundamentally humanistic nature of archaeological inquiry—the desire to understand how people lived in the past and what their achievements reveal about human potential and possibility.
+                                </p>
+                            </div>
+                        );
+                    
+                    case 'references':
+                        return (
+                            <div className="space-y-6">
+                                <h2 className="text-4xl font-serif font-bold text-slate-900 mb-8">
+                                    References
+                                </h2>
+                                
+                                <div className="space-y-4 text-slate-700">
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Amos, Z. (2024).</p>
+                                        <p className="italic">'Five Archaeological Discoveries Made by AI.'</p>
+                                        <p>SwissCognitive: AI Ventures, Advisory & Research. October 31, 2024.</p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Cobb, S., et al. (2025).</p>
+                                        <p className="italic">'Researchers Tap AI to Dig Into the Past.'</p>
+                                        <p>Communications of the ACM. June 13, 2025.</p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Emslie, K. (2026).</p>
+                                        <p className="italic">'AI in Archaeology: Discovering the Past Faster.'</p>
+                                        <p>Ultralytics. February 10, 2026.</p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Farritor, L., et al. (2024).</p>
+                                        <p className="italic">'Decoding Herculaneum Scrolls with Artificial Intelligence.'</p>
+                                        <p>Inside the AI Competition That Decoded an Ancient Scroll. Scientific American. February 28, 2024.</p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Friedman, N., & Gross, D. (2023-2024).</p>
+                                        <p className="italic">The Vesuvius Challenge: A Global Competition in Machine Learning for Ancient Text Recovery.</p>
+                                        <p><span className="text-teal-600">https://www.vesuvius-challenge.com</span></p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Itkin, P., et al. (2019).</p>
+                                        <p className="italic">'Convolutional Neural Networks for Artifact Classification in Archaeology.'</p>
+                                        <p>Digital Applications in Archaeology and Cultural Heritage, 17, e00140.</p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">National Geographic. (2025).</p>
+                                        <p className="italic">'Everything We Thought We Knew About the Ancient Maya Is Being Upended.'</p>
+                                        <p>September 5, 2025.</p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Ringle, W. M., et al. (2021).</p>
+                                        <p className="italic">'LiDAR Survey of Ancient Maya Settlement in the Puuc Region of Yucatan, Mexico.'</p>
+                                        <p>PLoS ONE, 16(4), e0249314.</p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Schroder, W., et al. (2020).</p>
+                                        <p className="italic">'The Value of the NASA Goddard LiDAR, Hyperspectral, and Thermal (G-LiHT) Dataset for Maya Architecture.'</p>
+                                        <p>Journal of Archaeological Science: Reports.</p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Seales, B. (2023-2024).</p>
+                                        <p className="italic">'Virtual Unwrapping and Machine Learning Approaches to Ancient Text Recovery.'</p>
+                                        <p>University of Kentucky Center for Visualization and Virtual Environments.</p>
+                                    </div>
+
+                                    <div className="pb-3 border-b border-amber-200">
+                                        <p className="font-semibold">Springer Nature. (2025).</p>
+                                        <p className="italic">'Machine Learning-Ready Remote Sensing Data for Maya Archaeology.'</p>
+                                        <p>Scientific Data, August 23, 2023.</p>
+                                    </div>
+
+                                    <div className="pb-3">
+                                        <p className="font-semibold">Tulane University News. (2023).</p>
+                                        <p className="italic">'Archaeologists Use LiDAR Technology to Map Wealth and Status in Ancient Maya Society.'</p>
+                                        <p>September 1, 2023.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    
+                    default:
+                        return null;
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-stone-50">
+                    {/* Header */}
+                    <header className="sticky top-0 z-40 bg-white border-b border-amber-200 shadow-sm">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-serif font-bold text-slate-900">
+                                    AI in Archaeology
+                                </h1>
+                                <p className="text-amber-600 font-semibold text-sm">Transforming Ancient Discovery</p>
+                            </div>
+                            
+                            {/* Mobile menu button */}
+                            <button
+                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                                className="md:hidden p-2 hover:bg-stone-100 rounded-lg"
+                            >
+                                {mobileMenuOpen ? (
+                                    <X className="w-6 h-6 text-slate-900" />
+                                ) : (
+                                    <Menu className="w-6 h-6 text-slate-900" />
+                                )}
+                            </button>
+                        </div>
+                    </header>
+
+                    <div className="max-w-7xl mx-auto">
+                        <div className="flex flex-col md:flex-row gap-8 p-4 sm:p-6 lg:p-8">
+                            {/* Sidebar Navigation */}
+                            <nav className={`${
+                                mobileMenuOpen ? 'block' : 'hidden'
+                            } md:block md:sticky md:top-32 md:w-64 flex-shrink-0`}>
+                                <div className="bg-white p-6 rounded-lg border border-amber-200 shadow-sm">
+                                    <h2 className="font-serif font-bold text-slate-900 mb-4 text-lg">Contents</h2>
+                                    <ul className="space-y-2">
+                                        {sections.map((section) => (
+                                            <li key={section.id}>
+                                                <button
+                                                    onClick={() => {
+                                                        setActiveSection(section.id);
+                                                        setMobileMenuOpen(false);
+                                                    }}
+                                                    className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${
+                                                        activeSection === section.id
+                                                            ? 'bg-amber-600 text-white'
+                                                            : 'text-slate-700 hover:bg-stone-100'
+                                                    }`}
+                                                >
+                                                    <span className="flex items-center gap-2">
+                                                        <span className={`font-bold text-sm ${
+                                                            activeSection === section.id ? 'text-amber-100' : 'text-amber-600'
+                                                        }`}>
+                                                            {section.number}
+                                                        </span>
+                                                        {section.label}
+                                                    </span>
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                
+                                <div className="mt-6 bg-teal-50 p-4 rounded-lg border border-teal-200 text-sm text-slate-700">
+                                    <p className="font-semibold text-teal-900 mb-2">For Archaeology Students</p>
+                                    <p>This report explores how artificial intelligence is reshaping the field of archaeology, with practical examples and recent breakthroughs.</p>
+                                </div>
+                            </nav>
+
+                            {/* Main Content */}
+                            <main className="flex-1 min-w-0">
+                                <article className="bg-white rounded-lg shadow-sm p-8 md:p-12">
+                                    {renderContent()}
+                                    
+                                    {/* Navigation Footer */}
+                                    <div className="mt-12 pt-8 border-t border-stone-200 flex items-center justify-between">
+                                        <button
+                                            onClick={() => {
+                                                const currentIndex = sections.findIndex(s => s.id === activeSection);
+                                                if (currentIndex > 0) {
+                                                    setActiveSection(sections[currentIndex - 1].id);
+                                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                }
+                                            }}
+                                            disabled={sections.findIndex(s => s.id === activeSection) === 0}
+                                            className="px-4 py-2 text-slate-700 hover:text-amber-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                                        >
+                                            ← Previous
+                                        </button>
+                                        
+                                        <span className="text-sm text-slate-500">
+                                            {sections.findIndex(s => s.id === activeSection) + 1} of {sections.length}
+                                        </span>
+                                        
+                                        <button
+                                            onClick={() => {
+                                                const currentIndex = sections.findIndex(s => s.id === activeSection);
+                                                if (currentIndex < sections.length - 1) {
+                                                    setActiveSection(sections[currentIndex + 1].id);
+                                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                }
+                                            }}
+                                            disabled={sections.findIndex(s => s.id === activeSection) === sections.length - 1}
+                                            className="px-4 py-2 text-amber-600 hover:text-amber-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-1"
+                                        >
+                                            Next →
+                                        </button>
+                                    </div>
+                                </article>
+                            </main>
+                        </div>
+                    </div>
+
+                    {/* Footer */}
+                    <footer className="bg-slate-900 text-stone-300 mt-16 py-8">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+                            <p>Artificial Intelligence in Archaeology: A Report for Archaeology Students</p>
+                            <p className="mt-2">Created with research from recent publications (2023-2026)</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<ArchaeologyAISPA />, document.getElementById('root'));
+    </script>
+</body>
+</html>
